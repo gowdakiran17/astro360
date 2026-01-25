@@ -1,0 +1,36 @@
+
+--- Error processing 2026-01-25 00:00:00 ---
+must be real number, not tuple
+Traceback (most recent call last):
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/period_analysis/orchestrator.py", line 251, in _process_single_day
+    muhurta_data = get_muhurata_data(jd, lat, lon)
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/muhurata.py", line 70, in get_muhurata_data
+    res_rise = swe.rise_trans(jd, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, (lon, lat, 0), 0, 0, flags)
+TypeError: must be real number, not tuple
+
+--- Error processing 2026-01-25 00:00:00 ---
+must be real number, not tuple
+Traceback (most recent call last):
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/period_analysis/orchestrator.py", line 251, in _process_single_day
+    muhurta_data = get_muhurata_data(jd, lat, lon)
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/muhurata.py", line 70, in get_muhurata_data
+    res_rise = swe.rise_trans(jd, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, (lon, lat, 0), 0, 0, flags)
+TypeError: must be real number, not tuple
+
+--- Error processing 2026-01-25 00:00:00 ---
+must be real number, not tuple
+Traceback (most recent call last):
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/period_analysis/orchestrator.py", line 251, in _process_single_day
+    muhurta_data = get_muhurata_data(jd, lat, lon)
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/muhurata.py", line 70, in get_muhurata_data
+    res_rise = swe.rise_trans(jd, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, (lon, lat, 0), 0, 0, flags)
+TypeError: must be real number, not tuple
+
+--- Error processing 2026-01-25 00:00:00 ---
+must be real number, not tuple
+Traceback (most recent call last):
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/period_analysis/orchestrator.py", line 251, in _process_single_day
+    muhurta_data = get_muhurata_data(jd, lat, lon)
+  File "/Users/kiran/Documents/astro360/astro_app/backend/astrology/muhurata.py", line 70, in get_muhurata_data
+    res_rise = swe.rise_trans(jd, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, (lon, lat, 0), 0, 0, flags)
+TypeError: must be real number, not tuple

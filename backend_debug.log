@@ -1,0 +1,1386 @@
+INFO:     Will watch for changes in these directories: ['/Users/kirangowda/Downloads/astro360']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [39690] using StatReload
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [39737]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:55352 - "GET /users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:55354 - "GET /users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:55357 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55359 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55361 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55363 - "GET /users/me HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55366 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55369 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55373 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55376 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55379 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55382 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55387 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55390 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55478 - "GET /charts/ HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [39737]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [42524]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/varga_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42524]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [42623]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55511 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55547 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55549 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55551 - "POST /chart/shodashvarga HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/protocols/http/h11_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 231, in get_shodashvargas
+    verify_user_access(current_user, Feature.DIVISIONAL_CHARTS)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 68, in verify_user_access
+    return check_access(feature_name, user.tier)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 60, in check_access
+    raise PermissionError(
+PermissionError: Access Denied: Feature 'divisional_charts' is not available for 'free' tier.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55561 - "POST /chart/shodashvarga HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/protocols/http/h11_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 231, in get_shodashvargas
+    verify_user_access(current_user, Feature.DIVISIONAL_CHARTS)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 68, in verify_user_access
+    return check_access(feature_name, user.tier)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 60, in check_access
+    raise PermissionError(
+PermissionError: Access Denied: Feature 'divisional_charts' is not available for 'free' tier.
+INFO:     127.0.0.1:55560 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55595 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55598 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55601 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55604 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55608 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55611 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55614 - "POST /chart/shodashvarga HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/protocols/http/h11_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 231, in get_shodashvargas
+    verify_user_access(current_user, Feature.DIVISIONAL_CHARTS)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 68, in verify_user_access
+    return check_access(feature_name, user.tier)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 60, in check_access
+    raise PermissionError(
+PermissionError: Access Denied: Feature 'divisional_charts' is not available for 'free' tier.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55628 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55631 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55636 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55639 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55642 - "POST /chart/shodashvarga HTTP/1.1" 500 Internal Server Error
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/protocols/http/h11_impl.py", line 409, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 93, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/routing.py", line 290, in handle
+    await self.app(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 115, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 101, in app
+    response = await f(request)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 355, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/fastapi/routing.py", line 243, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 231, in get_shodashvargas
+    verify_user_access(current_user, Feature.DIVISIONAL_CHARTS)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 68, in verify_user_access
+    return check_access(feature_name, user.tier)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/monetization/access_control.py", line 60, in check_access
+    raise PermissionError(
+PermissionError: Access Denied: Feature 'divisional_charts' is not available for 'free' tier.
+WARNING:  StatReload detected changes in 'astro_app/backend/monetization/access_control.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [42623]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [43258]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:55665 - "POST /chart/shodashvarga HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [43258]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [44395]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55887 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55890 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating ashtakvarga: 'sign_idx'
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 281, in get_ashtakvarga_strength
+    ascendant_sign_idx = d1_result["ascendant"]["sign_idx"]
+KeyError: 'sign_idx'
+INFO:     127.0.0.1:55893 - "POST /chart/ashtakvarga HTTP/1.1" 500 Internal Server Error
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55913 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55916 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55919 - "POST /chart/shodashvarga HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55929 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55932 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55935 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55938 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [44395]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [45053]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55966 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55969 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55972 - "POST /chart/ashtakvarga HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55987 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 1 charts
+INFO:     127.0.0.1:55990 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56020 - "GET /geo/search?q=kolar HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56027 - "GET /geo/search?q=Kolar,%20Karnataka,%20India HTTP/1.1" 200 OK
+DEBUG: Received create_chart request for user 2
+DEBUG: Chart saved successfully with ID 2
+INFO:     127.0.0.1:56033 - "POST /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56041 - "POST /chart/birth HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56043 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56040 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56046 - "POST /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56049 - "POST /chart/panchang HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56055 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56058 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56063 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56065 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56068 - "POST /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56071 - "POST /chart/panchang HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56077 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56080 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56090 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56092 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56095 - "POST /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56098 - "POST /chart/panchang HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56102 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56105 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56108 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56111 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56116 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56119 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56131 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56134 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56137 - "POST /chart/shodashvarga HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56141 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56144 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56147 - "POST /chart/ashtakvarga HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56152 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56155 - "GET /charts/ HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [45053]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [46485]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:56243 - "GET /charts/ HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56245 - "GET /charts/ HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56287 - "GET /charts/ HTTP/1.1" 401 Unauthorized
+WARNING:  StatReload detected changes in 'astro_app/backend/auth/utils.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [46485]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [47576]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:56377 - "GET /users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56379 - "GET /users/me HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56384 - "GET /charts/ HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56386 - "GET /charts/ HTTP/1.1" 401 Unauthorized
+INFO:     127.0.0.1:56393 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56395 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56397 - "POST /auth/login HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56400 - "GET /users/me HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56403 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56406 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56411 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56417 - "POST /chart/ashtakvarga HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56415 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56420 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56423 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56426 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56436 - "POST /chart/shadbala HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/dasha.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [47576]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [48815]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/dasha.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [48815]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [48926]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56670 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56673 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56676 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56679 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56733 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56736 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56743 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56746 - "POST /chart/dasha HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/utils.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [48926]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [50905]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/shadow_planets.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50905]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [50916]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50916]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [50955]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:56874 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56878 - "GET /users/me HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56880 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56883 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56886 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56889 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56892 - "POST /chart/dasha HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56937 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:56943 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56940 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating shadow planets: module 'swisseph' has no attribute 'RISE'
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 345, in get_shadow_planets
+    shadow_planets = calculate_shadow_planets(
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/shadow_planets.py", line 138, in calculate_shadow_planets
+    upagrahas = calculate_upagrahas(jd, lat, lon, t_offset)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/shadow_planets.py", line 47, in calculate_upagrahas
+    res = swe.rise_trans(jd, swe.SUN, swe.RISE | swe.BIT_DISC_CENTER, lon, lat, 0, 0, 0)
+AttributeError: module 'swisseph' has no attribute 'RISE'
+INFO:     127.0.0.1:56946 - "POST /chart/shadow-planets HTTP/1.1" 500 Internal Server Error
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/shadow_planets.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [50955]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [52247]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/shadow_planets.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [52247]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [52534]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:57004 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57007 - "POST /chart/shadow-planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57031 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57034 - "POST /chart/shadow-planets HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57037 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57040 - "POST /chart/shadow-planets HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/utils.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [52534]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [53257]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [53257]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [53266]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57165 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57168 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57171 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57174 - "POST /chart/transits HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57194 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57197 - "GET /charts/ HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/panchang.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [53266]
+Process SpawnProcess-18:
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 11, in <module>
+    from astro_app.backend.astrology.panchang import calculate_panchang
+ImportError: cannot import name 'calculate_panchang' from 'astro_app.backend.astrology.panchang' (/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py)
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+Process SpawnProcess-19:
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 850, in exec_module
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 11, in <module>
+    from astro_app.backend.astrology.panchang import calculate_panchang
+ImportError: cannot import name 'calculate_panchang' from 'astro_app.backend.astrology.panchang' (/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py)
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/panchang.py'. Reloading...
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [56011]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 413, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 413, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 413, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57402 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57399 - "POST /chart/birth HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+INFO:     127.0.0.1:57327 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57328 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57370 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57386 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57523 - "POST /chart/birth HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57524 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57530 - "POST /chart/birth HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Fetching charts for user 2
+INFO:     127.0.0.1:57527 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 413, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+DEBUG: Found 2 charts
+DEBUG: Found 2 charts
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57531 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57539 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57534 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57536 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 413, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57542 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57545 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Fetching charts for user 2
+DEBUG: Fetching charts for user 2
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Found 2 charts
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57551 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57554 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57555 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57560 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57557 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57563 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57566 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Fetching charts for user 2
+INFO:     127.0.0.1:57569 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57575 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57576 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57578 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57581 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57584 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+INFO:     127.0.0.1:57587 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57594 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57591 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 177, in get_panchang
+    result = calculate_panchang(
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 198, in calculate_panchang
+    data = get_panchang_data(jd, latitude, longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+ERROR:astro_app.backend.main:Error calculating panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 177, in get_panchang
+    result = calculate_panchang(
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 198, in calculate_panchang
+    data = get_panchang_data(jd, latitude, longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57596 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 177, in get_panchang
+    result = calculate_panchang(
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 198, in calculate_panchang
+    data = get_panchang_data(jd, latitude, longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57603 - "POST /chart/panchang HTTP/1.1" 500 Internal Server Error
+ERROR:astro_app.backend.main:Error calculating panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 177, in get_panchang
+    result = calculate_panchang(
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 198, in calculate_panchang
+    data = get_panchang_data(jd, latitude, longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57600 - "POST /chart/panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57605 - "POST /chart/panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57608 - "POST /chart/panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57611 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57614 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [56011]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [56021]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [56021]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [56212]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57665 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57668 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57675 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57678 - "POST /chart/birth HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 176, in get_panchang
+    result = calculate_panchang(
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 198, in calculate_panchang
+    data = get_panchang_data(jd, latitude, longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57681 - "POST /chart/panchang HTTP/1.1" 500 Internal Server Error
+ERROR:astro_app.backend.main:Error calculating panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 176, in get_panchang
+    result = calculate_panchang(
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 198, in calculate_panchang
+    data = get_panchang_data(jd, latitude, longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57684 - "POST /chart/panchang HTTP/1.1" 500 Internal Server Error
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57689 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57692 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57695 - "POST /chart/shodashvarga HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57699 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57702 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57705 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57708 - "POST /chart/transits HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57712 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57715 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57843 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57846 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57849 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57852 - "POST /chart/transits HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57867 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57870 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57875 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57876 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/panchang.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [56212]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [58610]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:57890 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57892 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57900 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57902 - "GET /users/me HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57906 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57909 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57910 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:57921 - "POST /chart/live-panchang HTTP/1.1" 401 Unauthorized
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57943 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57946 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57949 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57952 - "POST /chart/transits HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57958 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57961 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57974 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57977 - "GET /charts/ HTTP/1.1" 200 OK
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57982 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:57985 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57989 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:57992 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57995 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:57998 - "POST /chart/transits HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/panchang.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [58610]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [59258]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/panchang.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [59258]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [59909]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [59909]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [59918]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58061 - "POST /chart/transits HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58066 - "POST /chart/live-panchang HTTP/1.1" 401 Unauthorized
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+ERROR:astro_app.backend.main:Error calculating live panchang: 'float' object is not subscriptable
+Traceback (most recent call last):
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 414, in get_live_panchang
+    current_data = get_panchang_data(jd, request.latitude, request.longitude)
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/astrology/panchang.py", line 104, in get_panchang_data
+    azimuth = res_az[0][0]
+TypeError: 'float' object is not subscriptable
+INFO:     127.0.0.1:58085 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+INFO:     127.0.0.1:58087 - "POST /chart/live-panchang HTTP/1.1" 500 Internal Server Error
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/panchang.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [59918]
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+INFO:     Started server process [60633]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:58126 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58128 - "GET /users/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58131 - "POST /chart/live-panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58133 - "POST /chart/live-panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58153 - "POST /chart/live-panchang HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:58174 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:58177 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:58209 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:58212 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58215 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58218 - "POST /chart/transits HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58223 - "POST /chart/live-panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58225 - "POST /chart/live-panchang HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:58276 - "GET /charts/ HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 2
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:58279 - "GET /charts/ HTTP/1.1" 200 OK
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [60633]
+Process SpawnProcess-28:
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 846, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 983, in get_code
+  File "<frozen importlib._bootstrap_external>", line 913, in source_to_code
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 441
+    @app.post("/chart/muhurata")
+IndentationError: unexpected unindent
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+Process SpawnProcess-29:
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 846, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 983, in get_code
+  File "<frozen importlib._bootstrap_external>", line 913, in source_to_code
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 442
+    @app.post("/chart/muhurata")
+IndentationError: unexpected unindent
+WARNING:  StatReload detected changes in 'astro_app/backend/astrology/muhurata.py'. Reloading...
+Process SpawnProcess-30:
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 846, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 983, in get_code
+  File "<frozen importlib._bootstrap_external>", line 913, in source_to_code
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 442
+    @app.post("/chart/muhurata")
+IndentationError: unexpected unindent
+WARNING:  StatReload detected changes in 'astro_app/backend/main.py'. Reloading...
+Process SpawnProcess-31:
+Traceback (most recent call last):
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 315, in _bootstrap
+    self.run()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/multiprocessing/process.py", line 108, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_subprocess.py", line 80, in subprocess_started
+    target(sockets=sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 67, in run
+    return asyncio_run(self.serve(sockets=sockets), loop_factory=self.config.get_loop_factory())
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/_compat.py", line 60, in asyncio_run
+    return loop.run_until_complete(main)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/asyncio/base_events.py", line 642, in run_until_complete
+    return future.result()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 71, in serve
+    await self._serve(sockets)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/server.py", line 78, in _serve
+    config.load()
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/config.py", line 439, in load
+    self.loaded_app = import_from_string(self.app)
+  File "/Users/kirangowda/Library/Python/3.9/lib/python/site-packages/uvicorn/importer.py", line 19, in import_from_string
+    module = importlib.import_module(module_str)
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/importlib/__init__.py", line 127, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1030, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1007, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 986, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 680, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 846, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 983, in get_code
+  File "<frozen importlib._bootstrap_external>", line 913, in source_to_code
+  File "<frozen importlib._bootstrap>", line 228, in _call_with_frames_removed
+  File "/Users/kirangowda/Downloads/astro360/astro_app/backend/main.py", line 450
+    @app.post("/chart/muhurata")
+IndentationError: unexpected unindent

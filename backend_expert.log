@@ -1,0 +1,153 @@
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+ASTROLOGY_API_IO_KEY not found. External astrology API disabled.
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/google/api_core/_python_version_support.py:246: FutureWarning: You are using a non-supported Python version (3.9.6). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.10, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/google/auth/__init__.py:54: FutureWarning: 
+    You are using a Python version 3.9 past its end of life. Google will update
+    google-auth with critical bug fixes on a best-effort basis, but not
+    with any other fixes or features. Please upgrade your Python version,
+    and then update google-auth.
+    
+  warnings.warn(eol_message.format("3.9"), FutureWarning)
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/google/oauth2/__init__.py:40: FutureWarning: 
+    You are using a Python version 3.9 past its end of life. Google will update
+    google-auth with critical bug fixes on a best-effort basis, but not
+    with any other fixes or features. Please upgrade your Python version,
+    and then update google-auth.
+    
+  warnings.warn(eol_message.format("3.9"), FutureWarning)
+/Users/kirangowda/Documents/astro360/astro_app/backend/routers/ai_insight.py:18: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+INFO:     Will watch for changes in these directories: ['/Users/kirangowda/Documents/astro360']
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [40338] using WatchFiles
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/pydantic/_internal/_config.py:383: UserWarning: Valid config keys have changed in V2:
+* 'orm_mode' has been renamed to 'from_attributes'
+  warnings.warn(message, UserWarning)
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+ASTROLOGY_API_IO_KEY not found. External astrology API disabled.
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/google/api_core/_python_version_support.py:246: FutureWarning: You are using a non-supported Python version (3.9.6). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.10, and then update google.api_core.
+  warnings.warn(message, FutureWarning)
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/google/auth/__init__.py:54: FutureWarning: 
+    You are using a Python version 3.9 past its end of life. Google will update
+    google-auth with critical bug fixes on a best-effort basis, but not
+    with any other fixes or features. Please upgrade your Python version,
+    and then update google-auth.
+    
+  warnings.warn(eol_message.format("3.9"), FutureWarning)
+/Users/kirangowda/Documents/astro360/.venv/lib/python3.9/site-packages/google/oauth2/__init__.py:40: FutureWarning: 
+    You are using a Python version 3.9 past its end of life. Google will update
+    google-auth with critical bug fixes on a best-effort basis, but not
+    with any other fixes or features. Please upgrade your Python version,
+    and then update google-auth.
+    
+  warnings.warn(eol_message.format("3.9"), FutureWarning)
+/Users/kirangowda/Documents/astro360/astro_app/backend/routers/ai_insight.py:18: FutureWarning: 
+
+All support for the `google.generativeai` package has ended. It will no longer be receiving 
+updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
+See README for more details:
+
+https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
+
+  import google.generativeai as genai
+INFO:     Started server process [40357]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     127.0.0.1:61411 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:watchfiles.main:1 change detected
+INFO:watchfiles.main:1281 changes detected
+INFO:watchfiles.main:1 change detected
+INFO:watchfiles.main:1 change detected
+INFO:watchfiles.main:1 change detected
+INFO:watchfiles.main:1 change detected
+INFO:watchfiles.main:1 change detected
+INFO:watchfiles.main:1 change detected
+INFO:     127.0.0.1:61668 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61668 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61671 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61675 - "GET /tools/sade-sati HTTP/1.1" 405 Method Not Allowed
+INFO:     127.0.0.1:61685 - "OPTIONS /auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61687 - "OPTIONS /auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61685 - "GET /auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61685 - "GET /auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61685 - "OPTIONS /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61694 - "OPTIONS /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61687 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61689 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61685 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61692 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61695 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61685 - "OPTIONS /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61694 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61687 - "POST /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61689 - "POST /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61692 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61694 - "POST /chart/dasha HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 5
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:61695 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61695 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61694 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61698 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61700 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61730 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61731 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61730 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61731 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61733 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61735 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61730 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61733 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61735 - "POST /chart/comprehensive-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61733 - "POST /chart/comprehensive-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61739 - "GET /tools/period-analysis HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:61751 - "GET /auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61751 - "GET /auth/me HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61751 - "POST /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61754 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61755 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61758 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61759 - "POST /chart/panchang HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61761 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61751 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61754 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61758 - "POST /chart/dasha HTTP/1.1" 200 OK
+DEBUG: Fetching charts for user 5
+DEBUG: Found 2 charts
+INFO:     127.0.0.1:61761 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61755 - "GET /charts/ HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61755 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61761 - "POST /chart/birth HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61755 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61754 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61761 - "POST /chart/period-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61758 - "POST /chart/dasha HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61755 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61758 - "POST /chart/shadbala HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61755 - "POST /chart/comprehensive-analysis HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61758 - "POST /chart/comprehensive-analysis HTTP/1.1" 200 OK
+INFO:watchfiles.main:2 changes detected
+INFO:     127.0.0.1:61768 - "OPTIONS /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61770 - "OPTIONS /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61768 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:     127.0.0.1:61770 - "POST /tools/sade-sati HTTP/1.1" 200 OK
+INFO:watchfiles.main:15 changes detected
+INFO:watchfiles.main:16 changes detected
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [40357]
+INFO:     Stopping reloader process [40338]
