@@ -28,9 +28,12 @@ export interface Panchang {
 
 export interface Muhurta {
   name: string;
-  type: string; // 'Choghadiya', 'Hora', 'Vedic'
-  start: string | number; // ISO string or JD? Backend sends JD usually, we might need formatting.
-  end: string | number;
+  type: string;
+  start_time: string;
+  end_time: string;
+  duration_minutes?: number;
+  start?: number | string;
+  end?: number | string;
   quality: 'Excellent' | 'Good' | 'Poor' | 'Avoid';
   ruler?: string;
 }
@@ -149,4 +152,36 @@ export interface PeriodResponse {
   monthly_forecast: any;
   weekly_forecast: any;
   current_day: DailyAnalysis;
+}
+
+export interface DayData {
+  id: string;
+  date: string;
+  day: string;
+  score: number;
+  energy: number;
+  theme: string;
+  best: string;
+  caution: string;
+}
+
+export interface WeeklyForecast {
+  range: string;
+  score: number;
+  quality: string;
+  theme: string;
+  energy: number;
+  summary: string;
+  days: DayData[];
+}
+
+export interface MonthlyForecast {
+  month: string;
+  score: number;
+  quality: string;
+  theme: string;
+  summary: string;
+  weeks: Array<{ id: number; range: string; score: number; theme: string }>;
+  keyDates: { best: string[]; caution: string[] };
+  focusAreas: string[];
 }

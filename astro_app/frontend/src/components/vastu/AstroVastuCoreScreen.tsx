@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // --- Types ---
-interface Remedy {
+export interface Remedy {
     zone: string;
     problem: string;
     action: string;
@@ -18,14 +18,14 @@ interface Remedy {
     time: string;
 }
 
-interface Alignment {
+export interface Alignment {
     need: string;
     why: string;
     direction: string;
     activity: string;
 }
 
-interface EliteAnalysisResult {
+export interface EliteAnalysisResult {
     life_theme_summary: string;
     active_astrology: any;
     diagnosis: string;

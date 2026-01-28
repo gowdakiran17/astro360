@@ -17,7 +17,7 @@
   }
   
   body {
-    @apply bg-slate-950 text-slate-100 antialiased font-sans bg-[url('/bg-stars.svg')] bg-fixed; /* Fallback or asset needs to be added */
+    @apply bg-slate-950 text-slate-100 antialiased font-sans bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black bg-fixed;
     font-family: 'Outfit', sans-serif;
   }
 

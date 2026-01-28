@@ -303,7 +303,7 @@ const GannIntelligence = () => {
   const getFinalAction = () => {
       if (!data) return { action: 'Loading...', color: 'text-slate-400' };
       
-      let baseAction = dayStatus.signal;
+      const baseAction = dayStatus.signal;
       
       if (!isPersonalOverlayOn || !data.personal_overlay) {
           // Map base signal to display format

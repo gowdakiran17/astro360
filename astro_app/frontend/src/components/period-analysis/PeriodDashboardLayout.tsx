@@ -41,7 +41,7 @@ const TABS = [
     { id: 'lifemap', label: 'Life Map', icon: Sparkles },
 ];
 
-const PeriodDashboardLayout = ({ data, loading, error, selectedDate, onDateChange, dailyData = {} }: PeriodDashboardProps) => {
+const PeriodDashboardLayout = ({ data, loading, error }: PeriodDashboardProps) => {
     const [activeTab, setActiveTab] = useState('overview');
 
     if (loading) {
@@ -96,9 +96,6 @@ const PeriodDashboardLayout = ({ data, loading, error, selectedDate, onDateChang
                 {activeTab === 'overview' && (
                     <OverviewTab
                         data={data}
-                        selectedDate={selectedDate}
-                        onDateChange={onDateChange}
-                        dailyData={dailyData}
                     />
                 )}
 

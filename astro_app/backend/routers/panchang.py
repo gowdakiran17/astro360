@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.post("/panchang")
-async def get_panchang(details: BirthDetails, current_user: User = Depends(get_current_user)):
+async def get_panchang(details: PanchangRequest, current_user: User = Depends(get_current_user)):
     """
     Calculates the Panchang (Tithi, Nakshatra, Yoga, Karana, Vara).
     """

@@ -101,8 +101,8 @@ class PanchangRequest(BaseModel):
         return v
 
 class CompatibilityRequest(BaseModel):
-    boy: dict
-    girl: dict
+    boy: BirthDetails
+    girl: BirthDetails
 
 class MuhurataRequest(BaseModel):
     date: str
@@ -147,6 +147,7 @@ class AIRequest(BaseModel):
     context: str = Field(..., description="Context of the report (e.g. 'period', 'dasha', 'general')")
     data: Dict = Field(..., description="Chart or analysis data to interpret")
     query: Optional[str] = Field(None, description="User question for chat mode")
+    llm_config: Optional[Dict] = Field(None, description="Optional overrides for model selection (provider, model_name, temp)")
 
 class RatingRequest(BaseModel):
     date: str # YYYY-MM-DD

@@ -29,7 +29,7 @@ const SouthIndianChart = ({ data }: { data: ChartData | null }) => {
   // 10       03 (Aquarius, Cancer)
   // 09       04 (Capricorn, Leo)
   // 08 07 06 05 (Sag, Scorpio, Libra, Virgo)
-  
+
   // Let's define the grid cell coordinates (x, y) for each sign index (0=Aries, 1=Taurus...)
   // Assuming 400x400 SVG, cell size 100x100
   const signCells = {
@@ -59,9 +59,9 @@ const SouthIndianChart = ({ data }: { data: ChartData | null }) => {
 
   return (
     <div className="flex justify-center my-6">
-      <svg width="100%" height="100%" viewBox="0 0 400 400" className="stroke-amber-500/50 stroke-2 bg-transparent max-w-[400px] max-h-[400px]">
+      <svg width="100%" height="100%" viewBox="0 0 400 400" className="stroke-amber-500 stroke-2 bg-transparent max-w-[400px] max-h-[400px]">
         {/* Outer Border */}
-        <rect x="2" y="2" width="396" height="396" fill="none" className="stroke-amber-500/50 stroke-[3]" />
+        <rect x="2" y="2" width="396" height="396" fill="none" className="stroke-amber-600 stroke-[4]" />
 
         {/* Grid Lines */}
         {/* Horizontal */}
@@ -69,7 +69,7 @@ const SouthIndianChart = ({ data }: { data: ChartData | null }) => {
         <line x1="0" y1="200" x2="100" y2="200" /> {/* Left stub */}
         <line x1="300" y1="200" x2="400" y2="200" /> {/* Right stub */}
         <line x1="0" y1="300" x2="400" y2="300" />
-        
+
         {/* Vertical */}
         <line x1="100" y1="0" x2="100" y2="400" />
         <line x1="200" y1="0" x2="200" y2="100" /> {/* Top stub */}
@@ -81,7 +81,7 @@ const SouthIndianChart = ({ data }: { data: ChartData | null }) => {
 
         {/* Render Signs */}
         {Object.values(signCells).map((coords) => {
-          
+
           const signName = coords.name;
           const planets = planetsBySign[signName] || [];
           const isAscendant = ascSign === signName;
@@ -96,7 +96,7 @@ const SouthIndianChart = ({ data }: { data: ChartData | null }) => {
               >
                 {signName.substring(0, 3)}
               </text> */}
-              
+
               {/* Ascendant Marker */}
               {isAscendant && (
                 <text

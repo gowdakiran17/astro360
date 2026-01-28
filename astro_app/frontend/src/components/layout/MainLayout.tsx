@@ -5,8 +5,6 @@ import { User, LogOut, LayoutGrid, AlertTriangle, Moon, Menu } from 'lucide-reac
 import { useChartSettings } from '../../context/ChartContext';
 import ProfileSelector from './ProfileSelector';
 
-import { ThemeToggle } from '../ThemeToggle';
-
 interface MainLayoutProps {
   children: React.ReactNode;
   title?: string;
@@ -16,11 +14,18 @@ interface MainLayoutProps {
   theme?: 'default' | 'cosmic';
 }
 
-const MainLayout = ({ children, breadcrumbs = ['Home', 'Charts'], showHeader = true, disableContentPadding = false, theme = 'default' }: MainLayoutProps) => {
+const MainLayout = ({ children, title, breadcrumbs = ['Home', 'Charts'], showHeader = true, disableContentPadding = false, theme = 'default' }: MainLayoutProps) => {
   const { logout } = useAuth();
   const { chartStyle, toggleChartStyle } = useChartSettings();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Update document title
+  useEffect(() => {
+    if (title) {
+      document.title = `${title} | Astro360`;
+    }
+  }, [title]);
 
   // Close mobile menu on route change or screen resize
   useEffect(() => {
@@ -35,11 +40,11 @@ const MainLayout = ({ children, breadcrumbs = ['Home', 'Charts'], showHeader = t
 
   const bgClass = theme === 'cosmic'
     ? "bg-[#0B0F19] text-white"
-    : "bg-slate-50 dark:bg-slate-900 cosmic-gradient";
+    : "bg-slate-900 text-slate-100 cosmic-gradient";
 
   const headerClass = theme === 'cosmic'
     ? "bg-[#0B0F19]/80 backdrop-blur-md border-b border-white/10 text-white"
-    : "bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800";
+    : "bg-slate-900/90 backdrop-blur-md border-b border-slate-800 text-white";
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${bgClass}`}>
@@ -79,19 +84,19 @@ const MainLayout = ({ children, breadcrumbs = ['Home', 'Charts'], showHeader = t
 
                 <div className="flex items-center space-x-4">
                   <ProfileSelector />
-                  <div className="h-6 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
+                  <div className="h-6 w-px bg-slate-700 mx-2"></div>
                   <button
                     onClick={toggleChartStyle}
-                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-full transition-all"
+                    className="p-2 text-slate-400 hover:text-indigo-400 hover:bg-slate-800 rounded-full transition-all"
                     title={`Switch to ${chartStyle === 'NORTH_INDIAN' ? 'South' : 'North'} Indian Chart`}
                   >
                     <LayoutGrid className="w-5 h-5" />
                   </button>
-                  <ThemeToggle />
-                  <div className="flex items-center text-slate-600 dark:text-slate-300 font-medium text-sm">
+                  {/* ThemeToggle removed */}
+                  <div className="flex items-center text-slate-300 font-medium text-sm">
                     <span className="mr-1">EN</span>
                   </div>
-                  <div className="h-8 w-8 bg-slate-900 dark:bg-indigo-600 rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-slate-800 dark:hover:bg-indigo-500 transition-colors shadow-lg">
+                  <div className="h-8 w-8 bg-indigo-600 rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-indigo-500 transition-colors shadow-lg">
                     <User className="w-4 h-4" />
                   </div>
                   <button onClick={logout} className="text-slate-400 hover:text-red-500 transition-colors" title="Logout">

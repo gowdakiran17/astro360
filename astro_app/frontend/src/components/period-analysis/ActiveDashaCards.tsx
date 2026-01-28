@@ -1,40 +1,10 @@
 import { DashboardOverviewResponse } from '../../types/periodAnalysis';
-import { Star, Sun, Moon, Sunrise, Sunset, Info } from 'lucide-react';
+import { Star, Sunrise, Sunset, Info } from 'lucide-react';
+import { NAKSHATRA_DATA } from '../../utils/nakshatraData';
 
 interface QuickReferenceWidgetProps {
     data: DashboardOverviewResponse;
 }
-
-// Static Nakshatra Metadata Map (Simplified for display)
-const NAKSHATRA_META: Record<string, { deity: string; symbol: string; quality: string }> = {
-    "Ashwini": { deity: "Ashwini Kumaras", symbol: "Horse's Head", quality: "Swift" },
-    "Bharani": { deity: "Yama", symbol: "Yoni", quality: "Fierce" },
-    "Krittika": { deity: "Agni", symbol: "Knife", quality: "Sharp" },
-    "Rohini": { deity: "Brahma", symbol: "Chariot", quality: "Fixed" },
-    "Mrigashirsha": { deity: "Soma", symbol: "Deer's Head", quality: "Soft" },
-    "Ardra": { deity: "Rudra", symbol: "Teardrop", quality: "Sharp" },
-    "Punarvasu": { deity: "Aditi", symbol: "Bow and Quiver", quality: "Movable" },
-    "Pushya": { deity: "Brihaspati", symbol: "Cow's Udder", quality: "Swift" },
-    "Ashlesha": { deity: "Nagas", symbol: "Coiled Snake", quality: "Sharp" },
-    "Magha": { deity: "Pitris", symbol: "Throne", quality: "Fierce" },
-    "Purva Phalguni": { deity: "Bhaga", symbol: "Bed", quality: "Fierce" },
-    "Uttara Phalguni": { deity: "Aryaman", symbol: "Bed", quality: "Fixed" },
-    "Hasta": { deity: "Savitr", symbol: "Hand", quality: "Swift" },
-    "Chitra": { deity: "Vishvakarma", symbol: "Pearl", quality: "Soft" },
-    "Swati": { deity: "Vayu", symbol: "Coral", quality: "Movable" },
-    "Vishakha": { deity: "Indragni", symbol: "Archway", quality: "Mixed" },
-    "Anuradha": { deity: "Mitra", symbol: "Lotus", quality: "Soft" },
-    "Jyeshtha": { deity: "Indra", symbol: "Umbrella", quality: "Sharp" },
-    "Mula": { deity: "Nirriti", symbol: "Roots", quality: "Sharp" },
-    "Purva Ashadha": { deity: "Apah", symbol: "Fan", quality: "Fierce" },
-    "Uttara Ashadha": { deity: "Vishwadevas", symbol: "Elephant Tusk", quality: "Fixed" },
-    "Shravana": { deity: "Vishnu", symbol: "Ear", quality: "Movable" },
-    "Dhanishta": { deity: "Vasud", symbol: "Drum", quality: "Movable" },
-    "Shatabhisha": { deity: "Varuna", symbol: "Circle", quality: "Movable" },
-    "Purva Bhadrapada": { deity: "Aja Ekapada", symbol: "Sword", quality: "Fierce" },
-    "Uttara Bhadrapada": { deity: "Ahir Budhnya", symbol: "Twin Face", quality: "Fixed" },
-    "Revati": { deity: "Pushan", symbol: "Fish", quality: "Soft" }
-};
 
 const QuickReferenceWidget = ({ data }: QuickReferenceWidgetProps) => {
     const { chart_details, dasha_info } = data;
@@ -45,7 +15,31 @@ const QuickReferenceWidget = ({ data }: QuickReferenceWidgetProps) => {
     const sun = chart_details?.sun_sign || { sign: "Unknown", degree_str: "0°0'" };
     const nak = chart_details?.nakshatra || { name: "Unknown", pada: 1 };
 
-    const meta = NAKSHATRA_META[nak.name] || { deity: "Unknown", symbol: "Unknown", quality: "Unknown" };
+    // Helper to get nakshatra data case-insensitively
+    const getNakshatraMeta = (name: string) => {
+        // Debug logging
+        // console.log("Lookup Nakshatra:", name);
+        // console.log("Available keys:", Object.keys(NAKSHATRA_DATA));
+
+        if (!name || name === "Unknown") return { deity: "Unknown", symbol: "Unknown", quality: "Unknown" };
+        
+        // 1. Try exact match
+        if (NAKSHATRA_DATA[name]) return NAKSHATRA_DATA[name];
+        
+        // 2. Try case-insensitive match (trimmed)
+        const cleanName = name.toLowerCase().trim();
+        const key = Object.keys(NAKSHATRA_DATA).find(k => k.toLowerCase().trim() === cleanName);
+        if (key) return NAKSHATRA_DATA[key];
+
+        // 3. Try fuzzy match (remove spaces and special chars) - e.g. "PurvaAshadha" vs "Purva Ashadha"
+        const fuzzyName = cleanName.replace(/[^a-z0-9]/g, '');
+        const fuzzyKey = Object.keys(NAKSHATRA_DATA).find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === fuzzyName);
+        if (fuzzyKey) return NAKSHATRA_DATA[fuzzyKey];
+
+        return { deity: "Unknown", symbol: "Unknown", quality: "Unknown" };
+    };
+
+    const meta = getNakshatraMeta(nak.name);
 
     // Dasha Logic
     const currentMD = dasha_info?.current?.current_mahadasha;

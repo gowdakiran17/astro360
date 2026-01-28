@@ -135,7 +135,7 @@ const ChartCompatibility = () => {
     );
 
     return (
-        <MainLayout title="Chart Compatibility" breadcrumbs={['Home', 'Matching']} showHeader={false}>
+        <MainLayout title="Chart Compatibility" breadcrumbs={['Home', 'Matching']}>
             <div className="max-w-5xl mx-auto space-y-6 pb-20">
 
                 {/* Header Section */}

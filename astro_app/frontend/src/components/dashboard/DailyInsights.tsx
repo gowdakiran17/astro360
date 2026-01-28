@@ -1,13 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { Briefcase, Heart, Activity, ArrowRight, Sparkles } from 'lucide-react';
-import { DailyAnalysis, StrengthData } from '../../types/periodAnalysis';
+import { DailyAnalysis } from '../../types/periodAnalysis';
 
 interface DailyInsightsProps {
   dailyData?: DailyAnalysis;
-  strengthData?: StrengthData;
 }
 
-const DailyInsights = ({ dailyData, strengthData }: DailyInsightsProps) => {
+const DailyInsights = ({ dailyData }: DailyInsightsProps) => {
   const navigate = useNavigate();
 
   // Helper to get insight text based on score

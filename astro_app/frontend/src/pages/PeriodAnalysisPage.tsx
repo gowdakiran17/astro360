@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import MainLayout from '../components/layout/MainLayout';
-import DashboardHeader from '../components/layout/DashboardHeader';
 import api from '../services/api';
 import { useChartSettings } from '../context/ChartContext';
 import { formatDate } from '../utils/dateUtils';
@@ -119,8 +118,7 @@ const PeriodAnalysisPage = () => {
   }, [currentProfile]);
 
   return (
-    <MainLayout title="Period Analysis" breadcrumbs={['Home', 'Period Analysis']} showHeader={false}>
-      <DashboardHeader activeTab="dashboard" />
+    <MainLayout title="Period Analysis" breadcrumbs={['Home', 'Period Analysis']}>
       <div className="min-h-screen bg-slate-900 pb-20 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           <PeriodDashboardLayout

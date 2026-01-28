@@ -1,7 +1,8 @@
 from typing import List, Dict
 
 # Standard Ashtakvarga bindu (point) tables
-# Format: Relative positions (houses) from a planet where it contributes a point.
+# Based on Brihat Parashara Hora Shastra (BPHS) system.
+# Format: Relative positions (houses) from a planet where it contributes a point (Bindu).
 # 1-indexed houses.
 
 ASHTAKVARGA_TABLES = {
@@ -97,6 +98,32 @@ def calculate_bav(planet_positions: Dict[str, int], target_planet: str) -> List[
                 bav[target_sign] += 1
     return bav
 
+def calculate_prastaraka(planet_positions: Dict[str, int], target_planet: str) -> Dict[str, List[int]]:
+    """
+    Calculates Prastaraka (Detailed Breakdown) for a specific planet.
+    Returns a dictionary mapping Donor Planet -> List of 12 (1/0) indicating contribution per sign.
+    """
+    prastaraka = {}
+    rules = ASHTAKVARGA_TABLES.get(target_planet)
+    if not rules:
+        return prastaraka
+        
+    # Initialize for all standard donors (7 planets + Lagna)
+    donors = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Lagna"]
+    for d in donors:
+        prastaraka[d] = [0] * 12
+        
+    for source_p, houses in rules.items():
+        if source_p in planet_positions:
+            source_pos = planet_positions[source_p]
+            row = prastaraka.get(source_p, [0]*12) # Should exist
+            for h in houses:
+                target_sign = (source_pos + (h - 1)) % 12
+                row[target_sign] = 1
+            prastaraka[source_p] = row
+            
+    return prastaraka
+
 def calculate_ashtakvarga(planets_data: List[dict], ascendant_sign_idx: int) -> dict:
     # 1. Prepare position map
     pos_map = {"Lagna": ascendant_sign_idx}
@@ -105,14 +132,17 @@ def calculate_ashtakvarga(planets_data: List[dict], ascendant_sign_idx: int) -> 
         sign_idx = int(p['longitude'] / 30)
         pos_map[p['name']] = sign_idx
         
-    # 2. Calculate BAV for each of the 7 planets
+    # 2. Calculate BAV and Prastaraka for each of the 7 planets
     main_planets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"]
     bavs = {}
+    prastarakas = {}
     sav = [0] * 12
     
     for p_name in main_planets:
         bav = calculate_bav(pos_map, p_name)
         bavs[p_name] = bav
+        prastarakas[p_name] = calculate_prastaraka(pos_map, p_name)
+        
         # Accumulate to SAV
         for i in range(12):
             sav[i] += bav[i]
@@ -144,7 +174,9 @@ def calculate_ashtakvarga(planets_data: List[dict], ascendant_sign_idx: int) -> 
         "average_points": sum(sav) / 12.0,
         "total_points": sum(sav),
         "sav": sav,
-        "bavs": bavs
+        "bavs": bavs,
+        "prastarakas": prastarakas,
+        "ascendant_sign_idx": ascendant_sign_idx
     }
     
     return stats

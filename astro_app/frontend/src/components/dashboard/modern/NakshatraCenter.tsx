@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Star, Info, Sparkles, User, Briefcase, Heart, AlertCircle, ChevronDown, ChevronUp, Sun, Moon, Hand } from 'lucide-react';
+import { Star, Sparkles, Briefcase, Heart, AlertCircle, ChevronDown, ChevronUp, Sun, Moon, Hand } from 'lucide-react';
 import { NAKSHATRA_DATA, NakshatraInfo } from '../../../utils/nakshatraData';
 
 interface NakshatraCenterProps {

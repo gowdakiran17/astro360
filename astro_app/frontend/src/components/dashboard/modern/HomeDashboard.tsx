@@ -12,9 +12,7 @@ import EnergyDashboard from './EnergyDashboard';
 import PowerHours from './PowerHours';
 import DailyBriefing from './DailyBriefing';
 import LifeDomains from './LifeDomains';
-import CosmicWeatherAlert from './CosmicWeatherAlert';
 import TransitDashboard from './TransitDashboard';
-import DashaDashboard from './DashaDashboard';
 import NakshatraCenter from './NakshatraCenter';
 
 import { Calendar } from 'lucide-react';
@@ -26,9 +24,10 @@ const HomeDashboard = () => {
   const { user, isLoading: authLoading } = useAuth();
 
   const [chartData, setChartData] = useState<any>(null);
-  const [panchangData, setPanchangData] = useState<any>(null);
+  const [panchangData, setPanchangData] = useState<any>(null); // Daily Panchang
+  const [birthPanchangData, setBirthPanchangData] = useState<any>(null); // Birth Panchang
   const [dashaData, setDashaData] = useState<any>(null);
-  const [shadbalaData, setShadbalaData] = useState<any>(null);
+  const [ashtakvargaData, setAshtakvargaData] = useState<any>(null);
   const [periodOverview, setPeriodOverview] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +37,8 @@ const HomeDashboard = () => {
     setChartData(null);
     setDashaData(null);
     setPanchangData(null);
-    setShadbalaData(null);
+    setBirthPanchangData(null);
+    setAshtakvargaData(null);
     setPeriodOverview(null);
 
     if (!currentProfile) return;
@@ -75,6 +75,11 @@ const HomeDashboard = () => {
         .then((res: any) => setPanchangData(res.data))
         .catch((e: any) => console.error("Panchang Error:", e));
 
+      // 1b. Fetch Birth Panchang
+      const birthPanchangPromise = api.post('/chart/panchang', birthDetails)
+        .then((res: any) => setBirthPanchangData(res.data))
+        .catch((e: any) => console.error("Birth Panchang Error:", e));
+
       // 2. Fetch Chart & Dasha
       const chartPromise = api.post('/chart/birth', birthDetails)
         .then(async (chartRes: any) => {
@@ -100,12 +105,12 @@ const HomeDashboard = () => {
           console.error("Chart Error:", e);
         });
 
-      // 3. Fetch Shadbala (Planetary Strength)
-      const shadbalaPromise = api.post('/chart/shadbala', { birth_details: birthDetails })
-        .then((res: any) => setShadbalaData(res.data))
-        .catch((e: any) => console.error("Shadbala Error:", e));
+      // 4. Fetch Ashtakvarga (Natal Strength)
+      const ashtakvargaPromise = api.post('/chart/ashtakvarga', { birth_details: birthDetails })
+        .then((res: any) => setAshtakvargaData(res.data))
+        .catch((e: any) => console.error("Ashtakvarga Error:", e));
 
-      // 4. Fetch Period Overview (includes daily analysis, house strengths, muhuratas, etc.)
+      // 5. Fetch Period Overview (includes daily analysis, house strengths, muhuratas, etc.)
       const analysisDate = targetDate.toISOString().split('T')[0]; // YYYY-MM-DD
       const overviewPromise = api.post('/chart/period/overview', {
         birth_details: birthDetails,
@@ -117,7 +122,7 @@ const HomeDashboard = () => {
         })
         .catch((e: any) => console.error("Period Overview Error:", e));
 
-      await Promise.all([panchangPromise, chartPromise, shadbalaPromise, overviewPromise]);
+      await Promise.all([panchangPromise, birthPanchangPromise, chartPromise, ashtakvargaPromise, overviewPromise]);
     } catch (e: any) {
       console.error("Fetch Data Global Error:", e);
     } finally {
@@ -185,9 +190,20 @@ const HomeDashboard = () => {
           </div>
         </div>
 
-        {/* 1. Hero Grid: Alert + Energy + Power Hours */}
-        <CosmicWeatherAlert />
+        {/* Quick Reference Data (Moved to top) */}
+        <div>
+          <h3 className="text-lg font-serif text-slate-400 mb-6 px-2">Quick Reference Data</h3>
+          <SummaryCards 
+            chartData={chartData}  
+            panchangData={panchangData} 
+            birthPanchangData={birthPanchangData}
+          />
+        </div>
 
+        {/* 1. Daily Briefing */}
+        <DailyBriefing dailyData={periodOverview?.daily_analysis} dashaData={dashaData} />
+
+        {/* 2. Hero Grid: Energy + Power Hours */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <EnergyDashboard dailyData={periodOverview?.daily_analysis} />
@@ -197,26 +213,22 @@ const HomeDashboard = () => {
           </div>
         </div>
 
-        {/* 2. Daily Briefing */}
-        <DailyBriefing dailyData={periodOverview?.daily_analysis} dashaData={dashaData} />
-
         {/* 3. Interactive Transit Dashboard */}
-        <TransitDashboard />
+        <TransitDashboard transits={periodOverview?.daily_analysis?.transits} ascendantSign={chartData?.ascendant?.sign} />
 
-        {/* 4. Comprehensive Dasha Timeline */}
-        <DashaDashboard dashaData={dashaData} shadbalaData={shadbalaData} />
+        {/* 4. Comprehensive Dasha Timeline (Removed/Replaced by Quick Reference) */}
+        {/* <DashaDashboard dashaData={dashaData} shadbalaData={shadbalaData} /> */}
 
         {/* 5. Life Domains */}
-        <LifeDomains />
+        <LifeDomains 
+          dailyData={periodOverview?.daily_analysis} 
+          dashaData={dashaData} 
+          ashtakvargaData={ashtakvargaData}
+          chartData={chartData} 
+        />
 
         {/* 6. Nakshatra Intelligence */}
         <NakshatraCenter chartData={chartData} />
-
-        {/* Footer / Summary Cards (Keep for basic data reference if needed, or remove if redundant. Keeping as 'Chart Summary' at bottom) */}
-        <div className="border-t border-white/5 pt-8">
-          <h3 className="text-lg font-serif text-slate-400 mb-6 px-2">Quick Reference Data</h3>
-          <SummaryCards chartData={chartData} panchangData={panchangData} dashaData={dashaData} />
-        </div>
 
       </div>
     </div>

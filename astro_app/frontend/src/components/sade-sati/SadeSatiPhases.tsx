@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, AlertTriangle, Shield, TrendingUp, Info } from 'lucide-react';
+import { ChevronRight, Shield } from 'lucide-react';
 
 interface Phase {
     id: 'rising' | 'peak' | 'setting';
@@ -16,7 +16,7 @@ interface SadeSatiPhasesProps {
     phases: Phase[];
 }
 
-const SadeSatiPhases: React.FC<SadeSatiPhasesProps> = ({ currentPhaseId, phases }) => {
+const SadeSatiPhases: React.FC<SadeSatiPhasesProps> = ({ phases }) => {
     return (
         <div className="grid md:grid-cols-3 gap-6">
             {phases.map((phase) => {

@@ -9,9 +9,10 @@ import {
     ReferenceLine
 } from 'recharts';
 import { Clock } from 'lucide-react';
+import type { Muhurta } from '../../types/periodAnalysis';
 
 interface DailyEnergyChartProps {
-    muhuratas: any[]; // List of period objects
+    muhuratas: Muhurta[];
 }
 
 const CHOGHADIYA_ADVICE: Record<string, string> = {
@@ -23,6 +24,16 @@ const CHOGHADIYA_ADVICE: Record<string, string> = {
     'Rog': 'Disease. Avoid if possible; focus on health and rest.',
     'Kaal': 'Difficulty. Avoid important work and high-stakes meetings.'
 };
+
+interface ChartPoint {
+    time: number;
+    score: number;
+    quality: string;
+    name: string;
+    startTime: string;
+    endTime: string;
+    label: string;
+}
 
 const DailyEnergyChart = ({ muhuratas }: DailyEnergyChartProps) => {
     const qualityScore: Record<string, number> = {
@@ -39,12 +50,27 @@ const DailyEnergyChart = ({ muhuratas }: DailyEnergyChartProps) => {
         'Avoid': '#ef4444' // red-500
     };
 
-    // Filter for Choghadiya periods only for the main chart
+    const getTimeSortValue = (time: string) => {
+        const trimmed = time.trim();
+        const parts = trimmed.split(' ');
+        const [hourStr, minuteStr] = parts[0]?.split(':') ?? [];
+        const hour = Number(hourStr);
+        const minute = Number(minuteStr);
+        if (Number.isNaN(hour) || Number.isNaN(minute)) {
+            return 0;
+        }
+        const meridiem = parts[1]?.toUpperCase();
+        let adjustedHour = hour;
+        if (meridiem === 'PM' && adjustedHour < 12) adjustedHour += 12;
+        if (meridiem === 'AM' && adjustedHour === 12) adjustedHour = 0;
+        return adjustedHour * 60 + minute;
+    };
+
     const sortedPeriods = [...muhuratas]
         .filter(p => p.type === 'Choghadiya')
-        .sort((a, b) => a.start - b.start);
+        .sort((a, b) => getTimeSortValue(a.start_time) - getTimeSortValue(b.start_time));
 
-    const chartData: any[] = [];
+    const chartData: ChartPoint[] = [];
     let currentHour = 6.0;
 
     sortedPeriods.forEach((p) => {
@@ -81,7 +107,7 @@ const DailyEnergyChart = ({ muhuratas }: DailyEnergyChartProps) => {
         return `${hDisp} ${ampm}`;
     }
 
-    const CustomTooltip = ({ active, payload }: any) => {
+    const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: Array<{ payload: ChartPoint }> }) => {
         if (active && payload && payload.length) {
             const d = payload[0].payload;
             const pureName = d.name;
@@ -186,14 +212,17 @@ const DailyEnergyChart = ({ muhuratas }: DailyEnergyChartProps) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {highlights.map((p, i) => {
                         const pureName = p.name.replace('Day ', '').replace('Night ', '');
+                        const timeParts = p.start_time.split(' ');
+                        const timeHour = timeParts[0]?.split(':')[0] || '';
+                        const timeMeridiem = timeParts[1] || '';
                         return (
                             <div key={i} className="flex items-center gap-4 bg-slate-800/40 border border-slate-700/50 p-3 rounded-xl hover:bg-slate-800/60 transition-colors group">
                                 <div className={`w-10 h-10 rounded-lg flex flex-col items-center justify-center border ${p.quality === 'Excellent' ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-blue-500/10 border-blue-500/30'}`}>
                                     <span className={`text-xs font-bold ${p.quality === 'Excellent' ? 'text-emerald-400' : 'text-blue-400'}`}>
-                                        {p.start_time.split(':')[0]}
+                                        {timeHour}
                                     </span>
                                     <span className="text-[8px] text-slate-500 opacity-60 font-medium">
-                                        {p.start_time.split(' ')[1]}
+                                        {timeMeridiem}
                                     </span>
                                 </div>
                                 <div className="flex-1">

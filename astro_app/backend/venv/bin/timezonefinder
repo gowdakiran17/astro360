@@ -1,4 +1,4 @@
-#!/Users/kiran/Documents/astro360/astro_app/backend/venv/bin/python3
+#!/Users/kirangowda/Desktop/astro360/astro_app/backend/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -5,7 +5,7 @@ from .utils import get_julian_day
 # Constants for Muhuratas
 DAY_MUHURATAS = [
     ("Rudra", "Poor"), ("Ahi", "Avoid"), ("Mitra", "Good"), ("Pitru", "Poor"),
-    ("Vasu", "Good"), ("Vara", "Excellent"), ("Vishwadev", "Excellent"), ("Vidhi", "Excellent"),
+    ("Vasu", "Good"), ("Vara", "Excellent"), ("Vishwadev", "Excellent"), ("Abhijit", "Excellent"),
     ("Satamukhi", "Good"), ("Puruhuta", "Good"), ("Vahini", "Poor"), ("Naktanchara", "Avoid"),
     ("Varuna", "Good"), ("Aryaman", "Good"), ("Bhaga", "Poor")
 ]
@@ -60,6 +60,31 @@ PLANET_QUALITY = {
     "Mars": "Avoid"
 }
 
+MUHURATA_MEANINGS = {
+    # Choghadiya
+    "Udveg": "Mental agitation. Avoid new ventures.",
+    "Chal": "Unstable energy. Good for travel.",
+    "Labh": "Benefit & Gain. Good for business/learning.",
+    "Amrit": "Best time. Suitable for all auspicious works.",
+    "Kaal": "Inauspicious. Avoid important tasks.",
+    "Shubh": "Good/Auspicious. Great for ceremonies.",
+    "Rog": "Conflict/Disease. Avoid disputes.",
+    
+    # Special
+    "Rahu Kaal": "Strictly avoid for new beginnings.",
+    "Yamaganda": "Activities started may yield poor results.",
+    "Gulika Kaal": "Events repeat. Good for storage, bad for funerals.",
+    
+    # Horas (Simplified)
+    "Sun": "Government work, applying for jobs.",
+    "Moon": "Emotional tasks, gardening, food.",
+    "Mars": "Physical activity, sports, debates.",
+    "Mercury": "Learning, writing, accounting.",
+    "Jupiter": "Financial planning, marriage, wisdom.",
+    "Venus": "Romance, arts, buying vehicles.",
+    "Saturn": "Hard labor, cleaning, discipline."
+}
+
 def get_muhurata_data(jd, lat, lon):
     swe.set_sid_mode(swe.SIDM_LAHIRI, 0, 0)
     geopos = (lon, lat, 0)
@@ -67,14 +92,14 @@ def get_muhurata_data(jd, lat, lon):
     
     # Sun events for current day
     # swe.rise_trans(jd, body, rsmi, geopos, press, temp, flags)
-    res_rise = swe.rise_trans(jd, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, (lon, lat, 0), 0, 0, flags)
+    res_rise = swe.rise_trans(jd, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, geopos, 0, 0, flags)
     sunrise = res_rise[1][0] if res_rise[0] == 0 else jd
     
-    res_set = swe.rise_trans(jd, swe.SUN, swe.CALC_SET | swe.BIT_DISC_CENTER, (lon, lat, 0), 0, 0, flags)
+    res_set = swe.rise_trans(jd, swe.SUN, swe.CALC_SET | swe.BIT_DISC_CENTER, geopos, 0, 0, flags)
     sunset = res_set[1][0] if res_set[0] == 0 else jd + 0.5
     
     # Next sunrise for night calculations
-    res_next_rise = swe.rise_trans(jd + 1, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, (lon, lat, 0), 0, 0, flags)
+    res_next_rise = swe.rise_trans(jd + 1, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, geopos, 0, 0, flags)
     next_sunrise = res_next_rise[1][0] if res_next_rise[0] == 0 else jd + 1.0
     
     day_duration = sunset - sunrise
@@ -100,7 +125,8 @@ def get_muhurata_data(jd, lat, lon):
             "start": sunrise + (i * part_day),
             "end": sunrise + ((i+1) * part_day),
             "quality": quality,
-            "ruler": ruler
+            "ruler": ruler,
+            "description": MUHURATA_MEANINGS.get(name, "Check quality before proceeding.")
         })
         
     night_ch_seq = NIGHT_CHOGHADIYA_SEQ[weekday]
@@ -114,7 +140,8 @@ def get_muhurata_data(jd, lat, lon):
             "start": sunset + (i * part_night),
             "end": sunset + ((i+1) * part_night),
             "quality": quality,
-            "ruler": ruler
+            "ruler": ruler,
+            "description": MUHURATA_MEANINGS.get(name, "Check quality before proceeding.")
         })
 
     # 2. Hora (24 periods)
@@ -138,18 +165,25 @@ def get_muhurata_data(jd, lat, lon):
             "start": hr_start,
             "end": hr_end,
             "quality": PLANET_QUALITY[ruler],
-            "ruler": ruler
+            "ruler": ruler,
+            "description": MUHURATA_MEANINGS.get(ruler, "Planetary hour influence.")
         })
 
     # 3. Vedic Muhuratas (30 periods)
     part_muhurata_day = day_duration / 15
     for i, (name, qual) in enumerate(DAY_MUHURATAS):
+        # Abhijit Exception: Avoid on Wednesdays
+        final_qual = qual
+        if name == "Abhijit" and weekday == 3:
+            final_qual = "Avoid"
+
         periods.append({
             "name": name,
             "type": "Vedic Muhurata",
             "start": sunrise + (i * part_muhurata_day),
             "end": sunrise + ((i+1) * part_muhurata_day),
-            "quality": qual
+            "quality": final_qual,
+            "description": f"Vedic period: {final_qual}"
         })
         
     part_muhurata_night = night_duration / 15
@@ -159,7 +193,8 @@ def get_muhurata_data(jd, lat, lon):
             "type": "Vedic Muhurata",
             "start": sunset + (i * part_muhurata_night),
             "end": sunset + ((i+1) * part_muhurata_night),
-            "quality": qual
+            "quality": qual,
+            "description": f"Vedic period: {qual}"
         })
 
     # 4. Special Periods (Rahu Kaal, Yamaganda, Gulika)
@@ -171,7 +206,8 @@ def get_muhurata_data(jd, lat, lon):
         "type": "Special",
         "start": sunrise + ((rahu_part - 1) * (day_duration/8)),
         "end": sunrise + (rahu_part * (day_duration/8)),
-        "quality": "Avoid"
+        "quality": "Avoid",
+        "description": MUHURATA_MEANINGS.get("Rahu Kaal", "Avoid")
     })
     
     yamaganda_parts = [5, 4, 3, 2, 1, 7, 6]
@@ -181,7 +217,8 @@ def get_muhurata_data(jd, lat, lon):
         "type": "Special",
         "start": sunrise + ((yama_part - 1) * (day_duration/8)),
         "end": sunrise + (yama_part * (day_duration/8)),
-        "quality": "Avoid"
+        "quality": "Avoid",
+        "description": MUHURATA_MEANINGS.get("Yamaganda", "Avoid")
     })
     
     gulika_parts = [7, 6, 5, 4, 3, 2, 1]
@@ -191,7 +228,8 @@ def get_muhurata_data(jd, lat, lon):
         "type": "Special",
         "start": sunrise + ((guli_part - 1) * (day_duration/8)),
         "end": sunrise + (guli_part * (day_duration/8)),
-        "quality": "Poor"
+        "quality": "Poor",
+        "description": MUHURATA_MEANINGS.get("Gulika Kaal", "Avoid")
     })
 
     # Abhijit Muhurata (Special designation for the 8th Muhurata of the day)

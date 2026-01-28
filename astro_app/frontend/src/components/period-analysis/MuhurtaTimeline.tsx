@@ -1,14 +1,5 @@
-import React from 'react';
 import { Clock, ArrowRight } from 'lucide-react';
-
-interface Muhurta {
-    name: string;
-    type: string;
-    quality: string;
-    start_time: string;
-    end_time: string;
-    duration_minutes: number;
-}
+import type { Muhurta } from '../../types/periodAnalysis';
 
 interface MuhurtaTimelineProps {
     muhuratas: Muhurta[];

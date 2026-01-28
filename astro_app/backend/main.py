@@ -25,6 +25,7 @@ from astro_app.backend.routers.research import router as research_router
 from astro_app.backend.routers.business import router as business_router
 from astro_app.backend.routers.vastu import router as vastu_router
 from astro_app.backend.routers.elite_vastu import router as elite_vastu_router
+from astro_app.backend.routers.compatibility import router as compatibility_router
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO)
@@ -81,6 +82,7 @@ app.include_router(research_router, prefix="/research", tags=["research"])
 app.include_router(business_router, prefix="/business", tags=["business"])
 app.include_router(vastu_router, prefix="/vastu", tags=["vastu"])
 app.include_router(elite_vastu_router, prefix="/vastu/elite", tags=["elite_vastu"])
+app.include_router(compatibility_router, prefix="/api/compatibility", tags=["compatibility"])
 
 # Compatibility alias to match original main.py if needed, 
 # main.py had @app.post("/chart/compatibility") AND @app.post("/match/ashtakoot")

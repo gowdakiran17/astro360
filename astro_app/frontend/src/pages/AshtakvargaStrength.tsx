@@ -14,7 +14,9 @@ const AshtakvargaStrength = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [avData, setAvData] = useState<any>(null);
-    const [activeTab, setActiveTab] = useState<'charts' | 'table'>('charts');
+    const [activeTab, setActiveTab] = useState<'charts' | 'table' | 'detailed'>('charts');
+    const [viewMode, setViewMode] = useState<'house' | 'sign'>('house');
+    const [selectedPrastarakaPlanet, setSelectedPrastarakaPlanet] = useState<string>('Sun');
 
     useEffect(() => {
         if (currentProfile) {
@@ -87,6 +89,37 @@ const AshtakvargaStrength = () => {
         );
     };
 
+    const getRotatedData = (data: number[]) => {
+        if (viewMode === 'sign' || typeof avData?.ascendant_sign_idx === 'undefined') return data;
+        const ascIdx = avData.ascendant_sign_idx;
+        // Rotate: Start from Ascendant Index
+        return [...data.slice(ascIdx), ...data.slice(0, ascIdx)];
+    };
+
+    const signsShort = ["Ar", "Ta", "Ge", "Cn", "Le", "Vi", "Li", "Sc", "Sg", "Cp", "Aq", "Pi"];
+
+    const getBestPlanet = () => {
+        if (!avData || !avData.bavs) return null;
+        let maxAvg = 0;
+        let bestPlanet = '';
+        
+        planets.forEach(planet => {
+            const points = avData.bavs[planet];
+            if (points) {
+                const total = points.reduce((a: number, b: number) => a + b, 0);
+                const avg = total / 12;
+                if (avg > maxAvg) {
+                    maxAvg = avg;
+                    bestPlanet = planet;
+                }
+            }
+        });
+        
+        return { planet: bestPlanet, avg: maxAvg };
+    };
+
+    const bestPlanetData = avData ? getBestPlanet() : null;
+
     return (
         <MainLayout title="Ashtakvarga Strength" breadcrumbs={['Calculations', 'Ashtakvarga']}>
             <div className="space-y-6">
@@ -97,8 +130,8 @@ const AshtakvargaStrength = () => {
                             <BarChart2 className="w-6 h-6" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-slate-900">Ashtakvarga Strength</h1>
-                            <p className="text-sm text-slate-500">Numerical strength analysis of life areas</p>
+                            <h1 className="text-xl font-bold text-slate-900">Ashtakvarga Strength (Natal)</h1>
+                            <p className="text-sm text-slate-500">Inherent strength analysis based on your Birth Chart</p>
                         </div>
                     </div>
 
@@ -133,6 +166,14 @@ const AshtakvargaStrength = () => {
                     </div>
                 ) : avData ? (
                     <div className="space-y-6">
+                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex gap-3">
+                            <Info className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                            <p className="text-sm text-blue-700">
+                                <strong>Note:</strong> These scores represent your permanent <strong>Natal Strength</strong> based on your birth chart. 
+                                For daily fluctuating scores based on current planetary transits, check the Home Dashboard.
+                            </p>
+                        </div>
+
                         {/* Intro Stats Row */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
@@ -181,10 +222,12 @@ const AshtakvargaStrength = () => {
                                     <span>Best Performing Planet</span>
                                 </div>
                                 <div className="flex flex-col space-y-2 mt-4">
-                                    <div className="text-2xl font-bold text-slate-900">Jupiter</div>
+                                    <div className="text-2xl font-bold text-slate-900">{bestPlanetData?.planet || '-'}</div>
                                     <div className="flex items-center space-x-2">
                                         <span className="text-xs text-slate-500">Avg Points:</span>
-                                        <span className="text-xs font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-100">4.7 / house</span>
+                                        <span className="text-xs font-bold bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded border border-indigo-100">
+                                            {bestPlanetData?.avg.toFixed(1) || '0.0'} / house
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -210,28 +253,143 @@ const AshtakvargaStrength = () => {
                                     <h2 className="text-lg font-bold text-slate-900">Total House Strengths (Sarvashtakvarga)</h2>
                                     <p className="text-xs text-slate-500">Combined planetary strength for each house</p>
                                 </div>
-                                <div className="flex bg-slate-50 p-1 rounded-lg border border-slate-200">
-                                    <button
-                                        onClick={() => setActiveTab('charts')}
-                                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'charts' ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
-                                    >
-                                        <Layout className="w-3 h-3 inline mr-1" /> Visuals
-                                    </button>
-                                    <button
-                                        onClick={() => setActiveTab('table')}
-                                        className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'table' ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
-                                    >
-                                        <Table className="w-3 h-3 inline mr-1" /> Table
-                                    </button>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex bg-slate-50 p-1 rounded-lg border border-slate-200">
+                                        <button
+                                            onClick={() => setViewMode('house')}
+                                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'house' ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                        >
+                                            By House
+                                        </button>
+                                        <button
+                                            onClick={() => setViewMode('sign')}
+                                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${viewMode === 'sign' ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                        >
+                                            By Sign
+                                        </button>
+                                    </div>
+                                    <div className="flex bg-slate-50 p-1 rounded-lg border border-slate-200">
+                                        <button
+                                            onClick={() => setActiveTab('charts')}
+                                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'charts' ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                        >
+                                            <Layout className="w-3 h-3 inline mr-1" /> Visuals
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('table')}
+                                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'table' ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                        >
+                                            <Table className="w-3 h-3 inline mr-1" /> Table
+                                        </button>
+                                        <button
+                                            onClick={() => setActiveTab('detailed')}
+                                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${activeTab === 'detailed' ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}
+                                        >
+                                            <Layout className="w-3 h-3 inline mr-1" /> Detailed
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="p-6">
-                                {activeTab === 'charts' ? (
+                                {activeTab === 'detailed' ? (
+                                    <div className="space-y-6">
+                                        {/* Planet Selector */}
+                                        <div className="flex flex-wrap items-center gap-2 mb-6 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                                            <span className="text-sm font-medium text-slate-700 mr-2">Select Planet:</span>
+                                            {planets.map(planet => (
+                                                <button
+                                                    key={planet}
+                                                    onClick={() => setSelectedPrastarakaPlanet(planet)}
+                                                    className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all ${
+                                                        selectedPrastarakaPlanet === planet 
+                                                            ? 'bg-indigo-600 text-white shadow-sm' 
+                                                            : 'bg-white text-slate-600 border border-slate-200 hover:border-indigo-300 hover:text-indigo-600'
+                                                    }`}
+                                                >
+                                                    {planet}
+                                                </button>
+                                            ))}
+                                        </div>
+
+                                        {avData?.prastarakas && avData.prastarakas[selectedPrastarakaPlanet] ? (
+                                            <div className="overflow-x-auto border border-slate-200 rounded-lg shadow-sm">
+                                                <table className="w-full text-xs text-center border-collapse">
+                                                    <thead>
+                                                        <tr className="bg-slate-50 text-slate-600">
+                                                            <th className="p-3 border-b border-r border-slate-200 text-left font-bold w-32">Donor \ {viewMode === 'house' ? 'House' : 'Sign'}</th>
+                                                            {Array.from({ length: 12 }).map((_, i) => (
+                                                                <th key={i} className="p-3 border-b border-slate-200 font-bold min-w-[40px]">
+                                                                    {viewMode === 'house' ? `H${i + 1}` : signsShort[i]}
+                                                                </th>
+                                                            ))}
+                                                            <th className="p-3 border-b border-l border-slate-200 font-bold bg-slate-100">Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody className="bg-white">
+                                                        {["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Lagna"].map((donor) => {
+                                                            const rowData = getRotatedData(avData.prastarakas[selectedPrastarakaPlanet][donor] || Array(12).fill(0));
+                                                            const rowTotal = rowData.reduce((a: number, b: number) => a + b, 0);
+                                                            
+                                                            return (
+                                                                <tr key={donor} className="hover:bg-slate-50 transition-colors">
+                                                                    <td className="p-3 border-b border-r border-slate-200 text-left font-medium text-slate-700">
+                                                                        {donor}
+                                                                    </td>
+                                                                    {rowData.map((val: number, idx: number) => (
+                                                                        <td key={idx} className="p-3 border-b border-slate-200 text-slate-400">
+                                                                            {val === 1 ? (
+                                                                                <span className="inline-block w-2 h-2 rounded-full bg-indigo-500"></span>
+                                                                            ) : (
+                                                                                <span className="text-slate-200">·</span>
+                                                                            )}
+                                                                        </td>
+                                                                    ))}
+                                                                    <td className="p-3 border-b border-l border-slate-200 font-bold text-slate-800 bg-slate-50">
+                                                                        {rowTotal}
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                        {/* Footer Totals */}
+                                                        <tr className="bg-indigo-50 font-bold border-t-2 border-indigo-100">
+                                                            <td className="p-3 border-r border-indigo-200 text-left text-indigo-800">Total (BAV)</td>
+                                                            {Array.from({ length: 12 }).map((_, colIdx) => {
+                                                                // Calculate column sum dynamically from displayed rows
+                                                                const colSum = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Lagna"].reduce((sum, donor) => {
+                                                                    const rowData = getRotatedData(avData.prastarakas[selectedPrastarakaPlanet][donor] || Array(12).fill(0));
+                                                                    return sum + rowData[colIdx];
+                                                                }, 0);
+                                                                
+                                                                return (
+                                                                    <td key={colIdx} className="p-3 text-indigo-700">
+                                                                        {colSum}
+                                                                    </td>
+                                                                );
+                                                            })}
+                                                            <td className="p-3 border-l border-indigo-200 text-indigo-900 text-lg">
+                                                                {/* Grand Total */}
+                                                                {avData.bavs[selectedPrastarakaPlanet]?.reduce((a: number, b: number) => a + b, 0)}
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        ) : (
+                                            <div className="p-8 text-center text-slate-400 bg-slate-50 rounded-lg border border-dashed border-slate-300">
+                                                No detailed data available for this planet.
+                                            </div>
+                                        )}
+                                        
+                                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 text-xs text-blue-700">
+                                            <p><strong>Prastaraka Table:</strong> This detailed view shows exactly which "Donor" planet contributes a positive point (Bindu) to the selected planet's score in each sign/house.</p>
+                                        </div>
+                                    </div>
+                                ) : activeTab === 'charts' ? (
                                     <div className="space-y-8">
                                         <div className="w-full max-w-4xl mx-auto pt-6 pb-6 bg-slate-50/50 rounded-xl border border-slate-100 px-8">
                                             <div className="h-[250px] w-full">
-                                                <BarChart data={avData.sav} />
+                                                <BarChart data={getRotatedData(avData.sav)} />
                                             </div>
                                             <div className="mt-4 flex justify-between items-center bg-white p-3 rounded-lg border border-slate-200 shadow-sm text-center">
                                                 <div className="flex-1">
@@ -264,7 +422,7 @@ const AshtakvargaStrength = () => {
                                                         <span className="text-[10px] text-slate-400 uppercase font-bold tracking-tighter">BAV Points</span>
                                                     </div>
                                                     <div className="h-[120px] w-full">
-                                                        <BarChart data={avData.bavs[p_name]} showLabels={false} />
+                                                        <BarChart data={getRotatedData(avData.bavs[p_name])} showLabels={false} />
                                                     </div>
                                                     <div className="mt-2 flex justify-between text-[10px] text-slate-400 font-bold uppercase">
                                                         <span>Max: {Math.max(...avData.bavs[p_name])}</span>
@@ -281,7 +439,12 @@ const AshtakvargaStrength = () => {
                                                 <tr className="bg-slate-100 text-slate-600 font-bold uppercase text-[10px] tracking-widest border-b border-slate-200">
                                                     <th className="px-4 py-3 sticky left-0 bg-slate-100 z-10 border-r border-slate-200">Planet</th>
                                                     {[...Array(12)].map((_, i) => (
-                                                        <th key={i} className="px-3 py-3 text-center border-r border-slate-200">H{i + 1}</th>
+                                                        <th key={i} 
+                                                            className="px-3 py-3 text-center border-r border-slate-200"
+                                                            title={viewMode === 'house' && avData?.ascendant_sign_idx !== undefined ? signsShort[(avData.ascendant_sign_idx + i) % 12] : ''}
+                                                        >
+                                                            {viewMode === 'house' ? `H${i + 1}` : signsShort[i]}
+                                                        </th>
                                                     ))}
                                                     <th className="px-4 py-3 text-center">Total</th>
                                                 </tr>
@@ -289,8 +452,17 @@ const AshtakvargaStrength = () => {
                                             <tbody>
                                                 {planets.map(p_name => (
                                                     <tr key={p_name} className="border-b border-slate-200 hover:bg-white transition-colors">
-                                                        <td className="px-4 py-3 font-bold text-slate-700 sticky left-0 bg-inherit z-10 border-r border-slate-200">{p_name.substring(0, 2)}</td>
-                                                        {avData.bavs[p_name].map((val: number, i: number) => (
+                                                        <td 
+                                                            className="px-4 py-3 font-bold text-slate-700 sticky left-0 bg-inherit z-10 border-r border-slate-200 cursor-pointer hover:text-indigo-600 underline decoration-dotted decoration-slate-400 hover:decoration-indigo-600"
+                                                            onClick={() => {
+                                                                setSelectedPrastarakaPlanet(p_name);
+                                                                setActiveTab('detailed');
+                                                            }}
+                                                            title="View Detailed Prastaraka Table"
+                                                        >
+                                                            {p_name.substring(0, 2)}
+                                                        </td>
+                                                        {getRotatedData(avData.bavs[p_name]).map((val: number, i: number) => (
                                                             <td key={i} className={`px-2 py-3 text-center font-medium border-r border-slate-100/50 ${getHeatmapColor(val)}`}>
                                                                 {val}
                                                             </td>
@@ -302,7 +474,7 @@ const AshtakvargaStrength = () => {
                                                 ))}
                                                 <tr className="bg-slate-900 text-white font-bold">
                                                     <td className="px-4 py-4 sticky left-0 bg-slate-900 border-r border-slate-800">SAV</td>
-                                                    {avData.sav.map((val: number, i: number) => (
+                                                    {getRotatedData(avData.sav).map((val: number, i: number) => (
                                                         <td key={i} className="px-2 py-4 text-center border-r border-slate-800/20">{val}</td>
                                                     ))}
                                                     <td className="px-4 py-4 text-center bg-indigo-600">{avData.total_points}</td>
@@ -311,7 +483,11 @@ const AshtakvargaStrength = () => {
                                         </table>
                                         <div className="mt-4 flex items-center space-x-2 text-xs text-slate-500">
                                             <Info className="w-4 h-4 text-indigo-500" />
-                                            <span>Houses are calculated relative to the Lagna (Ascendant).</span>
+                                            <span>
+                                                {viewMode === 'house' 
+                                                    ? "Houses are calculated relative to the Lagna (Ascendant)." 
+                                                    : "Showing strength by Zodiac Sign (Aries to Pisces)."}
+                                            </span>
                                         </div>
                                     </div>
                                 )}
@@ -326,7 +502,7 @@ const AshtakvargaStrength = () => {
                             <div className="max-w-2xl relative z-10">
                                 <h3 className="text-xl font-bold mb-2">Ashtakvarga interpretation Guide</h3>
                                 <p className="text-indigo-100 text-sm leading-relaxed mb-4">
-                                    A house with 30 or more points is considered very strong, while a house with less than 20 points may indicate challenges or areas where extra effort is required. Planets with high average points across houses generally have a more positive influence on the native's life.
+                                    A house with 30 or more points is considered very strong, while a house with less than 20 points may indicate challenges. Note that these are your birth chart strengths - daily transit strengths will vary.
                                 </p>
                                 <div className="flex space-x-4">
                                     <button className="px-4 py-2 bg-white text-indigo-600 rounded-lg text-sm font-bold hover:bg-indigo-50 transition-colors">

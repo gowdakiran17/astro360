@@ -19,9 +19,9 @@ const Dashboard = () => {
     longitude: 0,
   });
 
-  const [chartData, setChartData] = useState(null);
-  const [dashaData, setDashaData] = useState(null);
-  const [panchangData, setPanchangData] = useState(null);
+  const [chartData, setChartData] = useState<any>(null);
+  const [dashaData, setDashaData] = useState<any>(null);
+  const [panchangData, setPanchangData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'chart' | 'visual' | 'dasha' | 'panchang'>('visual');
 
   const [loading, setLoading] = useState(false);

@@ -5,6 +5,12 @@ from astro_app.backend.astrology.utils import (
     normalize_degree, get_zodiac_sign, get_nakshatra, ZODIAC_SIGNS, parse_timezone
 )
 
+ZODIAC_LORDS = {
+    "Aries": "Mars", "Taurus": "Venus", "Gemini": "Mercury", "Cancer": "Moon",
+    "Leo": "Sun", "Virgo": "Mercury", "Libra": "Venus", "Scorpio": "Mars",
+    "Sagittarius": "Jupiter", "Capricorn": "Saturn", "Aquarius": "Saturn", "Pisces": "Jupiter"
+}
+
 def calculate_chart(date_str: str, time_str: str, timezone_str: str, latitude: float, longitude: float):
     """
     Calculates the astrological chart using pyswisseph (Swiss Ephemeris).
@@ -111,8 +117,6 @@ def calculate_chart(date_str: str, time_str: str, timezone_str: str, latitude: f
             planet_longitudes[p_name] = lon
 
     # 6. Calculate Ascendant (Lagna)
-    # swe.houses calculates Tropical cusps. We need to subtract ayanamsa manually.
-    # Longitude must be in degrees.
     res_houses = swe.houses(jd_ut, latitude, longitude, b'P') 
     ascendant_tropical = res_houses[1][0]
     ascendant_nirayana = normalize_degree(ascendant_tropical - ayanamsa)
@@ -123,42 +127,38 @@ def calculate_chart(date_str: str, time_str: str, timezone_str: str, latitude: f
         "nakshatra": get_nakshatra(ascendant_nirayana)
     }
 
-    # 7. Calculate Houses (Whole Sign System)
-    # House 1 is the sign containing the Ascendant
+    # 7. Calculate Houses (Whole Sign System) & Planets
     asc_sign_index = int(ascendant_nirayana / 30)
     
-    houses_data = []
-    
+    houses_data = [] 
+    houses_dict = {}
+
     for i in range(12):
         house_num = i + 1
-        # In Whole Sign, House 1 starts at 0 degrees of Ascendant Sign
-        # House 2 starts at 0 degrees of next sign, etc.
         sign_index = (asc_sign_index + i) % 12
         sign_start_deg = sign_index * 30
         
-        # Center of the house (roughly) or just start degree
-        # Let's just store the sign info for the house
-        
-        houses_data.append({
+        h_obj = {
             "house_number": house_num,
             "zodiac_sign": ZODIAC_SIGNS[sign_index],
             "longitude_start": float(sign_start_deg),
-            "longitude_end": float(sign_start_deg + 30)
-        })
+            "longitude_end": float(sign_start_deg + 30),
+            "lord": ZODIAC_LORDS.get(ZODIAC_SIGNS[sign_index], "Unknown")
+        }
+        houses_data.append(h_obj)
+        houses_dict[str(house_num)] = h_obj
 
     # Assign Houses to Planets
     for p in planets_data:
         p_lon = p["longitude"]
         p_sign_index = int(p_lon / 30)
         
-        # House number = (Planet Sign Index - Asc Sign Index) + 1
-        # If result is <= 0, add 12.
         diff = p_sign_index - asc_sign_index
-        if diff < 0:
-            diff += 12
+        if diff < 0: diff += 12
         house_num = diff + 1
+        
         p["house"] = house_num
-
+        
     # 8. Construct Final Response
     result = {
         "birth_details": {
@@ -169,8 +169,8 @@ def calculate_chart(date_str: str, time_str: str, timezone_str: str, latitude: f
             "longitude": longitude
         },
         "ascendant": ascendant_data,
-        "planets": planets_data,
-        "houses": houses_data
+        "planets": planets_data, # Return List for Frontend compatibility
+        "houses": houses_data # Return List for Frontend compatibility
     }
     
     return result

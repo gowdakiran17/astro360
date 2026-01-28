@@ -1,4 +1,4 @@
-import { Star, TrendingUp, AlertCircle, ChevronDown, ChevronUp, CheckCircle, Sparkles, Zap, Shield, Tag, Hexagon, Flame, Gem, BookOpen } from 'lucide-react';
+import { Star, TrendingUp, AlertCircle, ChevronDown, ChevronUp, CheckCircle, Sparkles, Zap, Shield, Flame, Gem, BookOpen } from 'lucide-react';
 import { HouseStrength } from '../../types/periodAnalysis';
 import { useState } from 'react';
 import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, Tooltip } from 'recharts';
@@ -199,26 +199,21 @@ const DetailedHouseCard = ({ index, score, isExpanded, onToggle }: { index: numb
     let color = 'text-slate-400';
     let borderColor = 'border-slate-800';
     let trend = 'neutral';
-    let verdict = "Stable";
-
     if (score >= 32) {
         status = 'strong';
         color = 'text-emerald-400';
         borderColor = 'border-emerald-500/30';
         trend = 'up';
-        verdict = "Peak";
     } else if (score >= 28) {
         status = 'neutral';
         color = 'text-yellow-400';
         borderColor = 'border-yellow-500/30';
         trend = 'flat';
-        verdict = "Good";
     } else {
         status = 'weak';
         color = 'text-rose-400';
         borderColor = 'border-rose-500/30';
         trend = 'down';
-        verdict = "Low";
     }
 
     const house = HOUSE_DATA[index];

@@ -131,19 +131,25 @@ class ScoringEngine:
         # Categorize score
         if normalized_score >= 80:
             quality = "Excellent"
-            recommendation = "Highly favorable for all activities"
         elif normalized_score >= 65:
             quality = "Good"
-            recommendation = "Favorable for most activities"
         elif normalized_score >= 50:
             quality = "Average"
-            recommendation = "Moderate - proceed with caution"
         elif normalized_score >= 35:
             quality = "Below Average"
-            recommendation = "Not ideal - avoid important activities"
         else:
             quality = "Poor"
-            recommendation = "Unfavorable - postpone important activities"
+
+        # Generate rich narrative summary
+        component_scores = {
+            'dasha': dasha_score,
+            'transits': transit_score,
+            'tarabala': tarabala_score,
+            'chandrabala': chandrabala_score,
+            'panchang': panchang_score
+        }
+        recommendation = ScoringEngine._generate_narrative(normalized_score, quality, component_scores)
+
         
         # Calculate event impact
         event_impact = ScoringEngine._calculate_event_impact(events) if events else {}
@@ -197,6 +203,100 @@ class ScoringEngine:
             'inauspicious_events': [e.get('name') for e in inauspicious],
             'net_strength': round(auspicious_impact - inauspicious_impact, 2)
         }
+
+    @staticmethod
+    def _generate_narrative(score: float, quality: str, components: Dict[str, float]) -> str:
+        """
+        Generates a rich, AI-like narrative summary based on scores.
+        """
+        import random
+        
+        # 1. Opening Hook (General Energy)
+        openers = {
+            "Excellent": [
+                "Today presents a rare alignment of cosmic forces in your favor.",
+                "The stars are shining brightly on your endeavors today.",
+                "You are surfing a high wave of positive energy right now.",
+                "This is a day of exceptional potential and clarity."
+            ],
+            "Good": [
+                "A solid and supportive day lies ahead.",
+                "The cosmic weather is generally fair and productive.",
+                "You have a green light for most of your planned activities.",
+                "Energy flows smoothly today, allowing for steady progress."
+            ],
+            "Average": [
+                "Today offers a mix of influences, requiring balance.",
+                "Navigate this day with steady awareness; it is neither high nor low.",
+                "A neutral day that reflects the effort you put into it.",
+                "Cosmic currents are moderate—keep your hand steady on the wheel."
+            ],
+            "Below Average": [
+                "You may face some headwinds today; patience is key.",
+                "The cosmic energy is slightly resistant, suggesting a need for caution.",
+                "Don't force outcomes today; flow around obstacles instead.",
+                "A day to conserve energy and handle routine matters carefully."
+            ],
+            "Poor": [
+                "The stars advise a strategic pause; avoid major risks today.",
+                "Cosmic weather is turbulent—seek shelter in routine and reflection.",
+                "Challenges may arise; meet them with patience rather than force.",
+                "A low-energy day best suited for introspection and planning."
+            ]
+        }
+        
+        # 2. Specific Insights (Based on components)
+        insights = []
+        
+        # Dasha (Long-term)
+        if components.get('dasha', 0) > 50:
+            insights.append("Your broader life period is providing a strong tailwind.")
+        elif components.get('dasha', 0) < 0:
+            insights.append("Underlying long-term trends may feel challenging, so stay grounded.")
+            
+        # Transit (Medium-term)
+        if components.get('transits', 0) > 40:
+            insights.append("Current planetary movements are opening doors for you.")
+        elif components.get('transits', 0) < 0:
+            insights.append("Planetary transits suggest potential delays, so plan for extra time.")
+
+        # Tarabala (Relationships/Strength)
+        if components.get('tarabala', 0) > 40:
+            insights.append("Interactions with others will likely be fruitful and harmonious.")
+        elif components.get('tarabala', 0) < 0:
+            insights.append("Misunderstandings are possible; communicate with extra clarity.")
+
+        # Panchang (Timing)
+        if components.get('panchang', 0) > 40:
+            insights.append("The timing is impeccable for starting new ventures.")
+        elif components.get('panchang', 0) < 0:
+            insights.append("It's better to finish existing tasks than to start new ones today.")
+            
+        # Chandrabala (Mind/Emotions)
+        if components.get('chandrabala', 0) > 40:
+            insights.append("Your mind is sharp and your emotional state is resilient.")
+        elif components.get('chandrabala', 0) < 0:
+            insights.append("You might feel emotionally sensitive; prioritize self-care.")
+
+        # Select 2 distinct insights
+        selected_insights = random.sample(insights, min(2, len(insights))) if insights else []
+        
+        # 3. Actionable Closing
+        closers = {
+            "Excellent": "Strike while the iron is hot!",
+            "Good": "Move forward with confidence.",
+            "Average": "Focus on your core priorities.",
+            "Below Average": "Stick to what you know best today.",
+            "Poor": "Rest is also a form of action."
+        }
+        
+        # Assemble
+        narrative = f"{random.choice(openers.get(quality, openers['Average']))} "
+        if selected_insights:
+            narrative += " ".join(selected_insights) + " "
+        narrative += closers.get(quality, "")
+        
+        return narrative
     
     @staticmethod
     def calculate_dasha_score(

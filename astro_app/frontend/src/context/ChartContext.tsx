@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '../services/api';
 import { useAuth } from './AuthContext';
 
@@ -20,7 +20,7 @@ interface ChartContextType {
   chartStyle: ChartStyle;
   setChartStyle: (style: ChartStyle) => void;
   toggleChartStyle: () => void;
-  
+
   // Profile Management
   currentProfile: UserProfile | null;
   availableProfiles: any[];
@@ -44,7 +44,7 @@ const ChartContext = createContext<ChartContextType | undefined>(undefined);
 export const ChartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [chartStyle, setChartStyleState] = useState<ChartStyle>('NORTH_INDIAN');
-  
+
   // Profile State
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null); // Start null to allow init
   const [availableProfiles, setAvailableProfiles] = useState<any[]>([]);
@@ -107,27 +107,27 @@ export const ChartProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   const switchProfile = (chart: any) => {
-    const newProfile = normalizeProfile(chart);
-    setCurrentProfile(newProfile);
+    const profile = normalizeProfile(chart);
+    setCurrentProfile(profile);
     localStorage.setItem('lastViewedChart', JSON.stringify(chart));
   };
 
-  const refreshProfiles = useCallback(async () => {
+  const refreshProfiles = async () => {
     setIsLoadingProfiles(true);
     try {
-      const res = await api.get('/charts/');
-      setAvailableProfiles(res.data);
-    } catch (e) {
-      console.error("Failed to fetch saved charts", e);
+      const response = await api.get('/charts/');
+      setAvailableProfiles(response.data);
+    } catch (error) {
+      console.error("Failed to fetch profiles", error);
     } finally {
       setIsLoadingProfiles(false);
     }
-  }, []);
+  };
 
   return (
-    <ChartContext.Provider value={{ 
-      chartStyle, 
-      setChartStyle, 
+    <ChartContext.Provider value={{
+      chartStyle,
+      setChartStyle,
       toggleChartStyle,
       currentProfile,
       availableProfiles,
@@ -140,10 +140,13 @@ export const ChartProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   );
 };
 
-export const useChartSettings = () => {
+export const useChart = () => {
   const context = useContext(ChartContext);
   if (context === undefined) {
-    throw new Error('useChartSettings must be used within a ChartProvider');
+    throw new Error('useChart must be used within a ChartProvider');
   }
   return context;
 };
+
+// Alias for backward compatibility
+export const useChartSettings = useChart;

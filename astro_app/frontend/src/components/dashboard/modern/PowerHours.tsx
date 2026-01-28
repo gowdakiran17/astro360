@@ -25,6 +25,13 @@ const PowerHours: React.FC<PowerHoursProps> = ({ dailyData }) => {
         return <Moon className="w-3 h-3" />;
     };
 
+    const getDescription = (period: any) => {
+        if (period.description) return period.description;
+        return period.quality === 'Excellent' ? 'Ideal for important decisions and new beginnings.' :
+            period.quality === 'Good' ? 'Favorable for routine activities and planning.' :
+                'Suitable for steady progress.';
+    };
+
     const getColor = (index: number) => {
         if (index === 0) return { border: 'border-amber-500/30', dot: 'border-amber-500', text: 'text-amber-300', bg: 'bg-amber-500/10' };
         if (index === 1) return { border: 'border-orange-500/30', dot: 'border-orange-500', text: 'text-orange-300', bg: 'bg-orange-500/10' };
@@ -55,15 +62,20 @@ const PowerHours: React.FC<PowerHoursProps> = ({ dailyData }) => {
                                             {getIcon(idx)}
                                             {period.start} – {period.end}
                                         </span>
-                                        <span className={`text-[10px] px-1.5 py-0.5 rounded ${colors.bg} ${colors.text} border ${colors.dot}/20`}>
-                                            {period.quality}
-                                        </span>
+                                        <div className="flex gap-1">
+                                            {period.type && (
+                                                <span className={`text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-slate-400 border border-white/10 hidden sm:inline-block`}>
+                                                    {period.type === 'Vedic Muhurata' ? 'Vedic' : period.type}
+                                                </span>
+                                            )}
+                                            <span className={`text-[10px] px-1.5 py-0.5 rounded ${colors.bg} ${colors.text} border ${colors.dot}/20`}>
+                                                {period.quality}
+                                            </span>
+                                        </div>
                                     </div>
                                     <p className="text-sm text-slate-200 font-medium">{period.name}</p>
-                                    <p className="text-xs text-slate-400 mt-1">
-                                        {period.quality === 'Excellent' ? 'Ideal for important decisions and new beginnings.' :
-                                            period.quality === 'Good' ? 'Favorable for routine activities and planning.' :
-                                                'Suitable for steady progress.'}
+                                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                                        {getDescription(period)}
                                     </p>
                                 </div>
                             </div>

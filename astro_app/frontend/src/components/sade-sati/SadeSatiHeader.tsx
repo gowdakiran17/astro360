@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertCircle, Calendar, Clock, TrendingUp } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 
 interface SadeSatiHeaderProps {
     status: 'active' | 'approaching' | 'completed';

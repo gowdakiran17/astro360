@@ -87,13 +87,13 @@ except ImportError as e:
 def get_lucky_factors(day_lord: str) -> Dict[str, str]:
     """Derive lucky attributes based on the day lord (Planet)"""
     attributes = {
-        "Sun": {"color": "Gold, Orange", "direction": "East", "gem": "Ruby", "mantra": "Om Suryaya Namaha"},
-        "Moon": {"color": "White, Silver", "direction": "North-West", "gem": "Pearl", "mantra": "Om Chandraya Namaha"},
-        "Mars": {"color": "Red", "direction": "South", "gem": "Red Coral", "mantra": "Om Angarakaya Namaha"},
-        "Mercury": {"color": "Green", "direction": "North", "gem": "Emerald", "mantra": "Om Budhaya Namaha"},
-        "Jupiter": {"color": "Yellow", "direction": "North-East", "gem": "Yellow Sapphire", "mantra": "Om Gurave Namaha"},
-        "Venus": {"color": "White, Pink", "direction": "South-East", "gem": "Diamond", "mantra": "Om Shukraya Namaha"},
-        "Saturn": {"color": "Blue, Black", "direction": "West", "gem": "Blue Sapphire", "mantra": "Om Shanishcharaya Namaha"},
+        "Sun": {"color": "Gold, Orange", "direction": "East", "number": "1", "mantra": "Om Suryaya Namaha"},
+        "Moon": {"color": "White, Silver", "direction": "North-West", "number": "2", "mantra": "Om Chandraya Namaha"},
+        "Mars": {"color": "Red", "direction": "South", "number": "9", "mantra": "Om Angarakaya Namaha"},
+        "Mercury": {"color": "Green", "direction": "North", "number": "5", "mantra": "Om Budhaya Namaha"},
+        "Jupiter": {"color": "Yellow", "direction": "North-East", "number": "3", "mantra": "Om Gurave Namaha"},
+        "Venus": {"color": "White, Pink", "direction": "South-East", "number": "6", "mantra": "Om Shukraya Namaha"},
+        "Saturn": {"color": "Blue, Black", "direction": "West", "number": "8", "mantra": "Om Shanishcharaya Namaha"},
     }
     return attributes.get(day_lord, attributes["Sun"])
 
@@ -134,17 +134,132 @@ class PeriodAnalysisOrchestrator:
                 # Fallback to ISO just in case
                 dt = datetime.strptime(f"{self.birth_details['date']} {self.birth_details['time']}", "%Y-%m-%d %H:%M")
                 
-            jd_birth = AstroCalculate.get_julian_day(dt)
-            # Simple Lagna Calc using swisseph
+            # Parse timezone
+            tz_str = self.birth_details.get('timezone', '+00:00')
+            sign = 1
+            if tz_str.startswith('-'):
+                sign = -1
+                tz_str = tz_str[1:]
+            elif tz_str.startswith('+'):
+                tz_str = tz_str[1:]
+            parts = tz_str.split(':')
+            minutes = float(parts[1]) if len(parts) > 1 else 0.0
+            tz_hours = sign * (float(parts[0]) + minutes/60.0)
+            
+            dt_utc = dt - timedelta(hours=tz_hours)
+            
+            logger.info(f"Birth DT: {dt}, TZ: {tz_hours}, UTC: {dt_utc}")
+
             import swisseph as swe
+            self.birth_jd = swe.julday(dt_utc.year, dt_utc.month, dt_utc.day, 
+                                       dt_utc.hour + dt_utc.minute/60.0 + dt_utc.second/3600.0)
+            logger.info(f"Birth JD: {self.birth_jd}")
+            
+            # Calculate Natal Ascendant
+            # houses returns (cusps, ascmc)
+            # cusps[0] is Ascendant (Lagna)
             swe.set_sid_mode(swe.SIDM_LAHIRI, 0, 0)
-            houses_cusps, _ = swe.houses(jd_birth, float(self.birth_details['latitude']), float(self.birth_details['longitude']), b'P')
+            houses_cusps, _ = swe.houses(self.birth_jd, float(self.birth_details['latitude']), float(self.birth_details['longitude']), b'P')
             self.natal_ascendant_deg = houses_cusps[0]
             self.natal_ascendant_sign = int(self.natal_ascendant_deg / 30)
+            logger.info(f"Calculated Natal Ascendant: {self.natal_ascendant_sign} (Deg: {self.natal_ascendant_deg})")
         except Exception as e:
             logger.warning(f"Could not calculate Natal Ascendant, defaulting to Moon Sign: {e}")
             self.natal_ascendant_sign = self.birth_moon_rashi - 1 # 0-indexed
             self.natal_ascendant_deg = (self.natal_ascendant_sign * 30) + 15 # Approximate mid-sign
+
+    def _get_personalized_lucky_factors(self, day_lord: str) -> Dict[str, str]:
+        """
+        Derive personalized lucky attributes based on User's Ascendant/Moon and Birth Date.
+        Overrides generic day lord factors with user-specific ones.
+        """
+        # 1. Lucky Number (Based on Birth Day - Root Number)
+        # e.g., 23rd -> 2+3=5
+        try:
+            # birth_details['date'] is DD/MM/YYYY
+            day_str = self.birth_details['date'].split('/')[0]
+            day_num = int(day_str)
+            
+            # Reduce to single digit (1-9)
+            while day_num > 9:
+                day_num = sum(int(d) for d in str(day_num))
+            
+            lucky_number = str(day_num)
+        except:
+            lucky_number = "1" # Fallback
+
+        # 2. Lucky Color & Direction (Based on Ascendant Lord)
+        # Sign Owners:
+        # Aries(0), Scorpio(7) -> Mars
+        # Taurus(1), Libra(6) -> Venus
+        # Gemini(2), Virgo(5) -> Mercury
+        # Cancer(3) -> Moon
+        # Leo(4) -> Sun
+        # Sag(8), Pisces(11) -> Jupiter
+        # Cap(9), Aq(10) -> Saturn
+        
+        asc_sign = self.natal_ascendant_sign
+        
+        # Mapping Sign Index (0-11) to Planet & Direction
+        # Directions: Fire=East, Earth=South, Air=West, Water=North (General Vaastu/Astro mapping)
+        
+        sign_props = {
+            0:  {"planet": "Mars",    "color": "Red, Maroon",        "direction": "East"},       # Aries
+            1:  {"planet": "Venus",   "color": "White, Pink",        "direction": "South"},      # Taurus
+            2:  {"planet": "Mercury", "color": "Green, Emerald",     "direction": "West"},       # Gemini
+            3:  {"planet": "Moon",    "color": "White, Pearl",       "direction": "North"},      # Cancer
+            4:  {"planet": "Sun",     "color": "Gold, Orange",       "direction": "East"},       # Leo
+            5:  {"planet": "Mercury", "color": "Green, Mint",        "direction": "South"},      # Virgo
+            6:  {"planet": "Venus",   "color": "White, Cream",       "direction": "West"},       # Libra
+            7:  {"planet": "Mars",    "color": "Red, Coral",         "direction": "North"},      # Scorpio
+            8:  {"planet": "Jupiter", "color": "Yellow, Gold",       "direction": "East"},       # Sagittarius
+            9:  {"planet": "Saturn",  "color": "Blue, Black",        "direction": "South"},      # Capricorn
+            10: {"planet": "Saturn",  "color": "Blue, Electric",     "direction": "West"},       # Aquarius
+            11: {"planet": "Jupiter", "color": "Yellow, Saffron",    "direction": "North"},      # Pisces
+        }
+        
+        props = sign_props.get(asc_sign, sign_props[0])
+        
+        # Mantra based on Ascendant Lord (Protects the self)
+        mantras = {
+            "Sun": "Om Suryaya Namaha",
+            "Moon": "Om Chandraya Namaha",
+            "Mars": "Om Angarakaya Namaha",
+            "Mercury": "Om Budhaya Namaha",
+            "Jupiter": "Om Gurave Namaha",
+            "Venus": "Om Shukraya Namaha",
+            "Saturn": "Om Shanishcharaya Namaha"
+        }
+        
+        return {
+            "color": props["color"],
+            "direction": props["direction"],
+            "number": lucky_number,
+            "mantra": mantras.get(props["planet"], "Om Namah Shivaya")
+        }
+
+    def _get_moon_house_insights(self, moon_house: int) -> Dict[str, List[str]]:
+        """
+        Get Key Focus and Watch Out areas based on Moon's transit house (Chandra Lagna)
+        """
+        # moon_house is 1-12
+        
+        insights = {
+            1:  {"best": ["Self-Care", "New Ventures", "Health"],     "caution": ["Impatience", "Headache"]},
+            2:  {"best": ["Finance", "Family Time", "Dining"],        "caution": ["Harsh Speech", "Spending"]},
+            3:  {"best": ["Communication", "Short Trips", "Hobbies"], "caution": ["Misunderstanding", "Laziness"]},
+            4:  {"best": ["Home Comforts", "Mother", "Rest"],         "caution": ["Emotional Conflict", "Property"]},
+            5:  {"best": ["Creativity", "Romance", "Stock Market"],   "caution": ["Gambling", "Overthinking"]},
+            6:  {"best": ["Service", "Routine", "Healing"],           "caution": ["Arguments", "Indigestion"]},
+            7:  {"best": ["Partnership", "Networking", "Dates"],      "caution": ["Ego Clashes", "Legal Issues"]},
+            8:  {"best": ["Research", "Occult", "Meditation"],        "caution": ["Accidents", "Stress", "Risks"]},
+            9:  {"best": ["Learning", "Travel", "Spirituality"],      "caution": ["Dogma", "Father's Health"]},
+            10: {"best": ["Career", "Public Image", "Leadership"],    "caution": ["Work Stress", "Authority"]},
+            11: {"best": ["Gains", "Friends", "Parties"],             "caution": ["Greed", "Elder Siblings"]},
+            12: {"best": ["Sleep", "Charity", "Foreign Lands"],       "caution": ["Expenses", "Isolation", "Loss"]}
+        }
+        
+        return insights.get(moon_house, {"best": ["Balance"], "caution": ["Extremes"]})
 
     def _process_single_day(self, date: datetime) -> Dict[str, Any]:
         """
@@ -182,7 +297,7 @@ class PeriodAnalysisOrchestrator:
                 'lucky_factors': {
                     'color': f"ERR: {str(e)[:20]}...",
                     'direction': "Backend Error",
-                    'gem': "Check Logs",
+                    'number': "0",
                     'mantra': error_msg[:50] # Show trace in UI
                 }
             }
@@ -295,6 +410,16 @@ class PeriodAnalysisOrchestrator:
             lon = float(self.birth_details.get('longitude', 0))
             muhurta_data = get_muhurata_data(jd, lat, lon)
             
+            # Format Muhurta times
+            formatted_periods = []
+            for p in muhurta_data['periods']:
+                p_fmt = p.copy()
+                p_fmt['start_jd'] = p['start'] # Preserve raw JD for frontend logic
+                p_fmt['end_jd'] = p['end']     # Preserve raw JD for frontend logic
+                p_fmt['start'] = self._format_time(p['start'])
+                p_fmt['end'] = self._format_time(p['end'])
+                formatted_periods.append(p_fmt)
+            
             # --- Feature 1E: Guidance Basics ---
             weekday_idx = date.weekday() # Mon=0, Sun=6 in Python? No, Mon=0, Sun=6.
             # Convert to astrological weekday (Sun=0 ... Sat=6)
@@ -302,7 +427,8 @@ class PeriodAnalysisOrchestrator:
             # Mon(0)->Moon(1), Tue(1)->Mars(2), Wed(2)->Merc(3), Thu(3)->Jup(4), Fri(4)->Ven(5), Sat(5)->Sat(6), Sun(6)->Sun(0)
             day_lords_map = ["Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Sun"]
             day_lord = day_lords_map[weekday_idx]
-            lucky_factors = get_lucky_factors(day_lord)
+            # lucky_factors = get_lucky_factors(day_lord) # OLD Static
+            lucky_factors = self._get_personalized_lucky_factors(day_lord) # NEW Personalized
 
             # 3. Detect all events
             events = self._detect_all_events(date, positions_map, tithi_data, karana_data)
@@ -329,34 +455,59 @@ class PeriodAnalysisOrchestrator:
             zodiac_signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
             for pname, plong in positions_map.items():
                 sign_idx = int(plong / 30)
+                is_retro = AstroCalculate.is_planet_retrograde(jd, pname)
                 transits_list.append({
                     "name": pname,
                     "longitude": plong,
                     "zodiac_sign": zodiac_signs[sign_idx],
-                    "is_retrograde": False, # TODO: calculate speed for retrograde
+                    "is_retrograde": is_retro,
                     "nakshatra": AstroCalculate.NAKSHATRA_NAMES[AstroCalculate.get_nakshatra(plong) - 1]
                 })
 
             # --- New: Rule-based Rich Analysis ---
             influences = []
-            if scores['dasha'] > 20: influences.append(f"{day_lord} Dasha")
-            if scores['transit'] > 20: influences.append("Favorable Transits")
-            if scores['tarabala'] > 20: influences.append("Stable Moon")
-            if scores['panchang'] > 20: influences.append("Auspicious Tithi")
             
-            # Identify Best/Caution areas
-            best_areas = []
-            caution_areas = []
+            # 1. Influences (Major Planetary Transits)
+            # Focus on Sun, Jupiter, Saturn, Mars + Retrogrades
+            important_planets = ["Sun", "Mars", "Jupiter", "Saturn"]
+            for p in transits_list:
+                if p["name"] in important_planets:
+                    influences.append(f"{p['name']} in {p['zodiac_sign']}")
             
-            if scores['transit'] > 15: best_areas.append("Social & Travel")
-            if scores['dasha'] > 15: best_areas.append("Career & Logic")
-            if scores['panchang'] > 15: best_areas.append("Ceremonies")
+            # Add Retrograde info
+            retro_planets = [p["name"] for p in transits_list if p.get("is_retrograde")]
+            if retro_planets:
+                influences.append(f"Retro: {', '.join(retro_planets[:2])}")
+
+            # 2. Nakshatra-based Activity Guidance (Moved to Frontend)
+            # Logic simplified to rely on Frontend's static dictionary for Nakshatra activities
+            # to avoid duplication and inconsistencies.
             
+            # --- Personalize Focus using Moon House (Chandra Lagna) ---
+            moon_house = AstroCalculate.get_planet_house_from_longitude(
+                positions_map['Moon'], self.moon_longitude
+            )
+            house_insights = self._get_moon_house_insights(moon_house)
+            
+            # Combine Personalized + General (Prioritize Personalized)
+            # FIX: Remove general Nakshatra guide to avoid duplication with new Frontend section
+            best_areas = list(house_insights["best"])
+            caution_areas = list(house_insights["caution"])
+            
+            # Add dynamic score-based recommendations
+            if scores['transit'] > 15: best_areas.append("Social Success")
+            if scores['dasha'] > 15: best_areas.append("Career Moves")
             if scores['transit'] < -15: caution_areas.append("Contracts")
-            if scores['panchang'] < -15: caution_areas.append("Fast-paced Work")
             
-            best_text = ", ".join(best_areas) if best_areas else "Routine Activities"
-            caution_text = ", ".join(caution_areas) if caution_areas else "Extreme Risks"
+            # Limit to 3 items for display (Ensure uniqueness)
+            seen_best = set()
+            unique_best = [x for x in best_areas if not (x in seen_best or seen_best.add(x))][:3]
+            
+            seen_caution = set()
+            unique_caution = [x for x in caution_areas if not (x in seen_caution or seen_caution.add(x))][:3]
+            
+            best_text = ", ".join(unique_best)
+            caution_text = ", ".join(unique_caution)
 
             return {
                 'date': date.isoformat(),
@@ -390,7 +541,7 @@ class PeriodAnalysisOrchestrator:
                 'transits': transits_list,
                 # New Rich Data
                 'house_strengths': house_analysis, # {strongest_houses: [], sav: [], ...}
-                'muhuratas': muhurta_data['periods'], # List of {name, start, end, quality}
+                'muhuratas': formatted_periods, # List of {name, start, end, quality}
                 'lucky_factors': lucky_factors,
                 'component_scores': scores
             }
@@ -420,14 +571,48 @@ class PeriodAnalysisOrchestrator:
                 }
             }
     
+    def _parse_timezone_offset(self, offset_str: str) -> timedelta:
+        """Parse timezone offset string (e.g., '+05:30') into timedelta"""
+        try:
+            if not offset_str:
+                return timedelta(0)
+            
+            # Handle format like +05:30 or -05:00
+            sign = 1
+            if offset_str.startswith('-'):
+                sign = -1
+                offset_str = offset_str[1:]
+            elif offset_str.startswith('+'):
+                offset_str = offset_str[1:]
+            
+            parts = offset_str.split(':')
+            hours = int(parts[0])
+            minutes = int(parts[1]) if len(parts) > 1 else 0
+            
+            return timedelta(hours=sign*hours, minutes=sign*minutes)
+        except Exception:
+            return timedelta(0)
+
     def _format_time(self, jd_time):
-        """Convert JD to HH:MM AM/PM string"""
-        # Very rough conversion for display, assuming JD is in UT or similar
-        # Actually JD is float days. 
-        # Need proper conversion. `swisseph` gives JD in UT usually.
-        # Let's ignore complex time zone conversion here and return a placeholder or simple calc
-        # Ideally pass datetime objects.
-        return "06:00 AM" # Placeholder to avoid complex timezone logic in this iteration
+        """Convert JD to HH:MM AM/PM string with timezone adjustment"""
+        try:
+            # JD at 1970-01-01 00:00:00 UTC is 2440587.5
+            unix_epoch_jd = 2440587.5
+            seconds_since_epoch = (jd_time - unix_epoch_jd) * 86400
+            
+            # Create UTC datetime (naive)
+            dt_utc = datetime.utcfromtimestamp(seconds_since_epoch)
+            
+            # Apply offset
+            tz_str = self.birth_details.get('timezone', '+00:00')
+            offset = self._parse_timezone_offset(tz_str)
+            
+            # Convert to local time
+            dt_local = dt_utc + offset
+            
+            return dt_local.strftime("%I:%M %p")
+        except Exception:
+            return "Unknown"
 
     def _detect_all_events(
         self,
@@ -800,8 +985,8 @@ class PeriodAnalysisOrchestrator:
                     "name": AstroCalculate.NAKSHATRA_NAMES[self.birth_moon_nakshatra - 1],
                     "pada": pada
                 },
-                "sunrise": daily_data.get('panchang', {}).get('sunrise', 'N/A'),
-                "sunset": daily_data.get('panchang', {}).get('sunset', 'N/A')
+                "sunrise": (daily_data.get('panchang') or {}).get('sunrise', 'N/A'),
+                "sunset": (daily_data.get('panchang') or {}).get('sunset', 'N/A')
             }
 
             return {

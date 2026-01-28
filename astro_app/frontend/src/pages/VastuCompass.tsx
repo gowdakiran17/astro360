@@ -1,10 +1,8 @@
-import { useState, type ComponentProps } from 'react';
+import { useState } from 'react';
 import VastuFloorPlan from '../components/vastu/VastuFloorPlan';
-import AstroVastuCoreScreen from '../components/vastu/AstroVastuCoreScreen';
+import AstroVastuCoreScreen, { type EliteAnalysisResult } from '../components/vastu/AstroVastuCoreScreen';
 import { Compass, ArrowRight, Loader2, Calendar, Clock, Globe } from 'lucide-react';
-
-type AstroVastuCoreScreenProps = ComponentProps<typeof AstroVastuCoreScreen>;
-type EliteAnalysisResult = AstroVastuCoreScreenProps['data'];
+import api from '../services/api';
 
 const VastuCompass = () => {
     const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -69,18 +67,8 @@ const VastuCompass = () => {
                 user_intent: userIntent
             };
 
-            const response = await fetch('http://localhost:8000/vastu/elite/analysis', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.detail || "Analysis failed");
-            }
-
-            const data: EliteAnalysisResult = await response.json();
+            const response = await api.post('/vastu/elite/analysis', payload);
+            const data: EliteAnalysisResult = response.data;
             
             // Wait a bit for the animation to finish
             setTimeout(() => {

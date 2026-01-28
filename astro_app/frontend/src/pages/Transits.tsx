@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import MainLayout from '../components/layout/MainLayout';
-import DashboardHeader from '../components/layout/DashboardHeader';
 import UniversalChart from '../components/charts/UniversalChart';
 import {
     Moon, Sun, Layout, MapPin,
@@ -191,8 +190,7 @@ const Transits = () => {
     );
 
     return (
-        <MainLayout title="Planetary Transits" breadcrumbs={['Home', 'Transits']} showHeader={false}>
-            <DashboardHeader activeTab="transit" />
+        <MainLayout title="Planetary Transits" breadcrumbs={['Home', 'Transits']}>
             
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
                 

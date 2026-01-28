@@ -1,59 +1,74 @@
-import React, { useState } from 'react';
-import { ArrowRight, Calendar, Grid, List, Clock, ChevronRight, AlertCircle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Grid, List, Clock, ChevronRight } from 'lucide-react';
+import { Transit } from '../../../types/periodAnalysis';
 
-const TransitDashboard = () => {
-  const [viewMode, setViewMode] = useState<'grid' | 'list' | 'timeline'>('grid');
+interface TransitDashboardProps {
+    transits?: Transit[];
+    ascendantSign?: string;
+}
 
-  const transits = [
-    {
-      planet: 'Sun',
-      sign: 'Capricorn',
-      house: '7th House',
-      houseType: 'Partnerships',
-      impact: 'Neutral',
-      duration: 'Until Jan 29',
-      description: 'Focus on professional relationships and formal agreements.',
-      color: 'from-amber-500/20 to-orange-500/5',
-      borderColor: 'border-amber-500/30',
-      textColor: 'text-amber-200'
-    },
-    {
-      planet: 'Moon',
-      sign: 'Taurus',
-      house: '9th House',
-      houseType: 'Higher Learning',
-      impact: 'Favorable',
-      duration: 'Next 2.5 days',
-      description: 'Excellent for study, travel, and connecting with mentors.',
-      color: 'from-indigo-500/20 to-purple-500/5',
-      borderColor: 'border-indigo-500/30',
-      textColor: 'text-indigo-200'
-    },
-    {
-      planet: 'Jupiter',
-      sign: 'Pisces (R)',
-      house: '9th House',
-      houseType: 'Wisdom',
-      impact: 'Transformational',
-      duration: 'Until Feb 10',
-      description: 'Deep internal growth and revisiting old spiritual lessons.',
-      color: 'from-yellow-500/20 to-amber-500/5',
-      borderColor: 'border-yellow-500/30',
-      textColor: 'text-yellow-200'
-    },
-     {
-      planet: 'Saturn',
-      sign: 'Aquarius',
-      house: '8th House',
-      houseType: 'Transformation',
-      impact: 'Challenging',
-      duration: 'Long Term',
-      description: 'Patience required in joint finances and inheritance matters.',
-      color: 'from-slate-700/40 to-slate-800/40',
-      borderColor: 'border-slate-600/30',
-      textColor: 'text-slate-300'
-    }
-  ];
+const TransitDashboard: React.FC<TransitDashboardProps> = ({ transits, ascendantSign }) => {
+  const navigate = useNavigate();
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+
+  const processedTransits = useMemo(() => {
+    if (!transits) return [];
+
+    const zodiacOrder = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+    
+    return transits.map(t => {
+        let houseNum = 0;
+        if (ascendantSign && t.zodiac_sign) {
+            // Ensure case-insensitive matching
+            const ascIdx = zodiacOrder.findIndex(z => z.toLowerCase() === ascendantSign.toLowerCase());
+            const planetIdx = zodiacOrder.findIndex(z => z.toLowerCase() === t.zodiac_sign.toLowerCase());
+            
+            if (ascIdx !== -1 && planetIdx !== -1) {
+                houseNum = ((planetIdx - ascIdx + 12) % 12) + 1;
+            }
+        }
+
+        // Determine house type/theme roughly
+        const houseThemes: Record<number, string> = {
+            1: "Self & Identity", 2: "Wealth & Family", 3: "Courage & Siblings", 4: "Home & Happiness",
+            5: "Creativity & Progeny", 6: "Health & Enemies", 7: "Partnerships", 8: "Transformation",
+            9: "Luck & Wisdom", 10: "Career & Status", 11: "Gains & Network", 12: "Loss & Liberation"
+        };
+
+        // Enhanced impact logic
+        let impact = "Neutral";
+        const dusthana = [6, 8, 12];
+        const kendra = [1, 4, 7, 10];
+        const trikona = [1, 5, 9]; // 1 is both Kendra and Trikona
+
+        if (houseNum > 0) {
+            if (dusthana.includes(houseNum)) {
+                impact = "Challenging";
+            } else if (kendra.includes(houseNum) || trikona.includes(houseNum)) {
+                impact = "Favorable";
+            }
+        }
+        
+        if (t.is_retrograde) {
+            impact = "Transformational"; // Retrograde often implies re-evaluation
+        }
+        
+        return {
+            ...t,
+            house: houseNum ? `${houseNum}${getOrdinal(houseNum)} House` : "Transit",
+            houseType: houseNum ? houseThemes[houseNum] : "General Influence",
+            impact: impact,
+            duration: "Current",
+            description: `${t.name} is transiting through ${t.zodiac_sign} in your ${houseNum ? houseNum + getOrdinal(houseNum) : ''} house.`,
+            color: getPlanetColor(t.name).bg,
+            borderColor: getPlanetColor(t.name).border,
+            textColor: getPlanetColor(t.name).text
+        };
+    });
+  }, [transits, ascendantSign]);
+
+  if (!transits || transits.length === 0) return null;
 
   return (
     <div className="bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl p-6">
@@ -78,23 +93,16 @@ const TransitDashboard = () => {
             >
                 <List className="w-4 h-4" />
             </button>
-            <button 
-                onClick={() => setViewMode('timeline')}
-                className={`p-2 rounded-md transition-all ${viewMode === 'timeline' ? 'bg-indigo-500 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-                title="Timeline View"
-            >
-                <Clock className="w-4 h-4" />
-            </button>
         </div>
       </div>
 
       {viewMode === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {transits.map((transit, idx) => (
+            {processedTransits.map((transit, idx) => (
                 <div key={idx} className={`rounded-xl border p-5 bg-gradient-to-br ${transit.color} ${transit.borderColor} group hover:scale-[1.02] transition-transform duration-300 relative overflow-hidden`}>
                     <div className="flex justify-between items-start mb-3 relative z-10">
                         <div>
-                            <div className={`font-bold text-lg ${transit.textColor}`}>{transit.planet} in {transit.sign}</div>
+                            <div className={`font-bold text-lg ${transit.textColor}`}>{transit.name} in {transit.zodiac_sign} {transit.is_retrograde ? '(R)' : ''}</div>
                             <div className="text-xs text-white/60 font-medium uppercase tracking-wider">{transit.house} • {transit.houseType}</div>
                         </div>
                         <span className={`text-[10px] px-2 py-1 rounded-full border border-white/10 bg-black/20 text-white`}>
@@ -110,14 +118,17 @@ const TransitDashboard = () => {
                         <span className="flex items-center gap-1">
                             <Clock className="w-3 h-3" /> {transit.duration}
                         </span>
-                        <button className="flex items-center gap-1 text-white hover:underline">
+                        <button 
+                            onClick={() => navigate('/global/transits')}
+                            className="flex items-center gap-1 text-white hover:underline"
+                        >
                             Details <ChevronRight className="w-3 h-3" />
                         </button>
                     </div>
 
                     {/* Decorative Planet Icon */}
                     <div className="absolute -bottom-4 -right-4 text-9xl opacity-5 pointer-events-none select-none font-serif">
-                        {transit.planet[0]}
+                        {transit.name[0]}
                     </div>
                 </div>
             ))}
@@ -126,14 +137,14 @@ const TransitDashboard = () => {
 
       {viewMode === 'list' && (
           <div className="space-y-3">
-              {transits.map((transit, idx) => (
+              {processedTransits.map((transit, idx) => (
                   <div key={idx} className="flex items-center justify-between p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
                       <div className="flex items-center gap-4">
                           <div className={`w-10 h-10 rounded-full flex items-center justify-center font-serif font-bold text-lg bg-gradient-to-br ${transit.color} border ${transit.borderColor} text-white`}>
-                              {transit.planet[0]}
+                              {transit.name[0]}
                           </div>
                           <div>
-                              <div className="font-medium text-white">{transit.planet} in {transit.sign}</div>
+                              <div className="font-medium text-white">{transit.name} in {transit.zodiac_sign} {transit.is_retrograde ? '(R)' : ''}</div>
                               <div className="text-xs text-slate-400">{transit.house} ({transit.houseType})</div>
                           </div>
                       </div>
@@ -145,48 +156,30 @@ const TransitDashboard = () => {
               ))}
           </div>
       )}
-
-      {viewMode === 'timeline' && (
-          <div className="relative py-4">
-              <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-white/10"></div>
-              
-              <div className="space-y-8 relative">
-                  <div className="relative pl-10">
-                        <div className="absolute left-[11px] top-1.5 w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
-                        <div className="text-sm font-bold text-indigo-300 mb-1">Today, Jan 23</div>
-                        <div className="p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-                            <div className="text-sm text-white">Moon enters Taurus</div>
-                            <div className="text-xs text-slate-400">Emotional stability increases</div>
-                        </div>
-                  </div>
-
-                  <div className="relative pl-10">
-                        <div className="absolute left-[13px] top-1.5 w-2 h-2 rounded-full bg-slate-600"></div>
-                        <div className="text-sm font-bold text-slate-400 mb-1">Jan 29</div>
-                        <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                            <div className="text-sm text-slate-200">Sun enters Aquarius</div>
-                            <div className="text-xs text-slate-400">Focus shifts to 8th House (Transformation)</div>
-                        </div>
-                  </div>
-
-                  <div className="relative pl-10">
-                        <div className="absolute left-[13px] top-1.5 w-2 h-2 rounded-full bg-amber-600"></div>
-                        <div className="text-sm font-bold text-slate-400 mb-1">Feb 10</div>
-                        <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                            <div className="text-sm text-slate-200">Jupiter goes Direct</div>
-                            <div className="text-xs text-slate-400">Projects accelerate, wisdom clarity</div>
-                        </div>
-                  </div>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-white/5 flex items-center gap-2 text-xs text-amber-300/80 bg-amber-900/10 p-3 rounded-lg">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Major Shift: Venus enters Aries on Feb 18 (Career Charm activated)</span>
-              </div>
-          </div>
-      )}
     </div>
   );
 };
+
+// Helpers
+function getOrdinal(n: number) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+function getPlanetColor(planet: string) {
+    const colors: Record<string, { bg: string, border: string, text: string }> = {
+        Sun: { bg: 'from-amber-500/20 to-orange-500/5', border: 'border-amber-500/30', text: 'text-amber-200' },
+        Moon: { bg: 'from-slate-200/20 to-slate-100/5', border: 'border-slate-300/30', text: 'text-slate-200' },
+        Mars: { bg: 'from-red-500/20 to-rose-500/5', border: 'border-red-500/30', text: 'text-red-200' },
+        Mercury: { bg: 'from-emerald-500/20 to-teal-500/5', border: 'border-emerald-500/30', text: 'text-emerald-200' },
+        Jupiter: { bg: 'from-yellow-500/20 to-amber-500/5', border: 'border-yellow-500/30', text: 'text-yellow-200' },
+        Venus: { bg: 'from-pink-500/20 to-rose-500/5', border: 'border-pink-500/30', text: 'text-pink-200' },
+        Saturn: { bg: 'from-blue-900/40 to-slate-900/40', border: 'border-blue-800/30', text: 'text-blue-300' },
+        Rahu: { bg: 'from-gray-700/40 to-gray-800/40', border: 'border-gray-600/30', text: 'text-gray-300' },
+        Ketu: { bg: 'from-gray-700/40 to-gray-800/40', border: 'border-gray-600/30', text: 'text-gray-300' }
+    };
+    return colors[planet] || colors.Sun;
+}
 
 export default TransitDashboard;

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001', // Reverted to 3001 as this instance is working correctly
+  baseURL: '', // Uses Vite proxy
 });
 
 // Add a request interceptor to attach the token

@@ -1,16 +1,4 @@
 import React from 'react';
-import { ArrowUp, ArrowDown } from 'lucide-react';
-
-interface PlanetRow {
-  name: string;
-  sign: string;
-  degree: number;
-  nakshatra: string;
-  pada: number;
-  house: number;
-  status: string; // 'Direct', 'Retrograde', 'Combust'
-  is_retrograde: boolean;
-}
 
 interface ModernPlanetaryTableProps {
   planets: any[];

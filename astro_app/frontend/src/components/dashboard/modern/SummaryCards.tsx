@@ -1,19 +1,46 @@
-import React, { useMemo } from 'react';
-import { Sun, Moon, Sunrise, Sunset, Star, Clock, Info } from 'lucide-react';
+import React from 'react';
+import { Sunrise, Sunset, Star, Info } from 'lucide-react';
+import { NAKSHATRA_DATA } from '../../../utils/nakshatraData';
+import SouthIndianChart from '../../charts/SouthIndianChart';
 
 interface SummaryCardsProps {
   chartData: any;
   panchangData: any;
-  dashaData: any;
+  birthPanchangData?: any; // Added Birth Panchang
 }
 
-const SummaryCards: React.FC<SummaryCardsProps> = ({ chartData, panchangData, dashaData }) => {
+const SummaryCards: React.FC<SummaryCardsProps> = ({ chartData, panchangData, birthPanchangData }) => {
   if (!chartData) return null;
 
   const ascendant = chartData.ascendant;
   const sun = chartData.planets.find((p: any) => p.name === 'Sun');
   const moon = chartData.planets.find((p: any) => p.name === 'Moon');
   
+  // Use birth panchang if available, otherwise fallback to daily panchang (though strictly should be birth)
+  const panchang = birthPanchangData || panchangData;
+  
+  // Helper to get nakshatra data case-insensitively
+  const getNakshatraMeta = (name: string) => {
+    if (!name || name === "Unknown") return { deity: "Unknown", symbol: "Unknown", quality: "Unknown" };
+    
+    // 1. Try exact match
+    if (NAKSHATRA_DATA[name]) return NAKSHATRA_DATA[name];
+    
+    // 2. Try case-insensitive match (trimmed)
+    const cleanName = name.toLowerCase().trim();
+    const key = Object.keys(NAKSHATRA_DATA).find(k => k.toLowerCase().trim() === cleanName);
+    if (key) return NAKSHATRA_DATA[key];
+
+    // 3. Try fuzzy match (remove spaces and special chars)
+    const fuzzyName = cleanName.replace(/[^a-z0-9]/g, '');
+    const fuzzyKey = Object.keys(NAKSHATRA_DATA).find(k => k.toLowerCase().replace(/[^a-z0-9]/g, '') === fuzzyName);
+    if (fuzzyKey) return NAKSHATRA_DATA[fuzzyKey];
+
+    return { deity: "Unknown", symbol: "Unknown", quality: "Unknown" };
+  };
+
+  const nakshatraMeta = getNakshatraMeta(moon?.nakshatra);
+
   // Helper to format degrees
   const formatDeg = (lon: number) => {
     const d = Math.floor(lon % 30);
@@ -21,53 +48,66 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ chartData, panchangData, da
     return `${d}°${m}'`;
   };
 
-  // Process Dasha Data
-  const { currentMD, currentAD, nextAD, progressAD } = useMemo(() => {
-    if (!dashaData?.dashas) return { currentMD: null, currentAD: null, nextAD: null, progressAD: 0 };
-
-    const dashas = dashaData.dashas;
-    const md = dashas.find((d: any) => d.is_current);
-    
-    if (!md) return { currentMD: null, currentAD: null, nextAD: null, progressAD: 0 };
-
-    const adIndex = md.antardashas?.findIndex((ad: any) => ad.is_current);
-    const ad = adIndex !== -1 ? md.antardashas[adIndex] : null;
-    
-    // Find next Antardasha
-    let next = null;
-    if (md.antardashas && adIndex !== -1 && adIndex < md.antardashas.length - 1) {
-        next = md.antardashas[adIndex + 1];
-    } else if (md.antardashas && adIndex === md.antardashas.length - 1) {
-        // Next MD's first AD
-        const mdIndex = dashas.findIndex((d: any) => d.lord === md.lord);
-        if (mdIndex < dashas.length - 1) {
-            next = dashas[mdIndex + 1].antardashas?.[0];
-        }
-    }
-
-    // Calculate Progress of current Antardasha
-    let progress = 0;
-    if (ad) {
-        const now = new Date().getTime();
-        const start = new Date(ad.start_date).getTime();
-        const end = new Date(ad.end_date).getTime();
-        const total = end - start;
-        const elapsed = now - start;
-        progress = Math.min(100, Math.max(0, Math.round((elapsed / total) * 100)));
-    }
-
-    return { currentMD: md, currentAD: ad, nextAD: next, progressAD: progress };
-  }, [dashaData]);
-
-  const formatDate = (dateStr: string) => {
-      if (!dateStr) return '';
-      return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
-  };
-
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      {/* Card 1: Chart Details */}
-      <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl hover:bg-white/10 transition-all group">
+      {/* Card 1: Visual D1 Chart */}
+      <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all flex flex-col">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-serif text-lg text-white">Lagna Chart (D1)</h3>
+          <div className="p-2 bg-indigo-500/20 rounded-lg text-indigo-300">
+            <Info className="w-4 h-4" />
+          </div>
+        </div>
+        
+        <div className="flex-1 flex items-center justify-center -my-4">
+             <div className="w-full max-w-[280px] aspect-square">
+                 <SouthIndianChart data={chartData} />
+             </div>
+        </div>
+        
+        <div className="flex justify-between items-center text-xs text-slate-400 mt-2 px-2">
+            <span>Asc: {ascendant?.zodiac_sign}</span>
+            <span>Moon: {moon?.zodiac_sign}</span>
+        </div>
+      </div>
+
+      {/* Card 2: Moon Nakshatra */}
+      <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl hover:border-indigo-500/30 transition-all relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Star className="w-32 h-32 text-indigo-400 rotate-12" />
+        </div>
+        <div className="flex justify-between items-center mb-2 relative z-10">
+          <h3 className="font-serif text-lg text-white">Moon Nakshatra</h3>
+          <div className="p-2 bg-purple-500/20 rounded-lg text-purple-300">
+             <Star className="w-4 h-4" />
+          </div>
+        </div>
+        
+        <div className="mt-6 relative z-10">
+            <h2 className="text-4xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200 mb-2">{moon?.nakshatra || "Unknown"}</h2>
+            <div className="flex items-center gap-2 mb-6">
+                 <span className="px-2 py-0.5 rounded text-xs font-medium bg-white/10 text-slate-200 border border-white/5">Pada {moon?.pada || 1} / 4</span>
+            </div>
+            
+            <div className="space-y-3 mt-4 bg-black/20 rounded-xl p-4 border border-white/5">
+                <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Deity</span>
+                    <span className="font-medium text-indigo-200">{nakshatraMeta.deity || moon?.nakshatra_info?.deity || "Unknown"}</span>
+                </div>
+                 <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Symbol</span>
+                    <span className="font-medium text-indigo-200">{nakshatraMeta.symbol || moon?.nakshatra_info?.symbol || "Unknown"}</span>
+                </div>
+                 <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Quality</span>
+                    <span className="font-medium text-indigo-200">{nakshatraMeta.quality || moon?.nakshatra_info?.quality || "Unknown"}</span>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      {/* Card 3: Chart Details */}
+      <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl hover:shadow-2xl hover:bg-white/10 transition-all group">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-serif text-lg text-white">Chart Details</h3>
           <div className="p-2 bg-indigo-500/20 rounded-lg text-indigo-300 group-hover:text-indigo-200 transition-colors">
@@ -99,103 +139,54 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ chartData, panchangData, da
           </div>
           
           <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-2"></div>
+
+          {/* Birth Panchang Details */}
+          <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
+             <div className="group/item">
+                <span className="text-xs text-slate-500 block mb-0.5">Tithi</span>
+                <span className="font-medium text-slate-300 group-hover/item:text-white transition-colors truncate block" title={panchang?.tithi}>
+                    {panchang?.tithi?.split(' ')[1] || panchang?.tithi || '-'}
+                </span>
+             </div>
+             <div className="group/item">
+                <span className="text-xs text-slate-500 block mb-0.5">Yoga</span>
+                <span className="font-medium text-slate-300 group-hover/item:text-white transition-colors truncate block" title={panchang?.yoga}>
+                    {panchang?.yoga || '-'}
+                </span>
+             </div>
+             <div className="group/item">
+                <span className="text-xs text-slate-500 block mb-0.5">Karana</span>
+                <span className="font-medium text-slate-300 group-hover/item:text-white transition-colors truncate block" title={panchang?.karana}>
+                    {panchang?.karana || '-'}
+                </span>
+             </div>
+             <div className="group/item">
+                <span className="text-xs text-slate-500 block mb-0.5">Day</span>
+                <span className="font-medium text-slate-300 group-hover/item:text-white transition-colors truncate block" title={panchang?.day_of_week}>
+                    {panchang?.day_of_week || panchang?.vara || '-'}
+                </span>
+             </div>
+          </div>
+          
+          <div className="h-px bg-gradient-to-r from-transparent via-white/10 to-transparent my-2"></div>
           
           <div className="grid grid-cols-2 gap-4">
             <div>
                  <span className="text-xs text-slate-500 block mb-1">Sunrise</span>
                  <span className="font-medium text-slate-300 flex items-center gap-1.5">
                     <Sunrise className="w-3 h-3 text-amber-400" />
-                    {panchangData?.sunrise || "06:00 AM"}
+                    {panchang?.sunrise || "06:00 AM"}
                  </span>
             </div>
              <div>
                  <span className="text-xs text-slate-500 block mb-1">Sunset</span>
                  <span className="font-medium text-slate-300 flex items-center gap-1.5">
                     <Sunset className="w-3 h-3 text-orange-400" />
-                    {panchangData?.sunset || "06:00 PM"}
+                    {panchang?.sunset || "06:00 PM"}
                  </span>
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Card 2: Moon Nakshatra */}
-      <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl hover:border-indigo-500/30 transition-all relative overflow-hidden group">
-        <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Star className="w-32 h-32 text-indigo-400 rotate-12" />
-        </div>
-        <div className="flex justify-between items-center mb-2 relative z-10">
-          <h3 className="font-serif text-lg text-white">Moon Nakshatra</h3>
-          <div className="p-2 bg-purple-500/20 rounded-lg text-purple-300">
-             <Star className="w-4 h-4" />
-          </div>
-        </div>
-        
-        <div className="mt-6 relative z-10">
-            <h2 className="text-4xl font-serif text-transparent bg-clip-text bg-gradient-to-r from-white to-indigo-200 mb-2">{moon?.nakshatra || "Unknown"}</h2>
-            <div className="flex items-center gap-2 mb-6">
-                 <span className="px-2 py-0.5 rounded text-xs font-medium bg-white/10 text-slate-200 border border-white/5">Pada {moon?.pada || 1} / 4</span>
-            </div>
-            
-            <div className="space-y-3 mt-4 bg-black/20 rounded-xl p-4 border border-white/5">
-                <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Deity</span>
-                    <span className="font-medium text-indigo-200">{moon?.nakshatra_info?.deity || "Unknown"}</span>
-                </div>
-                 <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Symbol</span>
-                    <span className="font-medium text-indigo-200">{moon?.nakshatra_info?.symbol || "Unknown"}</span>
-                </div>
-                 <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Quality</span>
-                    <span className="font-medium text-indigo-200">{moon?.nakshatra_info?.quality || "Unknown"}</span>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      {/* Card 3: Current Dasha */}
-      <div className="bg-white/5 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-xl hover:bg-white/10 transition-all">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-serif text-lg text-white">Current Dasha</h3>
-          <div className="p-2 bg-amber-500/20 rounded-lg text-amber-300">
-             <Clock className="w-4 h-4" />
-          </div>
-        </div>
-
-        {currentMD ? (
-            <div className="flex flex-col items-center justify-center py-2">
-                <div className="w-32 h-32 rounded-full border-4 border-white/5 relative flex items-center justify-center mb-4">
-                     <div className="absolute inset-0 rounded-full border-4 border-indigo-500/50 border-t-transparent animate-[spin_8s_linear_infinite]"></div>
-                     <div className="text-center">
-                         <span className="block text-3xl font-serif text-white">{currentMD.lord}</span>
-                         <span className="text-xs text-indigo-300 uppercase tracking-wider">Mahadasha</span>
-                     </div>
-                </div>
-                
-                <p className="text-slate-400 text-sm mb-4">Ends on <span className="text-white font-medium">{formatDate(currentMD.end_date)}</span></p>
-                
-                <div className="w-full bg-black/20 rounded-xl p-3 border border-white/5">
-                    <div className="flex justify-between items-center text-sm mb-1">
-                        <span className="text-slate-400">Current Antardasha</span>
-                        <span className="text-slate-300">{currentAD?.lord || 'Unknown'}</span>
-                    </div>
-                    <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
-                        <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-1.5 rounded-full" style={{ width: `${progressAD}%` }}></div>
-                    </div>
-                     {nextAD && (
-                        <div className="flex justify-between items-center text-xs mt-2 text-slate-500">
-                            <span>Next: {nextAD.lord} Antardasha</span>
-                            <span>{formatDate(currentAD?.end_date || '')}</span>
-                        </div>
-                    )}
-                </div>
-            </div>
-        ) : (
-             <div className="flex flex-col items-center justify-center py-10 text-slate-400">
-                <p>Dasha data unavailable</p>
-            </div>
-        )}
       </div>
     </div>
   );

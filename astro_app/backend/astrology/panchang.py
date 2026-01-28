@@ -91,24 +91,24 @@ def get_panchang_data(jd, lat, lon, jd_start=None):
     jd_search = jd_start if jd_start is not None else jd
     
     # Sun events
-    # swe.rise_trans(jd, body, lon, lat, alt, press, temp, rsmi, flag)
+    # swe.rise_trans(tjdut, body, rsmi, geopos, atpress, attemp, flags)
     lon_val, lat_val, alt_val = geopos
     
-    res_rise = swe.rise_trans(jd_search, swe.SUN, lon_val, lat_val, alt_val, 0, 0, swe.CALC_RISE | swe.BIT_DISC_CENTER, flags)
+    res_rise = swe.rise_trans(jd_search, swe.SUN, swe.CALC_RISE | swe.BIT_DISC_CENTER, geopos, 0, 0, flags)
     # Handle tuple return (status is in first element which might be a tuple)
     rise_success = res_rise[0][0] == 0 if isinstance(res_rise[0], tuple) else res_rise[0] == 0
     sunrise = res_rise[1][0] if rise_success else None
     
-    res_set = swe.rise_trans(jd_search, swe.SUN, lon_val, lat_val, alt_val, 0, 0, swe.CALC_SET | swe.BIT_DISC_CENTER, flags)
+    res_set = swe.rise_trans(jd_search, swe.SUN, swe.CALC_SET | swe.BIT_DISC_CENTER, geopos, 0, 0, flags)
     set_success = res_set[0][0] == 0 if isinstance(res_set[0], tuple) else res_set[0] == 0
     sunset = res_set[1][0] if set_success else None
     
     # Moon events
-    res_mrise = swe.rise_trans(jd_search, swe.MOON, lon_val, lat_val, alt_val, 0, 0, swe.CALC_RISE | swe.BIT_DISC_CENTER, flags)
+    res_mrise = swe.rise_trans(jd_search, swe.MOON, swe.CALC_RISE | swe.BIT_DISC_CENTER, geopos, 0, 0, flags)
     mrise_success = res_mrise[0][0] == 0 if isinstance(res_mrise[0], tuple) else res_mrise[0] == 0
     moonrise = res_mrise[1][0] if mrise_success else None
     
-    res_mset = swe.rise_trans(jd_search, swe.MOON, lon_val, lat_val, alt_val, 0, 0, swe.CALC_SET | swe.BIT_DISC_CENTER, flags)
+    res_mset = swe.rise_trans(jd_search, swe.MOON, swe.CALC_SET | swe.BIT_DISC_CENTER, geopos, 0, 0, flags)
     mset_success = res_mset[0][0] == 0 if isinstance(res_mset[0], tuple) else res_mset[0] == 0
     moonset = res_mset[1][0] if mset_success else None
     
@@ -133,8 +133,8 @@ def get_panchang_data(jd, lat, lon, jd_start=None):
     m_lat = m_res[0][1]
     m_dist = m_res[0][2]
     
-    # swe.azalt(jd, geo_lon, geo_lat, geo_height, obj_lon, obj_lat, obj_dist, pressure, temp, flag)
-    res_az = swe.azalt(jd, geopos[0], geopos[1], geopos[2], m_lon, m_lat, m_dist, 0, 0, swe.ECL2HOR)
+    # swe.azalt(tjdut, flag, geopos, atpress, attemp, xin)
+    res_az = swe.azalt(jd, swe.ECL2HOR, geopos, 0, 0, (m_lon, m_lat, m_dist))
     azimuth = res_az[0]
     elevation = res_az[1]
 

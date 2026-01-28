@@ -40,6 +40,7 @@ import CryptoStocksDashboard from './pages/CryptoStocksDashboard';
 import RealTimeTrading from './pages/RealTimeTrading';
 
 // Lazy load feature modules (Tools)
+const AIInsightsPage = lazy(() => import('./pages/AIInsightsPage'));
 const Research = lazy(() => import('./pages/Research'));
 const VastuCompass = lazy(() => import('./pages/VastuCompass'));
 const Gemstones = lazy(() => import('./pages/Gemstones'));
@@ -49,6 +50,8 @@ const BlueprintDashboard = lazy(() => import('./pages/BlueprintDashboard'));
 const ReportDashboard = lazy(() => import('./pages/ReportDashboard')); // Premium Reports
 const PersonalVastu = lazy(() => import('./pages/PersonalVastu')); // New Feature
 const KPAstrology = lazy(() => import('./pages/KPAstrology'));
+const LLMStudioPage = lazy(() => import('./pages/LLMStudioPage'));
+const AIChatPage = lazy(() => import('./pages/AIChatPage'));
 
 // Loading Fallback
 const PageLoader = () => (
@@ -88,8 +91,26 @@ function App() {
                 <Route path="/" element={<Navigate to="/home" replace />} />
 
                 <Route path="/home" element={
-                  <MainLayout title="Vedic Dashboard" breadcrumbs={['Home']} showHeader={false} disableContentPadding={true}>
+                  <MainLayout title="Vedic Dashboard" breadcrumbs={['Home']} showHeader={true} disableContentPadding={true}>
                     <HomeDashboard />
+                  </MainLayout>
+                } />
+
+                <Route path="/ai-insights" element={
+                  <MainLayout title="AI Insights" breadcrumbs={['Dashboard', 'AI Insights']} showHeader={true} disableContentPadding={false}>
+                    <AIInsightsPage />
+                  </MainLayout>
+                } />
+
+                <Route path="/ai-chat" element={
+                  <ProtectedRoute>
+                    <AIChatPage />
+                  </ProtectedRoute>
+                } />
+
+                <Route path="/llm-studio" element={
+                  <MainLayout title="LLM Studio" breadcrumbs={['Dashboard', 'LLM Studio']} showHeader={true} disableContentPadding={false}>
+                    <LLMStudioPage />
                   </MainLayout>
                 } />
 
