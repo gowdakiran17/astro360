@@ -16,9 +16,19 @@ import { GitCommit } from 'lucide-react';
 //     // Ideally this component fetches its own data or receives it.
 // }
 
-const LifePathTab = () => {
+import { DailyCalendarData } from '../InteractiveCalendar';
+import { DashboardOverviewResponse } from '../../../types/periodAnalysis';
+
+interface LifePathTabProps {
+    data: DashboardOverviewResponse;
+    selectedDate?: Date;
+    onDateChange?: (date: Date) => void;
+    dailyData?: Record<string, DailyCalendarData>;
+}
+
+const LifePathTab = ({ data: _overviewData }: LifePathTabProps) => {
     // Mock Data mimicking the backend structure
-    const data = [
+    const chartData = [
         { year: '2026', score: 65, dasha: 'Jupiter', transit: 'Saturn in Pisces' },
         { year: '2027', score: 72, dasha: 'Jupiter', transit: 'Jupiter in Leo' },
         { year: '2028', score: 60, dasha: 'Saturn', transit: 'Saturn in Aries' },
@@ -30,8 +40,8 @@ const LifePathTab = () => {
 
     // Gradient definitions
     const gradientOffset = () => {
-        const dataMax = Math.max(...data.map((i) => i.score));
-        const dataMin = Math.min(...data.map((i) => i.score));
+        const dataMax = Math.max(...chartData.map((i) => i.score));
+        const dataMin = Math.min(...chartData.map((i) => i.score));
 
         if (dataMax <= 0) {
             return 0;
@@ -102,7 +112,7 @@ const LifePathTab = () => {
                 <div className="h-[400px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
                         <AreaChart
-                            data={data}
+                            data={chartData}
                             margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
                         >
                             <defs>

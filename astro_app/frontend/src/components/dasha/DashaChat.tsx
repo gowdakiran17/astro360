@@ -47,7 +47,7 @@ const DashaChat: React.FC<DashaChatProps> = ({ currentContext }) => {
     setIsTyping(true);
 
     try {
-      const response = await api.post('/ai/generate', {
+      const response = await api.post('ai/generate', {
         context: 'normal_user_chat',
         data: currentContext,
         query: userMsg.text

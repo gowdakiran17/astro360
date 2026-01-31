@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
+import { astrologyService } from '../services/astrology';
 import MainLayout from '../components/layout/MainLayout';
 import UniversalChart from '../components/charts/UniversalChart';
 import {
     Moon, Sun, Layout, MapPin,
-    Mic, MicOff, Sparkles, Command, Search, Activity, Globe, Loader2
+    Mic, MicOff, Sparkles, Command, Search, Activity, Globe, Loader2, ArrowRightLeft
 } from 'lucide-react';
 import AIReportButton from '../components/ai/AIReportButton';
 import { useChartSettings } from '../context/ChartContext';
@@ -21,16 +22,22 @@ const Transits = () => {
     const [dashaData, setDashaData] = useState<any>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [showDetails, setShowDetails] = useState(false);
-    const [activeTab, setActiveTab] = useState<'visual' | 'data' | 'insights'>('visual');
+    const [activeTab, setActiveTab] = useState<'visual' | 'data' | 'insights' | 'ingress'>('visual');
     const [insightCategory, setInsightCategory] = useState<string>('all');
     const [language, setLanguage] = useState<'en' | 'hi' | 'es'>('en');
     const [nextUpdate, setNextUpdate] = useState(30);
     const [isProcessing, setIsProcessing] = useState(false);
-    
+
+    // Ingress Search State
+    const [ingressPlanet, setIngressPlanet] = useState('Jupiter');
+    const [ingressWindow, setIngressWindow] = useState(90);
+    const [ingressResults, setIngressResults] = useState<any[]>([]);
+    const [ingressLoading, setIngressLoading] = useState(false);
+
     // Voice & Command features
     const { isListening, transcript, startListening, stopListening, supported: voiceSupported } = useVoiceInput();
     const [commandInput, setCommandInput] = useState('');
-    
+
     // Default location
     const [location] = useState({
         name: "Bengaluru, Karnataka, IN",
@@ -60,7 +67,7 @@ const Transits = () => {
     const fetchTransitsOnly = useCallback(async () => {
         // Reset countdown on fetch
         setNextUpdate(30);
-        
+
         const now = new Date();
         const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
         const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
@@ -73,7 +80,7 @@ const Transits = () => {
             longitude: location.longitude,
             location_name: location.name
         };
-        const transitResponse = await api.post('/chart/transits', transitPayload);
+        const transitResponse = await api.post('chart/transits', transitPayload);
         setTransitData(transitResponse.data);
     }, [location]);
 
@@ -89,7 +96,7 @@ const Transits = () => {
                 latitude: currentProfile.latitude,
                 longitude: currentProfile.longitude
             };
-            const birthResponse = await api.post('/chart/birth', birthPayload);
+            const birthResponse = await api.post('chart/birth', birthPayload);
             setBirthData(birthResponse.data);
 
             // Fetch Dasha Data for Predictive Insights
@@ -98,7 +105,7 @@ const Transits = () => {
                     birth_details: birthPayload,
                     ayanamsa: "LAHIRI"
                 };
-                const dashaResponse = await api.post('/chart/dasha', dashaPayload);
+                const dashaResponse = await api.post('chart/dasha', dashaPayload);
                 setDashaData(dashaResponse.data);
             } catch (dashaErr) {
                 console.error("Failed to fetch dasha data:", dashaErr);
@@ -113,6 +120,30 @@ const Transits = () => {
             setLoading(false);
         }
     }, [currentProfile, fetchTransitsOnly]);
+
+    const handleIngressCheck = async () => {
+        setIngressLoading(true);
+        setIngressResults([]);
+        try {
+            const dateStr = `${currentTime.getDate().toString().padStart(2, '0')}/${(currentTime.getMonth() + 1).toString().padStart(2, '0')}/${currentTime.getFullYear()}`;
+            const result = await astrologyService.checkTransitIngress({
+                planet: ingressPlanet,
+                current_date: dateStr,
+                timezone: location.timezone,
+                window_days: ingressWindow
+            });
+
+            // Expected result: { shifts: [ { date, from_nak, to_nak, ... } ] }
+            if (result && result.shifts) {
+                setIngressResults(result.shifts);
+            }
+
+        } catch (e) {
+            console.error("Ingress check failed", e);
+        } finally {
+            setIngressLoading(false);
+        }
+    };
 
     // Auto-refresh transits (faster 30s cycle)
     useEffect(() => {
@@ -136,16 +167,16 @@ const Transits = () => {
         if (isListening) stopListening();
         else startListening();
     };
-    
+
     const handleSuggestion = (text: string) => {
         setCommandInput(text);
         setIsProcessing(true);
-        
+
         // Simulate processing and actions
         setTimeout(() => {
             setIsProcessing(false);
             const lowerText = text.toLowerCase();
-            
+
             if (lowerText.includes('retrograde')) {
                 setActiveTab('data');
                 setShowDetails(true);
@@ -161,6 +192,8 @@ const Transits = () => {
             } else if (lowerText.includes('insight')) {
                 setActiveTab('insights');
                 setInsightCategory('all');
+            } else if (lowerText.includes('ingress')) {
+                setActiveTab('ingress');
             } else {
                 setActiveTab('visual');
             }
@@ -174,6 +207,7 @@ const Transits = () => {
             'Visual Radar': { 'en': 'Visual Radar', 'hi': 'दृश्य रडार', 'es': 'Radar Visual' },
             'Predictive Insights': { 'en': 'Predictive Insights', 'hi': 'भविष्यवाणी अंतर्दृष्टि', 'es': 'Perspectivas Predictivas' },
             'Data Stream': { 'en': 'Data Stream', 'hi': 'डेटा स्ट्रीम', 'es': 'Flujo de Datos' },
+            'Ingress Finder': { 'en': 'Ingress Finder', 'hi': 'गोचर खोजकर्ता', 'es': 'Buscador de Ingresos' },
             'Listening...': { 'en': 'Listening...', 'hi': 'सुन रहा हूँ...', 'es': 'Escuchando...' },
             'Ask Astro360': { 'en': 'Ask Astro360', 'hi': 'Astro360 से पूछें', 'es': 'Pregunta a Astro360' }
         };
@@ -191,9 +225,9 @@ const Transits = () => {
 
     return (
         <MainLayout title="Planetary Transits" breadcrumbs={['Home', 'Transits']}>
-            
+
             <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-                
+
                 {error && (
                     <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-xl border border-red-200 dark:border-red-800">
                         {error}
@@ -202,8 +236,8 @@ const Transits = () => {
 
                 {/* Robotic/Command Center Header */}
                 <div className="bg-white dark:bg-slate-900 rounded-3xl p-1 border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden relative">
-                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 dark:from-indigo-900/20 dark:to-purple-900/20"></div>
-                     <div className="relative p-6 md:p-10">
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 dark:from-indigo-900/20 dark:to-purple-900/20"></div>
+                    <div className="relative p-6 md:p-10">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
                             <div>
                                 <div className="flex items-center gap-3 mb-2">
@@ -228,7 +262,7 @@ const Transits = () => {
                                     <MapPin className="w-3 h-3" />
                                     {location.name.split(',')[0]}
                                 </div>
-                                
+
                                 {/* Language Toggle */}
                                 <div className="mt-4 flex items-center gap-2 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
                                     <Globe className="w-4 h-4 text-slate-400 ml-2" />
@@ -236,11 +270,10 @@ const Transits = () => {
                                         <button
                                             key={lang}
                                             onClick={() => setLanguage(lang as any)}
-                                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all uppercase ${
-                                                language === lang 
-                                                ? 'bg-white dark:bg-slate-700 text-indigo-600 shadow-sm' 
+                                            className={`px-3 py-1 text-xs font-bold rounded-md transition-all uppercase ${language === lang
+                                                ? 'bg-white dark:bg-slate-700 text-indigo-600 shadow-sm'
                                                 : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-                                            }`}
+                                                }`}
                                         >
                                             {lang}
                                         </button>
@@ -257,7 +290,7 @@ const Transits = () => {
                                     <div className="pl-4 text-slate-400">
                                         <Command className="w-5 h-5" />
                                     </div>
-                                    <input 
+                                    <input
                                         type="text"
                                         value={commandInput}
                                         onChange={(e) => setCommandInput(e.target.value)}
@@ -273,7 +306,7 @@ const Transits = () => {
                                         ) : (
                                             <>
                                                 {voiceSupported && (
-                                                    <button 
+                                                    <button
                                                         onClick={handleVoiceToggle}
                                                         className={`p-3 rounded-lg transition-all ${isListening ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400'}`}
                                                         title="Voice Command"
@@ -281,7 +314,7 @@ const Transits = () => {
                                                         {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
                                                     </button>
                                                 )}
-                                                <button 
+                                                <button
                                                     onClick={() => handleSuggestion(commandInput)}
                                                     className="p-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-md"
                                                 >
@@ -295,10 +328,10 @@ const Transits = () => {
 
                             {/* Smart Suggestions */}
                             <div className="mt-4 flex flex-wrap gap-2">
-                                {['Current Retrogrades', 'Saturn Transit Impact', 'Career Outlook', 'Relationship Energy'].map((tag) => (
-                                    <button 
+                                {['Current Retrogrades', 'Saturn Transit Impact', 'Career Outlook', 'Ingress Check'].map((tag) => (
+                                    <button
                                         key={tag}
-                                        onClick={() => handleSuggestion(tag)}
+                                        onClick={() => handleSuggestion(tag.toLowerCase())}
                                         className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs font-bold rounded-full transition-colors border border-transparent hover:border-indigo-200 dark:hover:border-indigo-800"
                                     >
                                         {tag}
@@ -306,28 +339,34 @@ const Transits = () => {
                                 ))}
                             </div>
                         </div>
-                     </div>
+                    </div>
                 </div>
 
                 {/* Content Tabs */}
-                <div className="flex items-center gap-4 border-b border-slate-200 dark:border-slate-800">
-                    <button 
+                <div className="flex items-center gap-4 border-b border-slate-200 dark:border-slate-800 overflow-x-auto">
+                    <button
                         onClick={() => setActiveTab('visual')}
-                        className={`pb-4 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'visual' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`pb-4 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${activeTab === 'visual' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                     >
                         <Layout className="w-4 h-4" /> {t('Visual Radar')}
                     </button>
-                    <button 
+                    <button
                         onClick={() => setActiveTab('insights')}
-                        className={`pb-4 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'insights' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`pb-4 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${activeTab === 'insights' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                     >
                         <Sparkles className="w-4 h-4" /> {t('Predictive Insights')}
                     </button>
-                    <button 
+                    <button
                         onClick={() => setActiveTab('data')}
-                        className={`pb-4 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 ${activeTab === 'data' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                        className={`pb-4 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${activeTab === 'data' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
                     >
                         <Activity className="w-4 h-4" /> {t('Data Stream')}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('ingress')}
+                        className={`pb-4 text-sm font-bold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${activeTab === 'ingress' ? 'border-indigo-600 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+                    >
+                        <ArrowRightLeft className="w-4 h-4" /> {t('Ingress Finder')}
                     </button>
                 </div>
 
@@ -367,10 +406,6 @@ const Transits = () => {
                                             <div className="p-2 bg-amber-50 dark:bg-amber-900/30 rounded-xl text-amber-600 dark:text-amber-400">
                                                 <Sun className="w-5 h-5" />
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold text-slate-900 dark:text-white">Transit Chart</h3>
-                                                <p className="text-xs text-slate-500">Current Sky</p>
-                                            </div>
                                         </div>
                                     </div>
                                     <UniversalChart data={transitData} />
@@ -381,14 +416,14 @@ const Transits = () => {
                         {/* Insights Tab */}
                         {activeTab === 'insights' && (
                             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <PredictiveInsights 
-                                    transitData={transitData} 
-                                    birthData={birthData} 
-                                    dashaData={dashaData?.summary} 
+                                <PredictiveInsights
+                                    transitData={transitData}
+                                    birthData={birthData}
+                                    dashaData={dashaData?.summary}
                                     activeCategory={insightCategory}
                                     onCategoryChange={setInsightCategory}
                                 />
-                                
+
                                 {transitData && birthData && (
                                     <div className="mt-8 bg-gradient-to-br from-indigo-900 to-slate-900 rounded-3xl p-8 text-white text-center relative overflow-hidden">
                                         <div className="relative z-10">
@@ -403,11 +438,87 @@ const Transits = () => {
                                                 className="bg-white text-indigo-900 hover:bg-indigo-50 border-none px-8 py-4 text-lg font-bold rounded-xl shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all"
                                             />
                                         </div>
-                                        {/* Background decoration */}
-                                        <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-                                            <div className="absolute top-[-50%] left-[-20%] w-[500px] h-[500px] bg-indigo-500 rounded-full blur-[100px]" />
-                                            <div className="absolute bottom-[-50%] right-[-20%] w-[500px] h-[500px] bg-purple-500 rounded-full blur-[100px]" />
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Ingress Tab */}
+                        {activeTab === 'ingress' && (
+                            <div className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+                                <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-lg">
+                                    <div className="flex flex-col md:flex-row gap-6 items-end">
+                                        <div className="flex-1 space-y-2 w-full">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Planet to Track</label>
+                                            <select
+                                                value={ingressPlanet}
+                                                onChange={(e) => setIngressPlanet(e.target.value)}
+                                                className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 font-bold text-slate-900 dark:text-white"
+                                            >
+                                                {['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Rahu', 'Ketu'].map(p => (
+                                                    <option key={p} value={p}>{p}</option>
+                                                ))}
+                                            </select>
                                         </div>
+                                        <div className="flex-1 space-y-2 w-full">
+                                            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Window (Days)</label>
+                                            <select
+                                                value={ingressWindow}
+                                                onChange={(e) => setIngressWindow(Number(e.target.value))}
+                                                className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-xl p-4 font-bold text-slate-900 dark:text-white"
+                                            >
+                                                <option value={30}>Next 30 Days</option>
+                                                <option value={60}>Next 60 Days</option>
+                                                <option value={90}>Next 3 Months</option>
+                                                <option value={180}>Next 6 Months</option>
+                                                <option value={365}>Next 1 Year</option>
+                                            </select>
+                                        </div>
+                                        <button
+                                            onClick={handleIngressCheck}
+                                            disabled={ingressLoading}
+                                            className="px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200 disabled:opacity-50 flex items-center gap-2"
+                                        >
+                                            {ingressLoading ? <Loader2 className="animate-spin w-5 h-5" /> : <Search className="w-5 h-5" />}
+                                            Find Ingress
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Results */}
+                                {ingressResults.length > 0 && (
+                                    <div className="grid gap-4">
+                                        {ingressResults.map((shift, idx) => (
+                                            <div key={idx} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between group hover:border-indigo-200 transition-all">
+                                                <div className="flex items-center gap-6">
+                                                    <div className="p-4 bg-slate-100 dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white font-black text-center min-w-[80px]">
+                                                        <div className="text-xs uppercase text-slate-400">Date</div>
+                                                        <div className="text-lg">{shift.date}</div>
+                                                    </div>
+                                                    <div>
+                                                        <div className="flex items-center gap-3 text-sm font-bold text-slate-500 dark:text-slate-400 mb-1">
+                                                            <span>{shift.planet}</span>
+                                                            <ArrowRightLeft className="w-4 h-4" />
+                                                            <span className="text-indigo-600 dark:text-indigo-400">Ingress Shift</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-4 text-xl font-black text-slate-900 dark:text-white">
+                                                            <span className="opacity-60">{shift.from_nak}</span>
+                                                            <span className="text-slate-300">→</span>
+                                                            <span className="text-indigo-600 dark:text-indigo-400">{shift.to_nak}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {ingressResults.length === 0 && !ingressLoading && (
+                                    <div className="text-center py-12 text-slate-400 dark:text-slate-600">
+                                        <div className="bg-slate-50 dark:bg-slate-800/50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <ArrowRightLeft className="w-6 h-6 opacity-50" />
+                                        </div>
+                                        <p>Select a planet and time window to find nakshatra changes</p>
                                     </div>
                                 )}
                             </div>
@@ -418,7 +529,7 @@ const Transits = () => {
                             <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="p-6 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
                                     <h3 className="font-bold text-slate-900 dark:text-white">Planetary Ephemeris</h3>
-                                    <button 
+                                    <button
                                         onClick={() => setShowDetails(!showDetails)}
                                         className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
                                     >
@@ -445,11 +556,10 @@ const Transits = () => {
                                             {transitData.planets.map((p: any, idx: number) => (
                                                 <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                                                     <td className="px-6 py-4 font-medium text-slate-900 dark:text-white flex items-center gap-3">
-                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                                                            ['Sun', 'Mars', 'Jupiter'].includes(p.name) ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
+                                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold ${['Sun', 'Mars', 'Jupiter'].includes(p.name) ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' :
                                                             ['Moon', 'Venus'].includes(p.name) ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' :
-                                                            'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                                                        }`}>
+                                                                'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                                                            }`}>
                                                             {p.name.substring(0, 2)}
                                                         </div>
                                                         {p.name}
@@ -482,5 +592,4 @@ const Transits = () => {
         </MainLayout>
     );
 };
-
 export default Transits;

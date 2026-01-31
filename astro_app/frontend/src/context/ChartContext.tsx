@@ -12,6 +12,7 @@ export interface UserProfile {
   latitude: number;
   longitude: number;
   timezone: string;
+  gender?: string;
   // Store original raw data if needed
   raw?: any;
 }
@@ -41,12 +42,40 @@ const DEFAULT_PROFILE: UserProfile = {
 
 const ChartContext = createContext<ChartContextType | undefined>(undefined);
 
+
+// Helper to normalize profile data
+const normalizeProfile = (chart: any): UserProfile => {
+  return {
+    name: chart.first_name ? `${chart.first_name} ${chart.last_name}` : (chart.name || 'My Chart'),
+    date: chart.date_str || chart.date,
+    time: chart.time_str || chart.time,
+    location: chart.location_name || chart.location || 'Saved Location',
+    latitude: chart.latitude,
+    longitude: chart.longitude,
+    timezone: chart.timezone_str || chart.timezone,
+    gender: chart.gender || 'male',
+    raw: chart
+  };
+};
+
 export const ChartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [chartStyle, setChartStyleState] = useState<ChartStyle>('NORTH_INDIAN');
 
-  // Profile State
-  const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null); // Start null to allow init
+  // Profile State - Initialize Synchronously
+  const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(() => {
+    try {
+      const savedChart = localStorage.getItem('lastViewedChart');
+      if (savedChart) {
+        const parsed = JSON.parse(savedChart);
+        return normalizeProfile(parsed);
+      }
+    } catch (e) {
+      console.error("Failed to parse saved chart", e);
+    }
+    return DEFAULT_PROFILE;
+  });
+
   const [availableProfiles, setAvailableProfiles] = useState<any[]>([]);
   const [isLoadingProfiles, setIsLoadingProfiles] = useState(false);
 
@@ -58,22 +87,6 @@ export const ChartProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, []);
 
-  // Initialize Profile
-  useEffect(() => {
-    const savedChart = localStorage.getItem('lastViewedChart');
-    if (savedChart) {
-      try {
-        const parsed = JSON.parse(savedChart);
-        setCurrentProfile(normalizeProfile(parsed));
-      } catch (e) {
-        console.error("Failed to parse saved chart", e);
-        setCurrentProfile(DEFAULT_PROFILE);
-      }
-    } else {
-      setCurrentProfile(DEFAULT_PROFILE);
-    }
-  }, []);
-
   // Fetch profiles when user is authenticated
   useEffect(() => {
     if (user) {
@@ -82,19 +95,6 @@ export const ChartProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setAvailableProfiles([]);
     }
   }, [user]);
-
-  const normalizeProfile = (chart: any): UserProfile => {
-    return {
-      name: chart.first_name ? `${chart.first_name} ${chart.last_name}` : (chart.name || 'My Chart'),
-      date: chart.date_str || chart.date,
-      time: chart.time_str || chart.time,
-      location: chart.location_name || chart.location || 'Saved Location',
-      latitude: chart.latitude,
-      longitude: chart.longitude,
-      timezone: chart.timezone_str || chart.timezone,
-      raw: chart
-    };
-  };
 
   const setChartStyle = (style: ChartStyle) => {
     setChartStyleState(style);
@@ -115,7 +115,7 @@ export const ChartProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const refreshProfiles = async () => {
     setIsLoadingProfiles(true);
     try {
-      const response = await api.get('/charts/');
+      const response = await api.get('charts/');
       setAvailableProfiles(response.data);
     } catch (error) {
       console.error("Failed to fetch profiles", error);

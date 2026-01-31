@@ -158,18 +158,20 @@ def validate_timezone(timezone_str: str) -> bool:
     Validates timezone format: +HH:MM, -HH:MM, or named timezone (e.g. Asia/Kolkata).
     """
     # 1. Check if it's a numeric offset
-    pattern = r"^[+-]\d{2}(:?\d{2})?$"
-    if re.match(pattern, timezone_str):
-        try:
-            sign = timezone_str[0]
-            parts = timezone_str[1:].split(":")
-            hours = int(parts[0])
-            minutes = int(parts[1]) if len(parts) > 1 else 0
-            if hours > 14 or (hours == 14 and minutes > 0): return False
-            if minutes >= 60: return False
-            return True
-        except:
-            return False
+    # Matches: +HH:MM, -HH:MM, +H:MM, -H:MM, +H.H, -H.H, +HHMM, -HHMM
+    # Also handles cases like +5 (implied +05:00)
+    
+    # Simple regex for colon format
+    if re.match(r"^[+-]?\d{1,2}:\d{2}$", timezone_str):
+        return True
+        
+    # Regex for decimal format (e.g. 5.5, -5.0)
+    if re.match(r"^[+-]?\d{1,2}(\.\d+)?$", timezone_str):
+        return True
+        
+    # Regex for compact format (e.g. +0530)
+    if re.match(r"^[+-]?\d{4}$", timezone_str):
+        return True
             
     # 2. Check if it's a named timezone
     try:
@@ -213,13 +215,40 @@ def parse_timezone(timezone_str: str, dt_for_dst: Optional[datetime] = None) -> 
         except (pytz.UnknownTimeZoneError, ValueError):
             pass
 
-        # 2. Try numeric offset
-        if re.match(r"^[+-]\d{2}(:?\d{2})?$", timezone_str.replace(":", "")):
-            sign = 1 if timezone_str[0] == '+' else -1
-            clean_tz = timezone_str[1:].replace(":", "")
-            hours = int(clean_tz[:2])
-            minutes = int(clean_tz[2:]) if len(clean_tz) > 2 else 0
+        # 2. Try numeric parsing
+        # Handle cases: "+05:30", "5.5", "-5", "+530", "5:30"
+        
+        # Clean string
+        tz_str = timezone_str.strip()
+        sign = 1
+        if tz_str.startswith('-'):
+            sign = -1
+            tz_str = tz_str[1:]
+        elif tz_str.startswith('+'):
+            tz_str = tz_str[1:]
+            
+        # Decimal format (e.g. 5.5)
+        if '.' in tz_str:
+            return sign * float(tz_str)
+            
+        # Colon format (e.g. 5:30)
+        if ':' in tz_str:
+            parts = tz_str.split(':')
+            hours = int(parts[0])
+            minutes = int(parts[1]) if len(parts) > 1 else 0
             return sign * (hours + minutes / 60.0)
+            
+        # Compact format or just hours (e.g. 0530 or 5)
+        if len(tz_str) >= 3: # Likely HHMM (e.g. 530 or 0530)
+            # Pad to at least 3 digits? No, assume last 2 are minutes if length >= 3 and numeric
+            if tz_str.isdigit():
+                 minutes = int(tz_str[-2:])
+                 hours = int(tz_str[:-2])
+                 return sign * (hours + minutes / 60.0)
+        
+        # Just hours (e.g. 5)
+        if tz_str.isdigit():
+            return sign * float(tz_str)
             
     except Exception:
         pass
@@ -293,3 +322,71 @@ def get_planetary_dignity(planet_name: str, sign_idx: int) -> str:
     if planet_name in dignity_map:
         return dignity_map[planet_name].get(sign_idx, "Neutral")
     return "Neutral"
+
+def calculate_special_points(asc_lon: float, sun_lon: float, moon_lon: float, rahu_lon: float, is_day_birth: bool = True) -> dict:
+    """
+    Calculates Special Sensitive Points:
+    1. Bhrigu Bindu: Midpoint of Moon and Rahu.
+    2. Pars Fortuna (Part of Fortune):
+       Day: Asc + Moon - Sun
+       Night: Asc + Sun - Moon
+    3. Yogi Point: Sun + Moon + 93 deg 20 min (Pushya Start)
+    4. Avayogi Point: Yogi + 186 deg 40 min (6th Nakshatra from Yogi)
+    """
+    
+    # 1. Bhrigu Bindu
+    # CAUTION: Rahu is typically retrograde. Ensure Rahu lon is correct (True Node)
+    # Midpoint = (Lon1 + Lon2) / 2. Handle 360 crossover.
+    # Shortest arc path logic? Bhrigu Bindu usually (Moon + Rahu)/2 is fine. 
+    # If arc > 180, take other side? Usually simpler average.
+    bb_raw = (moon_lon + rahu_lon) / 2
+    if abs(moon_lon - rahu_lon) > 180:
+        bb_raw += 180
+    bhrigu_bindu = normalize_degree(bb_raw)
+    
+    # 2. Pars Fortuna
+    if is_day_birth:
+        pf_raw = asc_lon + moon_lon - sun_lon
+    else:
+        pf_raw = asc_lon + sun_lon - moon_lon
+    fortuna = normalize_degree(pf_raw)
+    
+    # 3. Yogi Point
+    # Sun Longitude + Moon Longitude + Constant (often Pushya/Cancer start? No, it's specific)
+    # Standard: Sun + Moon + 93deg 20min (Start of Pushya is where simplistic Yoga starts? No)
+    # Actually Yoga = Sun + Moon.
+    # Yogi Point = (Sun + Moon) + 93deg 20min (Constant).
+    # 93 deg 20 min = 93.3333...
+    yogi_point = normalize_degree(sun_lon + moon_lon + 93.33333333)
+    
+    # 4. Avayogi Point
+    # Yogi Point + 6 Nakshatras (186 deg 40 min) ?? No.
+    # Avayogi is the lord of the 6th Nakshatra from Yogi Star. 
+    # But usually the point itself is considered opposite or square. 
+    # Standard: Yogi Point + 186.6666 (Approx 186 deg 40 min? No 6 * 13.33 = 80? Wait.)
+    # Avayogi Point = Yogi Point + 93deg 20min? No.
+    # Correct Formula: Yogi Point + 186° 40' (approx 6 signs + 6 deg 40 min).
+    avayogi_point = normalize_degree(yogi_point + 186.66666667)
+    
+    return {
+        "Bhrigu Bindu": {
+            "longitude": bhrigu_bindu,
+            "sign": get_zodiac_sign(bhrigu_bindu),
+            "nakshatra": get_nakshatra(bhrigu_bindu)
+        },
+        "Fortuna": {
+            "longitude": fortuna,
+            "sign": get_zodiac_sign(fortuna),
+            "nakshatra": get_nakshatra(fortuna)
+        },
+        "Yogi Point": {
+            "longitude": yogi_point,
+            "sign": get_zodiac_sign(yogi_point),
+            "nakshatra": get_nakshatra(yogi_point)
+        },
+        "Avayogi Point": {
+            "longitude": avayogi_point,
+            "sign": get_zodiac_sign(avayogi_point),
+            "nakshatra": get_nakshatra(avayogi_point)
+        }
+    }

@@ -9,11 +9,16 @@ import DailyGuidance from '../DailyGuidance';
 import DailyEnergyChart from '../DailyEnergyChart';
 import PlanetaryCouncil from '../PlanetaryCouncil';
 
+import { DailyCalendarData } from '../InteractiveCalendar';
+
 interface OverviewTabProps {
     data: DashboardOverviewResponse;
+    selectedDate?: Date;
+    onDateChange?: (date: Date) => void;
+    dailyData?: Record<string, DailyCalendarData>;
 }
 
-const OverviewTab = ({ data }: OverviewTabProps) => {
+const OverviewTab = ({ data, selectedDate: _selectedDate, onDateChange: _onDateChange, dailyData: _dailyData }: OverviewTabProps) => {
     const currentDay = data.daily_analysis;
     const currentDateObj = new Date(currentDay.date);
 

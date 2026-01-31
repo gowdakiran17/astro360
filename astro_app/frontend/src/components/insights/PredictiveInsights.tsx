@@ -58,7 +58,7 @@ const PredictiveInsights: React.FC<PredictiveInsightsProps> = ({
                 }
             };
 
-            const response = await api.post('/ai/generate', payload);
+            const response = await api.post('ai/generate', payload);
             if (response.data && response.data.insights) {
                 setInsights(response.data.insights);
                 setLastUpdated(new Date());

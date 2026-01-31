@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '', // Uses Vite proxy
+  baseURL: '/api', // Uses Vite proxy
 });
 
 // Add a request interceptor to attach the token

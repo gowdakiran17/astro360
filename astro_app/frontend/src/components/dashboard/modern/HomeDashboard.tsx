@@ -14,6 +14,7 @@ import DailyBriefing from './DailyBriefing';
 import LifeDomains from './LifeDomains';
 import TransitDashboard from './TransitDashboard';
 import NakshatraCenter from './NakshatraCenter';
+import ModernPlanetaryTable from './ModernPlanetaryTable';
 
 import { Calendar } from 'lucide-react';
 
@@ -71,24 +72,24 @@ const HomeDashboard = () => {
         time: timeStr
       };
 
-      const panchangPromise = api.post('/chart/panchang', panchangPayload)
+      const panchangPromise = api.post('chart/panchang', panchangPayload)
         .then((res: any) => setPanchangData(res.data))
         .catch((e: any) => console.error("Panchang Error:", e));
 
       // 1b. Fetch Birth Panchang
-      const birthPanchangPromise = api.post('/chart/panchang', birthDetails)
+      const birthPanchangPromise = api.post('chart/panchang', birthDetails)
         .then((res: any) => setBirthPanchangData(res.data))
         .catch((e: any) => console.error("Birth Panchang Error:", e));
 
       // 2. Fetch Chart & Dasha
-      const chartPromise = api.post('/chart/birth', birthDetails)
+      const chartPromise = api.post('chart/birth', birthDetails)
         .then(async (chartRes: any) => {
           if (chartRes.data?.planets) {
             setChartData(chartRes.data);
             const moon = chartRes.data.planets.find((p: any) => p.name === 'Moon');
             if (moon) {
               try {
-                const dashaRes = await api.post('/chart/dasha', {
+                const dashaRes = await api.post('chart/dasha', {
                   birth_details: birthDetails,
                   moon_longitude: moon.longitude
                 });
@@ -106,13 +107,13 @@ const HomeDashboard = () => {
         });
 
       // 4. Fetch Ashtakvarga (Natal Strength)
-      const ashtakvargaPromise = api.post('/chart/ashtakvarga', { birth_details: birthDetails })
+      const ashtakvargaPromise = api.post('chart/ashtakvarga', { birth_details: birthDetails })
         .then((res: any) => setAshtakvargaData(res.data))
         .catch((e: any) => console.error("Ashtakvarga Error:", e));
 
       // 5. Fetch Period Overview (includes daily analysis, house strengths, muhuratas, etc.)
       const analysisDate = targetDate.toISOString().split('T')[0]; // YYYY-MM-DD
-      const overviewPromise = api.post('/chart/period/overview', {
+      const overviewPromise = api.post('chart/period/overview', {
         birth_details: birthDetails,
         analysis_date: analysisDate
       })
@@ -191,47 +192,55 @@ const HomeDashboard = () => {
         </div>
 
         {/* Quick Reference Data (Moved to top) */}
-        <div>
-          <h3 className="text-lg font-serif text-slate-400 mb-6 px-2">Quick Reference Data</h3>
-          <SummaryCards 
-            chartData={chartData}  
-            panchangData={panchangData} 
-            birthPanchangData={birthPanchangData}
-          />
-        </div>
-
-        {/* 1. Daily Briefing */}
-        <DailyBriefing dailyData={periodOverview?.daily_analysis} dashaData={dashaData} />
-
-        {/* 2. Hero Grid: Energy + Power Hours */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <EnergyDashboard dailyData={periodOverview?.daily_analysis} />
-          </div>
+        {chartData && (
           <div>
-            <PowerHours dailyData={periodOverview?.daily_analysis} />
+            <h3 className="text-lg font-serif text-slate-400 mb-6 px-2">Quick Reference Data</h3>
+            <SummaryCards
+              chartData={chartData}
+              panchangData={panchangData}
+              birthPanchangData={birthPanchangData}
+            />
+            <ModernPlanetaryTable
+              planets={chartData.planets}
+              ascendant={chartData.ascendant}
+              specialPoints={chartData.special_points}
+            />
           </div>
-        </div>
-
-        {/* 3. Interactive Transit Dashboard */}
-        <TransitDashboard transits={periodOverview?.daily_analysis?.transits} ascendantSign={chartData?.ascendant?.sign} />
-
-        {/* 4. Comprehensive Dasha Timeline (Removed/Replaced by Quick Reference) */}
-        {/* <DashaDashboard dashaData={dashaData} shadbalaData={shadbalaData} /> */}
-
-        {/* 5. Life Domains */}
-        <LifeDomains 
-          dailyData={periodOverview?.daily_analysis} 
-          dashaData={dashaData} 
-          ashtakvargaData={ashtakvargaData}
-          chartData={chartData} 
-        />
-
-        {/* 6. Nakshatra Intelligence */}
-        <NakshatraCenter chartData={chartData} />
-
+        )}
       </div>
+
+      {/* 1. Daily Briefing */}
+      <DailyBriefing dailyData={periodOverview?.daily_analysis} dashaData={dashaData} />
+
+      {/* 2. Hero Grid: Energy + Power Hours */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2">
+          <EnergyDashboard dailyData={periodOverview?.daily_analysis} />
+        </div>
+        <div>
+          <PowerHours dailyData={periodOverview?.daily_analysis} />
+        </div>
+      </div>
+
+      {/* 3. Interactive Transit Dashboard */}
+      <TransitDashboard transits={periodOverview?.daily_analysis?.transits} ascendantSign={chartData?.ascendant?.sign} />
+
+      {/* 4. Comprehensive Dasha Timeline (Removed/Replaced by Quick Reference) */}
+      {/* <DashaDashboard dashaData={dashaData} shadbalaData={shadbalaData} /> */}
+
+      {/* 5. Life Domains */}
+      <LifeDomains
+        dailyData={periodOverview?.daily_analysis}
+        dashaData={dashaData}
+        ashtakvargaData={ashtakvargaData}
+        chartData={chartData}
+      />
+
+      {/* 6. Nakshatra Intelligence */}
+      <NakshatraCenter chartData={chartData} />
+
     </div>
+
   );
 };
 

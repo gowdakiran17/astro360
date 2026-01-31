@@ -2,8 +2,13 @@ import { useState } from 'react';
 import { DashboardOverviewResponse } from '../../../types/periodAnalysis';
 import { Calendar, ChevronRight, ChevronDown, Clock, Star } from 'lucide-react';
 
+import { DailyCalendarData } from '../InteractiveCalendar';
+
 interface ActivePeriodsTabProps {
     data: DashboardOverviewResponse;
+    selectedDate?: Date;
+    onDateChange?: (date: Date) => void;
+    dailyData?: Record<string, DailyCalendarData>;
 }
 
 const ActivePeriodsTab = ({ data }: ActivePeriodsTabProps) => {

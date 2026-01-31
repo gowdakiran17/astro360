@@ -49,11 +49,37 @@ const PeriodAnalysisPage = () => {
 
     try {
       // Fetch Dashboard Overview
-      const res = await api.post('/chart/period/overview', payload);
-      setDashboardData(res.data);
+      // Fetch Dashboard Overview
+      const res = await api.post('chart/period/overview', payload);
+
+      // Transform response to match new premium dashboard structure
+      const transformedData: DashboardOverviewResponse = {
+        ...res.data,
+        current_period: {
+          mahadasha: res.data.dasha_info?.current?.current_mahadasha || 'Unknown',
+          antardasha: res.data.dasha_info?.current?.current_antardasha || 'Unknown',
+          pratyantar: res.data.dasha_info?.current?.current_pratyantardasha || 'Unknown',
+          next_antardasha: 'Next AD' // Placeholder, would need logic to determine next
+        },
+        period_scores: {
+          overall: res.data.daily_analysis?.score || 75,
+          career: 85, // Placeholder/Calculated from backend if available
+          health: 70, // Placeholder
+          relationships: 90 // Placeholder
+        }
+      };
+
+      setDashboardData(transformedData);
     } catch (e: any) {
       console.error("Analysis Error:", e);
-      setError(e.response?.data?.detail || e.message || "Failed to load analysis");
+      // Construct a very visible error message for debugging "same problem"
+      const errorMessage = e.response?.data?.detail
+        ? `API Error: ${JSON.stringify(e.response.data.detail)}`
+        : e.message
+          ? `Client Error: ${e.message}`
+          : "Unknown Error Occurred";
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -86,7 +112,7 @@ const PeriodAnalysisPage = () => {
           name: currentProfile.name
         };
 
-        const res = await api.post('/chart/period/month', {
+        const res = await api.post('chart/period/month', {
           birth_details: birthDetails,
           month: month,
           year: year

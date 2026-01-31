@@ -1,6 +1,16 @@
 import { FileText, Download, Mail, FileSpreadsheet } from 'lucide-react';
 
-const ReportsTab = () => {
+import { DailyCalendarData } from '../InteractiveCalendar';
+import { DashboardOverviewResponse } from '../../../types/periodAnalysis';
+
+interface ReportsTabProps {
+    data: DashboardOverviewResponse;
+    selectedDate?: Date;
+    onDateChange?: (date: Date) => void;
+    dailyData?: Record<string, DailyCalendarData>;
+}
+
+const ReportsTab = ({ data: _data }: ReportsTabProps) => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="col-span-full">

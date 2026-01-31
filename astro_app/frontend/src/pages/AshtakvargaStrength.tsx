@@ -40,7 +40,7 @@ const AshtakvargaStrength = () => {
                     longitude: currentProfile.longitude
                 }
             };
-            const response = await api.post('/chart/ashtakvarga', payload);
+            const response = await api.post('chart/ashtakvarga', payload);
             setAvData(response.data);
         } catch (err) {
             console.error(err);

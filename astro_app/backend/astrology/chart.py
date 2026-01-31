@@ -170,7 +170,8 @@ def calculate_chart(date_str: str, time_str: str, timezone_str: str, latitude: f
         },
         "ascendant": ascendant_data,
         "planets": planets_data, # Return List for Frontend compatibility
-        "houses": houses_data # Return List for Frontend compatibility
+        "houses": houses_data, # Return List for Frontend compatibility
+        "cusps_placidus": [normalize_degree(c - ayanamsa) for c in res_houses[0]]
     }
     
     return result

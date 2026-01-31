@@ -15,7 +15,7 @@ const VastuRemedies: React.FC<VastuRemediesProps> = ({ analysis }) => {
     const fetchRemedies = async () => {
         setLoading(true);
         try {
-            const response = await api.post('/vastu/remedies', {
+            const response = await api.post('vastu/remedies', {
                 defect_type: defectType,
                 zone: zone
             });

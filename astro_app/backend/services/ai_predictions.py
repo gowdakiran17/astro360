@@ -10,6 +10,8 @@ Supports:
 from typing import Dict, List, Any, Optional
 import os
 import logging
+import time
+import random
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -58,7 +60,7 @@ class AIPredictionService:
                 from google import genai
                 client = genai.Client(api_key=api_key)
                 self.client = client
-                self.model_name = 'gemini-2.0-flash-exp'
+                self.model_name = 'gemini-2.0-flash-lite'
                 self.provider = 'gemini'
                 self.enabled = True
                 logger.info("✅ AI Service initialized with Google Gemini (google-genai)")
@@ -69,9 +71,9 @@ class AIPredictionService:
             # Fallback to old package
             import google.generativeai as genai
             genai.configure(api_key=api_key)
-            # Use gemini-2.5-flash (stable version)
-            self.client = genai.GenerativeModel('gemini-2.5-flash')
-            self.model_name = 'gemini-2.5-flash'
+            # Use gemini-2.0-flash-lite (faster, higher limits)
+            self.client = genai.GenerativeModel('gemini-2.0-flash-lite')
+            self.model_name = 'gemini-2.0-flash-lite'
             self.provider = 'gemini'
             self.enabled = True
             logger.info("✅ AI Service initialized with Google Gemini (generativeai)")
@@ -150,17 +152,53 @@ class AIPredictionService:
         full_prompt = f"{self._get_system_prompt()}\n\n{prompt}"
         
         # Check if using new google-genai package
-        if hasattr(self.client, 'models'):
+        if self._is_new_package_client():
             # New package
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=full_prompt
-            )
+            def call_new_api():
+                return self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=full_prompt
+                )
+            
+            response = self._execute_with_retry(call_new_api)
             return response.text
         else:
             # Old package
-            response = self.client.generate_content(full_prompt)
+            def call_old_api():
+                return self.client.generate_content(full_prompt)
+                
+            response = self._execute_with_retry(call_old_api)
             return response.text
+            
+    def _is_new_package_client(self) -> bool:
+        """Check if client is from new google-genai package"""
+        return hasattr(self.client, 'models')
+            
+    def _execute_with_retry(self, func, max_retries=3, initial_delay=2.0):
+        """
+        Execute a function with exponential backoff retry logic
+        Handles 429 Resource Exhausted errors
+        """
+        delay = initial_delay
+        
+        for attempt in range(max_retries + 1):
+            try:
+                return func()
+            except Exception as e:
+                error_str = str(e).lower()
+                is_rate_limit = '429' in error_str or 'resource exhausted' in error_str or 'quota' in error_str
+                
+                if is_rate_limit and attempt < max_retries:
+                    # Add jitter
+                    sleep_time = delay * (1 + random.random() * 0.1)
+                    logger.warning(f"⚠️ Rate limit hit. Retrying in {sleep_time:.2f}s... (Attempt {attempt+1}/{max_retries})")
+                    time.sleep(sleep_time)
+                    delay *= 2  # Exponential backoff
+                else:
+                    # If not rate limit or max retries reached, re-raise
+                    if is_rate_limit:
+                        logger.error(f"❌ Max retries ({max_retries}) reached for rate limit.")
+                    raise e
     
     def _call_openai(self, prompt: str) -> str:
         """Call OpenAI API"""
@@ -380,3 +418,64 @@ Be specific, actionable, and reference the astrological factors."""
             'generated_by': 'rule_based',
             'confidence': 0.7
         }
+    
+    def generate_nadi_insight(
+        self,
+        dasha_hierarchy: Dict[str, Any],
+        event_name: Optional[str] = None,
+        significators: Optional[Dict] = None
+    ) -> str:
+        """
+        Generate KP/Nadi specific insights
+        """
+        if not self.enabled:
+            return "AI service is not available. Please check API key configuration."
+
+        try:
+            # Build prompt
+            prompt = self._build_nadi_prompt(dasha_hierarchy, event_name, significators)
+            
+            # Call AI
+            if self.provider == 'gemini':
+                response = self._call_gemini(prompt)
+            else:
+                response = self._call_openai(prompt)
+                
+            return response
+            
+        except Exception as e:
+            logger.error(f"AI Nadi insight failed: {e}")
+            return "Unable to generate insight at this time."
+
+    def _build_nadi_prompt(
+        self,
+        dasha: Dict,
+        event_name: Optional[str],
+        significators: Optional[Dict]
+    ) -> str:
+        md = dasha.get('mahadasha', {})
+        ad = dasha.get('antardasha', {})
+        pd = dasha.get('antara', {})
+        
+        md_lord = md.get('lord', 'Unknown')
+        ad_lord = ad.get('lord', 'Unknown')
+        pd_lord = pd.get('lord', 'Unknown')
+        
+        base_prompt = f"""As an expert KP Astrologer using Nakshatra Nadi techniques, analyze this period:
+        
+CURRENT DASHA PERIOD:
+- Mahadasha (MD): {md_lord} (Ends: {md.get('end_date','').split(' ')[0]})
+- Antardasha (AD): {ad_lord} (Ends: {ad.get('end_date','').split(' ')[0]})
+- Pratyantar (PD): {pd_lord} (Ends: {pd.get('end_date','').split(' ')[0]})
+"""
+
+        if event_name:
+            prompt = f"{base_prompt}\n\nUSER QUESTION: Analyze the potential for '{event_name.upper()}' during this specific period.\n"
+            prompt += f"Explain how {md_lord} (MD), {ad_lord} (AD), and {pd_lord} (PD) will likely influence {event_name}.\n"
+            prompt += "Is this a good time for this event? What are the blockages? Provide a short, direct answer with one specific remedy."
+        else:
+            prompt = f"{base_prompt}\n\nAnalyze the current time period general influence.\n"
+            prompt += "Focus on the interplay between the Dasha, Bhukti and Antara lords.\n"
+            prompt += "Provide a 3-sentence summary of what the user can expect right now in terms of general opportunities and mindset."
+            
+        return prompt

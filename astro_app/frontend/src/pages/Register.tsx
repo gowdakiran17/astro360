@@ -12,7 +12,7 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/auth/register', { email, password });
+      await api.post('auth/register', { email, password });
       navigate('/login');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Registration failed');

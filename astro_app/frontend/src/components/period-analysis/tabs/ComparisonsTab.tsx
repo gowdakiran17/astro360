@@ -1,6 +1,16 @@
 import { ArrowRightLeft, Calendar } from 'lucide-react';
 
-const ComparisonsTab = () => {
+import { DailyCalendarData } from '../InteractiveCalendar';
+import { DashboardOverviewResponse } from '../../../types/periodAnalysis';
+
+interface ComparisonsTabProps {
+    data: DashboardOverviewResponse;
+    selectedDate?: Date;
+    onDateChange?: (date: Date) => void;
+    dailyData?: Record<string, DailyCalendarData>;
+}
+
+const ComparisonsTab = ({ data: _data }: ComparisonsTabProps) => {
     return (
         <div className="space-y-6">
             <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">

@@ -1,8 +1,9 @@
 import { NavLink } from 'react-router-dom';
+
 import {
   Home, Star, Sparkles, Calendar, Zap, Compass,
   Grid, BarChart2, Moon, Globe, Sunrise, Clock, Users, Layers, Layout,
-  Briefcase, PanelLeftClose, PanelLeftOpen, X, Cpu, MessageSquare
+  Briefcase, PanelLeftClose, PanelLeftOpen, X, Cpu, TrendingUp
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -18,10 +19,9 @@ const MENU_ITEMS = [
     items: [
       { to: '/home', icon: Home, label: 'Home' },
       { to: '/my-charts', icon: Star, label: 'My Charts' },
-      { to: '/ai-insights', icon: Sparkles, label: 'VedaAI', badge: 'AI' },
-      { to: '/ai-chat', icon: MessageSquare, label: 'AI Chat', badge: 'AI' },
-      { to: '/llm-studio', icon: Cpu, label: 'LLM Studio', badge: 'DEV' },
-      { to: '/research', icon: Sparkles, label: 'AI Astrology Lab', badge: 'AI' },
+      { to: '/ai-astrologer', icon: Sparkles, label: 'VedaAI', badge: 'AI' },
+      { to: '/ai-guru', icon: Cpu, label: 'AI Guru', badge: 'AI' },
+      { to: '/ai-horary', icon: Sparkles, label: 'Horary Prasna', badge: 'AI' },
     ]
   },
   {
@@ -33,6 +33,7 @@ const MENU_ITEMS = [
   {
     section: 'Forecasts',
     items: [
+      { to: '/tools/life-predictor', icon: TrendingUp, label: 'Life Predictor', badge: 'AI', title: 'VedAstro-powered life predictions' },
       { to: '/tools/period-analysis', icon: Calendar, label: 'Period Analysis', badge: 'AI', title: 'Mahadasha + Antardasha' },
       { to: '/tools/sade-sati', icon: Moon, label: 'Sade Sati' },
       { to: '/calculations/vimshottari', icon: Clock, label: 'Vimshottari Dasha' },
@@ -54,13 +55,25 @@ const MENU_ITEMS = [
     ]
   },
   {
+    section: 'KP Astrology',
+    badge: 'NEW',
+    items: [
+      { to: '/kp/dashboard', icon: Star, label: 'KP Dashboard', badge: 'NEW' },
+      { to: '/kp/chart', icon: Grid, label: 'My KP Chart' },
+      { to: '/kp/detailed-predictions', icon: Sparkles, label: 'Detailed Predictions' },
+      { to: '/kp/precision-scoring', icon: BarChart2, label: 'Precision Scoring' },
+      { to: '/kp/event-potential', icon: Zap, label: 'Event Potential' },
+      { to: '/kp/timeline', icon: Calendar, label: '5-Year Timeline' },
+      { to: '/kp/complete-report', icon: Layers, label: 'Complete Report' },
+    ]
+  },
+  {
     section: 'Astro Metrics',
     badge: 'ADVANCED',
     items: [
       { to: '/calculations/shodashvarga', icon: Grid, label: 'Shodashvarga Charts' },
       { to: '/calculations/ashtakvarga', icon: BarChart2, label: 'Ashtakavarga Strength', title: 'Quantifies transit support for each house' },
       { to: '/calculations/shadbala', icon: Zap, label: 'Shadbala Energy', title: 'Measures planetary strength across six dimensions' },
-      { to: '/calculations/kp-astrology', icon: Grid, label: 'KP Astrology', badge: 'NEW', title: 'Krishnamurti Padhdhati: Precision Predictive System' },
       { to: '/calculations/shadow-planets', icon: Layers, label: 'Shadow Planets', title: 'Hidden karmic influencers beyond classical planets' },
     ]
   },

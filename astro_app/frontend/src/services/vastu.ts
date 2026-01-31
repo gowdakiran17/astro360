@@ -11,12 +11,12 @@ interface VastuBirthDetails {
 
 export const vastuService = {
   getPersonalProfile: async (birthDetails: VastuBirthDetails) => {
-    const response = await api.post('/vastu/elite/personal-profile', birthDetails);
+    const response = await api.post('vastu/elite/personal-profile', birthDetails);
     return response.data;
   },
   
   getEliteAnalysis: async (data: unknown) => {
-    const response = await api.post('/vastu/elite/analysis', data);
+    const response = await api.post('vastu/elite/analysis', data);
     return response.data;
   }
 };

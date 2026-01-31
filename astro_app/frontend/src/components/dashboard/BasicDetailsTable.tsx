@@ -28,7 +28,7 @@ const BasicDetailsTable: React.FC<BasicDetailsTableProps> = ({ profile }) => {
     const fetchBasicDetails = async () => {
       setLoading(true);
       try {
-        const response = await api.post('/chart/basics', {
+        const response = await api.post('chart/basics', {
           date: profile.date,
           time: profile.time,
           latitude: profile.latitude,

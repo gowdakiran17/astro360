@@ -129,6 +129,19 @@ export interface DashboardOverviewResponse {
   daily_analysis: DailyAnalysis;
   dasha_info: DashaInfo;
   strength_analysis: StrengthData;
+  // Mapped properties for frontend convenience
+  current_period?: {
+    mahadasha: string;
+    antardasha: string;
+    pratyantar: string;
+    next_antardasha?: string;
+  };
+  period_scores?: {
+    overall: number;
+    career: number;
+    health: number;
+    relationships: number;
+  };
   chart_details: {
     lagna: { sign: string; longitude: number; degree_str: string };
     sun_sign: { sign: string; longitude: number; degree_str: string };

@@ -36,11 +36,11 @@ const ShadowPlanets = () => {
             };
 
             // Fetch Birth Chart for D1
-            const birthResponse = await api.post('/chart/birth', birthPayload);
+            const birthResponse = await api.post('chart/birth', birthPayload);
             setBirthData(birthResponse.data);
 
             // Fetch Shadow Planets for S1
-            const shadowResponse = await api.post('/chart/shadow-planets', {
+            const shadowResponse = await api.post('chart/shadow-planets', {
                 birth_details: birthPayload
             });
             setShadowData(shadowResponse.data);

@@ -40,7 +40,7 @@ const CitySearch = ({ onSelect, label = "City / Place" }: CitySearchProps) => {
       if (query.length >= 2) {
         setLoading(true);
         try {
-          const response = await api.get(`/geo/search?q=${query}`);
+          const response = await api.get(`geo/search?q=${query}`);
           setResults(response.data);
           setShowDropdown(true);
         } catch (error) {

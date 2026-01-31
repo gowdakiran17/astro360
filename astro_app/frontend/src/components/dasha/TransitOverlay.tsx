@@ -81,7 +81,7 @@ const TransitOverlay: React.FC<TransitOverlayProps> = ({
                 ayanamsa: ayanamsa
             };
 
-            const response = await api.post('/chart/comprehensive-analysis', payload);
+            const response = await api.post('chart/comprehensive-analysis', payload);
             setData(response.data as TransitAnalysisData);
         } catch (err) {
             console.error(err);

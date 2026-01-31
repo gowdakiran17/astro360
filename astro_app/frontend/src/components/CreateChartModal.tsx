@@ -90,7 +90,7 @@ const CreateChartModal = ({ isOpen, onClose, onChartCreated }: CreateChartModalP
       };
 
       // 4. Save to Backend
-      const response = await api.post('/charts/', payload);
+      const response = await api.post('charts/', payload);
 
       // 5. Navigate or Refresh
       const homePayload = {

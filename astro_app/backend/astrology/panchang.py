@@ -207,6 +207,17 @@ def get_panchang_data(jd, lat, lon, jd_start=None):
         "tithi_end": tithi_end
     }
     
+    # Calculate Lagna (Ascendant) for Panchaka
+    res_houses = swe.houses_ex(jd, lat, lon, b'P', swe.FLG_SIDEREAL)
+    asc_sidereal = res_houses[0][0] # Ascendant degree
+    lagna_idx = int(asc_sidereal / 30) + 1 # 1-based index (1-12)
+    
+    # Calculate Panchaka
+    week_idx_fmt = dow_idx # 0=Sunday...6=Saturday from above logic (jd+1.5)%7
+    # Note: Traditional Panchaka often uses 1=Sunday...7=Saturday. 
+    # My get_panchaka function adds +1 to w_val, so passing 0-based is correct if 0=Sunday.
+    panchang_result["panchaka"] = get_panchaka(t_idx, week_idx_fmt, n_idx, lagna_idx)
+    
     # Calculate Quality Score
     panchang_result["quality_score"] = calculate_quality_score(panchang_result)
     
@@ -249,7 +260,55 @@ def calculate_quality_score(panchang):
     elif panchang.get("day_lord") in ["Tuesday", "Saturday"]:
         score -= 5
         
+    # 5. Panchaka Check
+    panchaka = panchang.get("panchaka", {})
+    if panchaka.get("status") == "Bad":
+        score -= 10
+        
     return max(0, min(100, score))
+
+def get_panchaka(tithi_idx, weekday_idx, nakshatra_idx, lagna_idx):
+    """
+    Calculates Panchaka (Five-Source Defect) Analysis.
+    Sum of Tithi (1-30), Weekday (1-7), Nakshatra (1-27), Lagna (1-12)
+    Divided by 9.
+    Remainder 1: Mrityu Panchaka (Danger)
+    Remainder 2: Agni Panchaka (Fire)
+    Remainder 4: Raja Panchaka (Royal trouble)
+    Remainder 6: Chor Panchaka (Theft)
+    Remainder 8: Roga Panchaka (Disease)
+    Remainder 3, 5, 7, 9 (0): Nishkantar (Good/Free from thorns)
+    """
+    # 1-based indexing for calculation
+    # Weekday 1=Sunday, 2=Monday...
+    # Our WEEKDAYS list is 0=Sunday. So +1.
+    w_val = weekday_idx + 1
+    
+    # Tithi 1-30. Our idx is 0-29. So +1.
+    t_val = tithi_idx + 1
+    
+    # Nakshatra 1-27. Our idx is 0-26. So +1.
+    n_val = nakshatra_idx + 1
+    
+    # Lagna 1-12. Our idx is 0-11 usually, but input needs to be checked. Assuming 1-based passed or 0-based.
+    # Let's assume input is 1-based (Aries=1).
+    l_val = lagna_idx
+    
+    total = t_val + w_val + n_val + l_val
+    remainder = total % 9
+    
+    if remainder == 1:
+        return {"type": "Mrityu Panchaka", "status": "Bad", "description": "Danger/Death-like suffering"}
+    elif remainder == 2:
+        return {"type": "Agni Panchaka", "status": "Bad", "description": "Risk of Fire"}
+    elif remainder == 4:
+        return {"type": "Raja Panchaka", "status": "Bad", "description": "Royal/Government trouble"}
+    elif remainder == 6:
+        return {"type": "Chor Panchaka", "status": "Bad", "description": "Risk of Theft"}
+    elif remainder == 8:
+        return {"type": "Roga Panchaka", "status": "Bad", "description": "Disease/Illness"}
+    else:
+        return {"type": "Nishkantar Panchaka", "status": "Good", "description": "Auspicious/Free from thorns"}
 
 def get_lagna_journey(date_str, timezone_str, lat, lon):
     swe.set_sid_mode(swe.SIDM_LAHIRI, 0, 0)
@@ -361,7 +420,9 @@ async def calculate_panchang(date_str, time_str, timezone_str, latitude=12.97, l
         "karana": data["karana"],
         "sunrise": rise_str,
         "sunset": set_str,
-        "day_of_week": datetime.strptime(date_str, "%d/%m/%Y").strftime("%A")
+        "sunset": set_str,
+        "day_of_week": datetime.strptime(date_str, "%d/%m/%Y").strftime("%A"),
+        "panchaka": data.get("panchaka")
     }
     
     result["day_lord"] = result["day_of_week"]

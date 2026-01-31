@@ -19,12 +19,12 @@ interface HomeAdvancedProps {
   shadbalaData: any;
 }
 
-const HomeAdvanced: React.FC<HomeAdvancedProps> = ({ 
-  profile, 
-  chartData, 
-  panchangData, 
-  dashaData, 
-  shadbalaData 
+const HomeAdvanced: React.FC<HomeAdvancedProps> = ({
+  profile,
+  chartData,
+  panchangData,
+  dashaData,
+  shadbalaData
 }) => {
   const navigate = useNavigate();
 
@@ -41,10 +41,10 @@ const HomeAdvanced: React.FC<HomeAdvancedProps> = ({
   ] : [];
 
   // Shadbala Score
-  const shadbalaScore = shadbalaData?.planets 
+  const shadbalaScore = shadbalaData?.planets
     ? Math.min(Math.round(shadbalaData.planets.reduce((acc: number, p: any) => acc + p.percentage, 0) / shadbalaData.planets.length), 100)
     : 0;
-  
+
   const shadbalaStatus = shadbalaScore >= 80 ? 'Excellent' : shadbalaScore >= 60 ? 'Strong' : shadbalaScore >= 40 ? 'Average' : 'Weak';
 
   return (
@@ -55,21 +55,21 @@ const HomeAdvanced: React.FC<HomeAdvancedProps> = ({
 
       {/* Main Content Layout */}
       <div className="w-full px-6 mt-8 flex-1">
-        
+
         {/* Welcome Hero Section */}
         <div className="mb-8 relative rounded-3xl bg-white border border-slate-200 shadow-sm">
           <div className="relative z-10 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
             {/* Left: Greeting & Name */}
             <div className="text-center md:text-left space-y-2">
               <div className="flex items-center justify-center md:justify-start gap-2 text-slate-500 text-sm font-medium">
-                 <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-wider">Advanced Analysis</span>
-                 <span>{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+                <span className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-600 text-xs font-bold uppercase tracking-wider">Advanced Analysis</span>
+                <span>{new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
               </div>
-              
+
               <h1 className="text-3xl md:text-4xl font-display font-bold leading-tight text-slate-900">
                 {profile.name}
               </h1>
-              
+
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-slate-500 text-xs font-medium pt-1">
                 <span className="flex items-center gap-1.5 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
                   <MapPin className="w-3.5 h-3.5 text-slate-400" /> {profile.location}
@@ -99,50 +99,50 @@ const HomeAdvanced: React.FC<HomeAdvancedProps> = ({
 
         {/* Dashboard Grid */}
         <div className="space-y-8">
-          
+
           {/* Top Row: Chart, Strength, Panchang, Moon Phase */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Lagna Chart Card */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 p-1 min-h-[420px] flex flex-col relative overflow-hidden group hover:shadow-2xl hover:shadow-slate-200/60 transition-all duration-300">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-50 rounded-bl-[100px] -mr-10 -mt-10 transition-transform group-hover:scale-110 duration-700"></div>
-                
-                <div className="relative z-10 p-6 flex justify-between items-start">
-                  <div>
-                    <h3 className="text-xl font-display font-bold text-slate-900">Lagna Chart</h3>
-                    <p className="text-sm text-slate-500 font-medium">Birth Chart (D1)</p>
+              <div className="absolute top-0 right-0 w-40 h-40 bg-indigo-50 rounded-bl-[100px] -mr-10 -mt-10 transition-transform group-hover:scale-110 duration-700"></div>
+
+              <div className="relative z-10 p-6 flex justify-between items-start">
+                <div>
+                  <h3 className="text-xl font-display font-bold text-slate-900">Lagna Chart</h3>
+                  <p className="text-sm text-slate-500 font-medium">Birth Chart (D1)</p>
+                </div>
+                {chartData?.ascendant && (
+                  <button onClick={() => navigate('/zodiac/profile')} className="px-4 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-full shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all hover:scale-105">
+                    {chartData.ascendant.zodiac_sign} Ascendant
+                  </button>
+                )}
+              </div>
+
+              <div className="flex-1 flex items-center justify-center p-4">
+                {chartData ? (
+                  <div className="transform scale-100 group-hover:scale-105 transition-transform duration-500 ease-out">
+                    <UniversalChart data={chartData} />
                   </div>
-                  {chartData?.ascendant && (
-                    <button onClick={() => navigate('/zodiac/profile')} className="px-4 py-1.5 bg-slate-900 text-white text-xs font-bold rounded-full shadow-lg shadow-slate-900/20 hover:bg-slate-800 transition-all hover:scale-105">
-                      {chartData.ascendant.zodiac_sign} Ascendant
-                    </button>
-                  )}
-                </div>
-                
-                <div className="flex-1 flex items-center justify-center p-4">
-                  {chartData ? (
-                    <div className="transform scale-100 group-hover:scale-105 transition-transform duration-500 ease-out">
-                      <UniversalChart data={chartData} />
-                    </div>
-                  ) : (
-                    <div className="animate-pulse w-full h-full bg-slate-50 rounded-xl" />
-                  )}
-                </div>
+                ) : (
+                  <div className="animate-pulse w-full h-full bg-slate-50 rounded-xl" />
+                )}
+              </div>
             </div>
 
             {/* Cosmic Strength Card */}
             <div className="bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/50 p-6 min-h-[420px] flex flex-col relative overflow-hidden group hover:shadow-2xl hover:shadow-slate-200/60 transition-all duration-300">
               <div className="relative z-10 flex justify-between items-start mb-8">
-                  <div>
-                    <h3 className="text-xl font-display font-bold text-slate-900">Cosmic Strength</h3>
-                    <p className="text-sm text-slate-500 font-medium">Shadbala & Power Analysis</p>
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
-                    <Zap className="w-5 h-5" />
-                  </div>
+                <div>
+                  <h3 className="text-xl font-display font-bold text-slate-900">Cosmic Strength</h3>
+                  <p className="text-sm text-slate-500 font-medium">Shadbala & Power Analysis</p>
                 </div>
-                <div className="flex-1 flex items-center justify-center">
-                  <AstroScoreCard score={shadbalaScore} status={shadbalaStatus} onViewReport={() => navigate('/calculations/shadbala')} />
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
+                  <Zap className="w-5 h-5" />
                 </div>
+              </div>
+              <div className="flex-1 flex items-center justify-center">
+                <AstroScoreCard score={shadbalaScore} status={shadbalaStatus} onViewReport={() => navigate('/calculations/shadbala')} />
+              </div>
             </div>
 
             {/* Daily Panchang */}
@@ -153,7 +153,7 @@ const HomeAdvanced: React.FC<HomeAdvancedProps> = ({
             {/* Moon Phase - Dark Theme Feature */}
             <div className="bg-[#0F172A] rounded-3xl p-8 text-white shadow-xl shadow-slate-900/20 relative overflow-hidden group flex flex-col h-full">
               <div className="absolute top-0 right-0 w-56 h-56 bg-indigo-500/30 rounded-full filter blur-[80px] -mr-10 -mt-10 animate-pulse"></div>
-              
+
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-8">
                   <div className="flex items-center gap-2 text-indigo-200 text-sm font-medium">
@@ -162,21 +162,21 @@ const HomeAdvanced: React.FC<HomeAdvancedProps> = ({
                   </div>
                   <span className="px-3 py-1 bg-indigo-500/20 text-indigo-200 rounded-full text-xs font-bold border border-indigo-500/30">Waxing Gibbous</span>
                 </div>
-                
+
                 <div className="flex items-center justify-center py-4 flex-1">
                   <div className="w-32 h-32 rounded-full bg-gradient-to-br from-indigo-200 to-slate-800 shadow-[0_0_50px_rgba(99,102,241,0.3)] relative group-hover:scale-105 transition-transform duration-700">
                     <div className="absolute inset-2 rounded-full bg-slate-900/80 backdrop-blur-sm"></div>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 text-center">
                   <h3 className="text-2xl font-display font-bold mb-1">75% Illumination</h3>
                   <p className="text-slate-400 text-sm">Excellent for new beginnings</p>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-slate-800 flex justify-between text-xs text-slate-400 font-medium">
-                    <span>Next: Full Moon</span>
-                    <span>In 3 Days</span>
+                  <span>Next: Full Moon</span>
+                  <span>In 3 Days</span>
                 </div>
               </div>
             </div>
@@ -223,10 +223,10 @@ const HomeAdvanced: React.FC<HomeAdvancedProps> = ({
                   <p className="text-xs text-slate-500 font-medium">Celestial Longitudes</p>
                 </div>
               </div>
-              {chartData && <PlanetaryTable planets={chartData.planets} ascendant={chartData.ascendant} />}
+              {chartData && <PlanetaryTable planets={chartData.planets} ascendant={chartData.ascendant} specialPoints={chartData.special_points} />}
             </div>
           </div>
-            
+
           {/* Quick Tools Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[

@@ -163,7 +163,7 @@ const Numerology = () => {
                 full_name: fullName
             };
 
-            const response = await api.post('/tools/numerology', payload);
+            const response = await api.post('tools/numerology', payload);
             setData(response.data);
 
             // Auto-generate blueprint if core numbers are successful
@@ -195,7 +195,7 @@ const Numerology = () => {
                 date: dob,
                 full_name: fullName
             };
-            const response = await api.post('/tools/numerology/blueprint', payload);
+            const response = await api.post('tools/numerology/blueprint', payload);
             const bp = response.data as NumerologyBlueprint;
             setBlueprint(bp);
         } catch (err: any) {
@@ -330,7 +330,7 @@ const Numerology = () => {
             if (!compatInput) return;
             setCompatLoading(true);
             try {
-                const response = await api.post('/tools/numerology/compatibility', {
+                const response = await api.post('tools/numerology/compatibility', {
                     input_number: compatInput,
                     target_root: advanced.core.psychic_number
                 });
@@ -345,7 +345,7 @@ const Numerology = () => {
         const handleNameCorrection = async () => {
             setCorrectionLoading(true);
             try {
-                const response = await api.post('/tools/numerology/name-correction', {
+                const response = await api.post('tools/numerology/name-correction', {
                     name: fullName || advanced.core.cornerstone, // Use available name
                     target_number: advanced.core.psychic_number
                 });

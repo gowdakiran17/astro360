@@ -54,7 +54,7 @@ const NormalUserView: React.FC<NormalUserViewProps> = ({
                 ...contextData
             }
         };
-        const res = await api.post('/ai/generate', payload);
+        const res = await api.post('ai/generate', payload);
         setAiResponse(res.data.insight);
     } catch (err) {
         console.error("AI Error:", err);

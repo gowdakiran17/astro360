@@ -57,7 +57,7 @@ const ActivityList: React.FC<ActivityListProps> = ({ date = new Date(), dayQuali
                 await new Promise(r => setTimeout(r, 800));
                 
                 // Simple heuristic based on date parity for demo
-                // In real app: const res = await api.post('/panchang/daily-score', { date });
+                // In real app: const res = await api.post('panchang/daily-score', { date });
                 const day = date.getDate();
                 if (day % 3 === 0) setQuality('excellent');
                 else if (day % 3 === 1) setQuality('good');

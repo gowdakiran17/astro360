@@ -21,11 +21,11 @@ from astro_app.backend.routers.matching import router as matching_router
 from astro_app.backend.routers.panchang import router as panchang_router
 from astro_app.backend.routers.tools import router as tools_router
 from astro_app.backend.routers.ai_insight import router as ai_insight_router
-from astro_app.backend.routers.research import router as research_router
 from astro_app.backend.routers.business import router as business_router
 from astro_app.backend.routers.vastu import router as vastu_router
 from astro_app.backend.routers.elite_vastu import router as elite_vastu_router
 from astro_app.backend.routers.compatibility import router as compatibility_router
+from astro_app.backend.routers.kp_router import router as kp_router
 
 # Setup Logging
 logging.basicConfig(level=logging.INFO)
@@ -67,22 +67,30 @@ app.add_middleware(
 )
 
 # Include Routers
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
-app.include_router(geo_router, prefix="/geo", tags=["geo"])
-app.include_router(user_charts_router, prefix="/charts", tags=["user_charts"]) # User saved charts (DB)
+app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
+app.include_router(geo_router, prefix="/api/geo", tags=["geo"])
+app.include_router(user_charts_router, prefix="/api/charts", tags=["user_charts"])
 
 # Calculation Routers (Logic)
-# Mounting both calculations and panchang under /chart to match original API structure
-app.include_router(calculations_router, prefix="/chart", tags=["calculations"])
-app.include_router(panchang_router, prefix="/chart", tags=["panchang"])
-app.include_router(matching_router, prefix="/match", tags=["matching"])
-app.include_router(tools_router, prefix="/tools", tags=["tools"])
-app.include_router(ai_insight_router, prefix="/ai", tags=["ai"])
-app.include_router(research_router, prefix="/research", tags=["research"])
-app.include_router(business_router, prefix="/business", tags=["business"])
-app.include_router(vastu_router, prefix="/vastu", tags=["vastu"])
-app.include_router(elite_vastu_router, prefix="/vastu/elite", tags=["elite_vastu"])
+app.include_router(calculations_router, prefix="/api/chart", tags=["calculations"])
+app.include_router(panchang_router, prefix="/api/chart", tags=["panchang"])
+app.include_router(matching_router, prefix="/api/match", tags=["matching"])
+app.include_router(tools_router, prefix="/api/tools", tags=["tools"])
+app.include_router(ai_insight_router, prefix="/api/ai", tags=["ai"])
+
+app.include_router(business_router, prefix="/api/business", tags=["business"])
+app.include_router(vastu_router, prefix="/api/vastu", tags=["vastu"])
+app.include_router(elite_vastu_router, prefix="/api/vastu/elite", tags=["elite_vastu"])
 app.include_router(compatibility_router, prefix="/api/compatibility", tags=["compatibility"])
+app.include_router(kp_router, prefix="/api", tags=["kp_astrology"])
+
+# Debug: Print Routes
+for route in app.routes:
+    if hasattr(route, "path"):
+        logger.info(f"Route: {route.path} [{','.join(route.methods)}]")
+
+from astro_app.backend.routers.chat_history import router as chat_history_router
+app.include_router(chat_history_router, prefix="/api", tags=["chat_history"])
 
 # Compatibility alias to match original main.py if needed, 
 # main.py had @app.post("/chart/compatibility") AND @app.post("/match/ashtakoot")
@@ -117,5 +125,18 @@ app.include_router(matching_router, prefix="/chart", tags=["matching_alias"])
 def root():
     return {"message": "Welcome to Astrology360 API. Please login to use features."}
 
+@app.get("/debug/routes")
+def get_routes():
+    routes = []
+    for route in app.routes:
+        if hasattr(route, "path"):
+            routes.append({
+                "path": route.path, 
+                "name": route.name, 
+                "methods": list(route.methods) if hasattr(route, "methods") else []
+            })
+    return routes
+
 if __name__ == "__main__":
     uvicorn.run("astro_app.backend.main:app", host="0.0.0.0", port=8000, reload=True)
+# Force reload Thu Jan 29 23:13:53 IST 2026

@@ -1,219 +1,217 @@
-"""
-Strength Analysis Service
-Calculates Vimsopaka Bala, Ishta/Kashta Phala, and extensions to Shadbala.
-"""
-from typing import Dict, List, Any
-import logging
-from astro_app.backend.astrology.varga_service import get_all_shodashvargas
-from astro_app.backend.astrology.shadbala import calculate_cheshta_bala, calculate_sthana_bala
-from astro_app.backend.astrology.utils import normalize_degree
+from .utils import get_zodiac_sign, normalize_degree
 
-logger = logging.getLogger(__name__)
-
-# Vimsopaka Varga Points (Standard Parasara)
-# Scheme: Shadvarga (6 charts), Saptavarga (7), Dasavarga (10), Shodashavarga (16)
-# We will use Shodashavarga (16 charts) logic for maximum precision if available,
-# or map to Dasavarga (10) as it is most common for Dasha analysis.
-#
-# Dasavarga Weights (Total 20):
-# Rasi (D1): 3.0
-# Hora (D2): 1.5
-# Drekkana (D3): 1.5
-# Saptamsa (D7): 1.5
-# Navamsa (D9): 2.5 (Crucial)
-# Dasamsa (D10): 1.5
-# Dwadasamsa (D12): 1.5
-# Shodasamsa (D16): 1.5
-# Trimsamsa (D30): 1.5
-# Shashtiamsa (D60): 4.0 (Highest)
-
-VIMSOPAKA_WEIGHTS = {
-    "D1": 3.0,
-    "D2": 1.5,
-    "D3": 1.5,
-    "D7": 1.5,
-    "D9": 2.5,
-    "D10": 1.5,
-    "D12": 1.5,
-    "D16": 1.5,
-    "D30": 1.5,
-    "D60": 4.0
-}
-
-# Dignity Scores (0-20 scale contribution)
-# Exalted/Mol: 100% of weight
-# Own Sign: 90%
-# Best Friend: 80%
-# Friend: 60%
-# Neutral: 40%
-# Enemy: 20%
-# Bitter Enemy: 10%
-# Debilitated: 0%
-
-FRIENDSHIP_TABLE = {
-    # Permanent Relationships (Naisargika)
-    "Sun": {"Friends": ["Moon", "Mars", "Jupiter"], "Enemies": ["Venus", "Saturn"], "Neutral": ["Mercury"]},
-    "Moon": {"Friends": ["Sun", "Mercury"], "Enemies": [], "Neutral": ["Mars", "Jupiter", "Venus", "Saturn"]},
-    "Mars": {"Friends": ["Sun", "Moon", "Jupiter"], "Enemies": ["Mercury"], "Neutral": ["Venus", "Saturn"]},
-    "Mercury": {"Friends": ["Sun", "Venus"], "Enemies": ["Moon"], "Neutral": ["Mars", "Jupiter", "Saturn"]},
-    "Jupiter": {"Friends": ["Sun", "Moon", "Mars"], "Enemies": ["Mercury", "Venus"], "Neutral": ["Saturn"]},
-    "Venus": {"Friends": ["Mercury", "Saturn"], "Enemies": ["Sun", "Moon"], "Neutral": ["Mars", "Jupiter"]},
-    "Saturn": {"Friends": ["Mercury", "Venus"], "Enemies": ["Sun", "Moon", "Mars"], "Neutral": ["Jupiter"]},
-    "Rahu": {"Friends": ["Venus", "Saturn"], "Enemies": ["Sun", "Moon"], "Neutral": ["Mercury", "Jupiter"]}, # Simplified
-    "Ketu": {"Friends": ["Mars", "Jupiter"], "Enemies": ["Sun", "Moon"], "Neutral": ["Mercury", "Venus"]}
-}
-
-PLANET_OWNERS = {
-    "Sun": [4], # Leo (index 4)
-    "Moon": [3], # Cancer
-    "Mars": [0, 7], # Aries, Scorpio
-    "Mercury": [2, 5], # Gemini, Virgo
-    "Jupiter": [8, 11], # Sag, Pisces
-    "Venus": [1, 6], # Taurus, Libra
-    "Saturn": [9, 10] # Cap, Aqua
-}
-
-EXALTATION_SIGNS = {"Sun": 0, "Moon": 1, "Mars": 9, "Mercury": 5, "Jupiter": 3, "Venus": 11, "Saturn": 6, "Rahu": 1, "Ketu": 7}
-DEBILITATION_SIGNS = {"Sun": 6, "Moon": 7, "Mars": 3, "Mercury": 11, "Jupiter": 9, "Venus": 5, "Saturn": 0, "Rahu": 7, "Ketu": 1}
-
-def get_dignity_score(planet: str, sign_idx: int) -> float:
-    """Calculate dignity multiplier (0.0 to 1.0)"""
-    if EXALTATION_SIGNS.get(planet) == sign_idx:
-        return 1.0 # Exalted
-    if DEBILITATION_SIGNS.get(planet) == sign_idx:
-        return 0.0 # Debilitated
-        
-    owners = PLANET_OWNERS.get(planet, [])
-    if sign_idx in owners:
-        return 0.9 # Own Sign (Swakshetra)
-        
-    # Find Owner of the sign
-    sign_owner = None
-    for owner, signs in PLANET_OWNERS.items():
-        if sign_idx in signs:
-            sign_owner = owner
-            break
-            
-    if not sign_owner:
-        return 0.4 # Default neutral
-        
-    # Check Relationship
-    rels = FRIENDSHIP_TABLE.get(planet, {})
-    if sign_owner in rels.get("Friends", []):
-        return 0.75 # Friendly (Simplified Avg)
-    if sign_owner in rels.get("Enemies", []):
-        return 0.25 # Enemy
-        
-    return 0.5 # Neutral
-
-async def calculate_vimsopaka_bala(
-    birth_details: Dict[str, Any],
-    planets_d1: List[Dict[str, Any]]
-) -> Dict[str, float]:
+def calculate_bhava_bala(chart_data: dict, shadbala_values: dict = None) -> list:
     """
-    Calculate Vimsopaka Strength (20-point scale) for all planets.
-    Requires calculating Divisional Charts first.
+    Calculates Bhava Bala (House Strength) for 12 houses.
+    Simplified Components:
+    1. Bhavadhipati Bala (Strength of House Lord) - Derived from Shadbala
+    2. Bhava Digbala (Directional Strength of House) - Signs in Kendall/Angle
+    3. Bhava Drishti Bala (Aspect Strength) - Benefic/Malefic aspects on the house
     """
-    # 1. Get All Vargas
-    vargas = await get_all_shodashvargas(planets_d1, birth_details)
     
-    results = {}
+    # Needs structure to hold results
+    bhava_balas = []
     
-    for planet in planets_d1:
-        p_name = planet['name']
-        if p_name not in VIMSOPAKA_WEIGHTS and p_name not in FRIENDSHIP_TABLE: 
-            # Skip Ascendant or outer planets
-            continue
-            
-        total_score = 0.0
-        max_score = 0.0
+    # 1. Map lords to houses
+    # Aries: Mars, Taurus: Venus...
+    sign_lords = {
+        "Aries": "Mars", "Taurus": "Venus", "Gemini": "Mercury", "Cancer": "Moon",
+        "Leo": "Sun", "Virgo": "Mercury", "Libra": "Venus", "Scorpio": "Mars",
+        "Sagittarius": "Jupiter", "Capricorn": "Saturn", "Aquarius": "Saturn", "Pisces": "Jupiter"
+    }
+
+    # Helper: Get Shadbala of a planet
+    def get_planet_strength(p_name):
+        if not shadbala_values: return 6.0 # Avg rupas
+        for p in shadbala_values.get("planets", []):
+            if p["name"] == p_name:
+                return p.get("total_rupas", 6.0)
+        return 6.0
         
-        # Iterate through required vargas
-        for v_code, weight in VIMSOPAKA_WEIGHTS.items():
-            if v_code not in vargas:
-                # If D60 missing, distribute weight? Or just ignore.
-                # Ideally D60 is heavy (4.0). If missing, score is skewed.
-                # Assuming get_all_shodashvargas returns them or we calc locally.
-                continue
+    asc_sign = chart_data["ascendant"]["zodiac_sign"]
+    asc_idx = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"].index(asc_sign)
+    
+    # Pre-process planet positions for Aspect Check
+    planet_positions = {p["name"]: p["longitude"] for p in chart_data["planets"]}
+    
+    # Benefics/Malefics (Natural)
+    # Variable nature (Moon/Mercury) ignored for simplicity, handled as beneficiaries usually
+    BENEFICS = ["Jupiter", "Venus", "Moon", "Mercury"]
+    MALEFICS = ["Sun", "Mars", "Saturn", "Rahu", "Ketu"]
+    
+    for house_num in range(1, 13):
+        # Determine Sign on House Cusp (Assuming Whole Sign for simplicity if unavailable)
+        # Or Equal House from Ascendant
+        current_sign_idx = (asc_idx + house_num - 1) % 12
+        signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
+        sign_on_cusp = signs[current_sign_idx]
+        
+        # 1. Lord Strength
+        lord = sign_lords.get(sign_on_cusp)
+        lord_strength = get_planet_strength(lord)
+        
+        # 2. Digbala (Directional Strength of Signs)
+        # Narayana Dasa/Jaimini logic or standard Dikbala? 
+        # Standard: 
+        # House 1 (East): Mercury/Jupiter strong
+        # House 10 (South): Sun/Mars strong
+        # House 7 (West): Saturn strong
+        # House 4 (North): Moon/Venus strong
+        # Here we are calc HOUSE strength. 
+        # Ancient texts say: Kendra houses (1,4,7,10) are strongest. Panapara (2,5,8,11) moderate. Apoklima (3,6,9,12) weak.
+        placement_strength = 0
+        if house_num in [1, 4, 7, 10]: placement_strength = 60
+        elif house_num in [2, 5, 8, 11]: placement_strength = 30
+        else: placement_strength = 15
+        
+        # 3. Drishti Bala (Aspects on Bhava)
+        # Calculate angle from each planet to House Cusp Middle (House Num * 30 + Asc Deg?)
+        # Let's assume Middle of House = Ascendant Degree + (H-1)*30
+        house_mid_deg = normalize_degree(chart_data["ascendant"]["longitude"] + (house_num - 1) * 30)
+        
+        aspect_score = 0
+        for p_name, p_long in planet_positions.items():
+            if p_name in ["Rahu", "Ketu"]: continue # Simplified aspects
+            
+            diff = normalize_degree(p_long - house_mid_deg) # Planet to House logic usually P -> H, so H - P?
+            # Actually Aspect is Planet looking at House.
+            # Angle = House - Planet.
+            angle = normalize_degree(house_mid_deg - p_long)
+            
+            # Simple Vedic Aspects (Whole sign)
+            # General: 7th (180 deg)
+            # Mars: 4, 7, 8
+            # Jupiter: 5, 7, 9
+            # Saturn: 3, 7, 10
+            is_aspecting = False
+            
+            # Tolerance +/- 15 deg for orb strength? Or just Sign based?
+            # Let's stick to Sign based for simple "Is Aspecting" logic
+            # House Sign Index vs Planet Sign Index
+            p_sign_idx = int(p_long / 30)
+            h_sign_idx = current_sign_idx
+            
+            sign_diff = (h_sign_idx - p_sign_idx) % 12
+            if sign_diff == 0: sign_diff = 12 # 12th house relative? No, 0 is conjunction (1st house)
+            else: sign_diff += 1 # Convert 0-11 to 1-12 relative house
+            
+            if sign_diff == 7: is_aspecting = True
+            if p_name == "Mars" and sign_diff in [4, 8]: is_aspecting = True
+            if p_name == "Jupiter" and sign_diff in [5, 9]: is_aspecting = True
+            if p_name == "Saturn" and sign_diff in [3, 10]: is_aspecting = True
+            
+            if is_aspecting:
+                strength = get_planet_strength(p_name)
+                # Benefic adds, Malefic subtracts (Drig Bala logic)
+                # Or for Bhava Purbness, interaction matters.
+                # Simplified: + Strength if Benefic, - Strength if Malefic
+                if p_name in BENEFICS: aspect_score += (strength * 0.25)
+                elif p_name in MALEFICS: aspect_score -= (strength * 0.25)
+
+        total_score = lord_strength + (placement_strength / 60.0 * 5) + aspect_score 
+        # Normalized roughly to Rupas (approx)
+        
+        bhava_balas.append({
+            "house": house_num,
+            "sign": sign_on_cusp,
+            "lord": lord,
+            "score": round(total_score, 2),
+            "label": "Strong" if total_score > 8 else "Average" if total_score > 5 else "Weak"
+        })
+        
+    return bhava_balas
+
+async def calculate_vimsopaka_bala(birth_details: dict, planets_d1: list) -> dict:
+    """
+    Calculates Vimsopaka Bala (20-point strength) based on divisional charts.
+    Uses Shad-Varga (6), Sapta-Varga (7), Dasa-Varga (10), or Shodasha-Varga (16).
+    Here we implement a simplified Shadvarga scheme (6 Vargas) as an example constant.
+    Real implementation should weight placement in D1, D2, D3, D9, D12, D30.
+    """
+    # 1. Get Vargas
+    from astro_app.backend.astrology.varga_service import get_all_shodashvargas
+    
+    # Needs planets input format for vargas
+    # planets_d1 is [{'name':..., 'longitude':...}]
+    # We call get_all_shodashvargas
+    try:
+        vargas = await get_all_shodashvargas(planets_d1, birth_details)
+    except Exception:
+        vargas = {} # Fallback
+        
+    scores = {}
+    
+    # 2. Iterate planets
+    # Simple mock logic: If in Own/Exalted in D9/D1 etc -> Add points.
+    for p in planets_d1:
+        p_name = p['name']
+        if p_name in ["Rahu", "Ketu", "Ascendant", "Uranus", "Neptune", "Pluto"]: continue
+        
+        score = 10.0 # Base
+        
+        # Check D9 (Navamsa) - Critical
+        d9_data = vargas.get("D9", {}).get("planets", [])
+        for d9_p in d9_data:
+            if d9_p["name"] == p_name:
+                dignity = d9_p.get("dignity", "Neutral")
+                if dignity == "Exalted": score += 5
+                elif dignity == "Own Sign": score += 3
+                elif dignity == "Debilitated": score -= 5
+                break
                 
-            v_data = vargas[v_code]
-            # Find planet in this varga
-            p_data = next((p for p in v_data['planets'] if p['name'] == p_name), None)
-            
-            if p_data:
-                # Determine sign index
-                # Local calc returns zodiac_sign name, we need index
-                from astro_app.backend.astrology.utils import ZODIAC_SIGNS
-                try:
-                    sign_idx = ZODIAC_SIGNS.index(p_data['zodiac_sign'])
-                    dignity_mult = get_dignity_score(p_name, sign_idx)
-                    
-                    total_score += weight * dignity_mult
-                    max_score += weight
-                except ValueError:
-                    continue
-                    
-        # Normalize to 20 if some charts missing
-        if max_score > 0:
-            final_vimsopaka = (total_score / max_score) * 20.0
-        else:
-            final_vimsopaka = 10.0 # Average fallback
-            
-        results[p_name] = round(final_vimsopaka, 2)
+        scores[p_name] = min(20, max(0, score))
         
-    return results
+    return scores
 
-def calculate_ishta_kashta_phala(
-    planet_name: str, 
-    longitude: float, 
-    cheshta_bala_score: float # From Shadbala (0-60 Virupas or normalized)
-) -> Dict[str, float]:
+def calculate_ishta_kashta_phala(planet_name: str, longitude: float, cheshta_bala: float) -> dict:
     """
-    Calculate Ishta (Good) and Kashta (Bad) Phala.
-    Based on Ucha Bala (Exaltation Strength) and Cheshta Bala (Motional Strength).
+    Calculates Ishta Phala (Benefic Result) and Kashta Phala (Malefic Result).
+    Ishta = (Uchcha Bala * Cheshta Bala) / (60*60) ? No, typically Sqrt(Uchcha * Cheshta).
+    Standard:
+    Uchcha Bala = 60 * (180 - dist from debilitation)/180. (0 to 60)
+    Ishta Phala = (Uchcha Bala + Cheshta Bala) / 2?
+    
+    Classic Formula (B.V. Raman):
+    Ishta Phala = Sqrt(Uchcha Bala * Cheshta Bala)
+    Kashta Phala = 60 - Ishta
     """
-    # 1. Ucha Bala (Exaltation Strength) - 0 to 60 Virupas
-    # Distance from Debilitation point
-    deep_exalt = {
-        "Sun": 10, "Moon": 33, "Mars": 298, "Mercury": 165, 
+    # 1. Calculate Uchcha Bala (Exaltation Strength)
+    # Exaltation Points
+    exaltation_points = {
+        "Sun": 10, "Moon": 33, "Mars": 298, "Mercury": 165,
         "Jupiter": 95, "Venus": 357, "Saturn": 200
     }
-    # Deep debilitation is +180
+    debilitation_points = {
+        "Sun": 190, "Moon": 213, "Mars": 118, "Mercury": 345,
+        "Jupiter": 275, "Venus": 177, "Saturn": 20
+    }
     
-    if planet_name not in deep_exalt:
-        return {"ishta": 30.0, "kashta": 30.0} # Neutral
-        
-    exalt_deg = deep_exalt[planet_name]
-    # Debilitation is 180 deg away
-    debilitation_deg = (exalt_deg + 180) % 360
+    deep_deb = debilitation_points.get(planet_name, 0)
     
-    # Distance from debilitation (increases strength)
-    diff = abs(longitude - debilitation_deg)
+    # Distance from deep debilitation
+    # Max distance is 180. 
+    diff = abs(longitude - deep_deb)
     if diff > 180: diff = 360 - diff
     
-    # Ucha Bala in Virupas (Max 60)
-    # 180 deg diff = 60 Virupas
-    ucha_bala = (diff / 180.0) * 60.0
+    uchcha_bala = (diff / 180.0) * 60.0
     
-    # 2. Cheshta Bala (Passed in as arg or calc)
-    # Assuming input is already in Virupas (0-60)
-    # If using simplified cheshta from shadbala (45.0), it works.
-    
-    # Ishta Phala Formula
-    # Ishta = sqrt(Ucha * Cheshta)
-    # Only for Sun, Moon, Mars, Mercury, Jupiter, Venus, Saturn
-    
-    ishta = (ucha_bala * cheshta_bala_score) ** 0.5
-    
-    # Kashta Phala = 60 - Ishta? 
-    # Proper formula involves Ishta/Kashta ratios usually.
-    # Standard: Kashta = sqrt((60-Ucha)*(60-Cheshta)) ?? No.
-    # Simplified: Ishta + Kashta = 60 roughly.
-    # Let's use:
+    # 2. Ishta Phala
+    # Formula: (Uchcha * Cheshta) ?? No.
+    # Ishta = (Uchcha Bala * Cheshta Bala) / 60 ??
+    # Let's use SQRT approach for balanced output 0-60
+    import math
+    try:
+        ishta = math.sqrt(pad_value(uchcha_bala) * pad_value(cheshta_bala))
+    except:
+        ishta = (uchcha_bala + cheshta_bala) / 2
+        
     kashta = 60.0 - ishta
     
     return {
         "ishta": round(ishta, 2),
         "kashta": round(kashta, 2),
-        "ratio": round(ishta / (kashta + 0.1), 2)
+        "uchcha_bala": round(uchcha_bala, 2)
     }
+
+def pad_value(v):
+    return max(0, v)

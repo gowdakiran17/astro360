@@ -74,3 +74,18 @@ class PerformanceMetric(Base):
     stocks_win_rate = Column(Float)
     avoid_accuracy = Column(Float)
     updated_at = Column(DateTime, default=datetime.utcnow)
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    role = Column(String) # user, assistant
+    content = Column(String) # Text content
+    html_content = Column(String, nullable=True) # For charts/tables
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    session_id = Column(String, nullable=True, index=True)
+    suggestions = Column(String, nullable=True) # JSON string of suggestions
+    
+    # Relationship to user
+    owner = relationship("User", backref="messages")

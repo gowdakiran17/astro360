@@ -25,7 +25,7 @@ const AstroVastuProfile: React.FC<AstroVastuProfileProps> = ({ ascendant, mahada
             
             setLoading(true);
             try {
-                const response = await api.post('/vastu/guidance', {
+                const response = await api.post('vastu/guidance', {
                     ascendant_sign: ascendant,
                     current_mahadasha_lord: mahadashaLord
                 });

@@ -25,7 +25,7 @@ const ChartRectification = () => {
             }
 
             // 2. If not, fetch list and get default
-            const response = await api.get('/charts/');
+            const response = await api.get('charts/');
             const charts = response.data;
             if (charts.length > 0) {
                 const defaultChart = charts.find((c: any) => c.is_default) || charts[0];
@@ -181,7 +181,7 @@ const ChartRectification = () => {
                                         events: events
                                     };
 
-                                    const res = await api.post('/tools/rectify/automated', payload);
+                                    const res = await api.post('tools/rectify/automated', payload);
                                     console.log("Rectification Result:", res.data);
                                     alert(`Rectification Complete.\nFound time: ${res.data.rectified_time}\nConfidence: ${res.data.confidence_score}%\n\n${res.data.notes}`);
                                 } catch (err) {

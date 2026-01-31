@@ -67,7 +67,7 @@ const VastuCompass = () => {
                 user_intent: userIntent
             };
 
-            const response = await api.post('/vastu/elite/analysis', payload);
+            const response = await api.post('vastu/elite/analysis', payload);
             const data: EliteAnalysisResult = response.data;
             
             // Wait a bit for the animation to finish

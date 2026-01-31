@@ -8,6 +8,11 @@ interface PanchangData {
   day_of_week: string;
   sunrise: string;
   sunset: string;
+  panchaka?: {
+    type: string;
+    status: string;
+    description: string;
+  };
 }
 
 const PanchangDisplay = ({ data }: { data: PanchangData | null }) => {
@@ -34,6 +39,17 @@ const PanchangDisplay = ({ data }: { data: PanchangData | null }) => {
               <span className="text-gray-600 font-medium">Nakshatra</span>
               <span className="text-gray-900 font-bold">{data.nakshatra}</span>
             </div>
+            {data.panchaka && (
+              <div className="flex items-center justify-between border-b pb-2">
+                <span className="text-gray-600 font-medium">Panchaka</span>
+                <div className="text-right">
+                  <span className={`font-bold block ${data.panchaka.status === "Good" ? "text-green-600" : "text-red-500"}`}>
+                    {data.panchaka.type}
+                  </span>
+                  <span className="text-xs text-gray-500">{data.panchaka.description}</span>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col space-y-4">

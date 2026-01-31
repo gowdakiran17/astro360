@@ -278,3 +278,29 @@ def get_muhurata_data(jd, lat, lon):
             "Avoid": len([p for p in periods if p["quality"] == "Avoid"])
         }
     }
+
+def find_muhurata(start_date, end_date, lat, lon, target_quality=["Excellent", "Good"]):
+    """
+    Finds auspicious moments in a date range.
+    """
+    start_dt = datetime.strptime(start_date, "%d/%m/%Y")
+    end_dt = datetime.strptime(end_date, "%d/%m/%Y")
+    current_dt = start_dt
+    
+    results = []
+    
+    while current_dt <= end_dt:
+        # Calculate for this day
+        # Assume approx timezone handling (using UTC JD)
+        jd = get_julian_day(current_dt.strftime("%d/%m/%Y"), "12:00", "+00:00")
+        day_data = get_muhurata_data(jd, lat, lon)
+        
+        for p in day_data["periods"]:
+            if p["quality"] in target_quality:
+                # Add date context
+                p["date"] = current_dt.strftime("%d/%m/%Y")
+                results.append(p)
+                
+        current_dt += timedelta(days=1)
+        
+    return results

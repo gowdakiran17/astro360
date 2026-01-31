@@ -204,7 +204,7 @@ const BlueprintDashboard = () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await api.post('/tools/numerology/blueprint', {
+                const response = await api.post('tools/numerology/blueprint', {
                     date: date,
                     full_name: name
                 });

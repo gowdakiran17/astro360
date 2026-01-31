@@ -62,7 +62,7 @@ const Dashboard = () => {
     setError('');
     try {
       // 1. Fetch Birth Chart (Visuals)
-      const chartResponse = await api.post('/chart/birth', payload);
+      const chartResponse = await api.post('chart/birth', payload);
       setChartData(chartResponse.data);
 
       // 2. Fetch Comprehensive Dashboard Overview (Panchang, Dasha, Strength, Daily Analysis)
@@ -73,7 +73,7 @@ const Dashboard = () => {
         analysis_date: today
       };
 
-      const overviewResponse = await api.post('/chart/period/overview', overviewPayload);
+      const overviewResponse = await api.post('chart/period/overview', overviewPayload);
       const overviewData = overviewResponse.data;
 
       // Map Overview Data to State

@@ -40,15 +40,15 @@ interface GannAIRequest {
 export const businessService = {
   getMarketTiming: async (location?: LocationParams) => {
     const config = location ? { params: location } : {};
-    const response = await api.get('/business/market-timing', config);
+    const response = await api.get('business/market-timing', config);
     return response.data;
   },
   getCryptoSignals: async () => {
-    const response = await api.get('/business/crypto-signals');
+    const response = await api.get('business/crypto-signals');
     return response.data;
   },
   getFinancialProfile: async (profileData: FinancialProfileRequest) => {
-    const response = await api.post('/business/financial-profile', profileData);
+    const response = await api.post('business/financial-profile', profileData);
     return response.data;
   },
   getLiveFeed: async (symbols?: string[], location?: LocationParams) => {
@@ -62,23 +62,23 @@ export const businessService = {
       Object.assign(params, location);
     }
     
-    const response = await api.get('/business/live-feed', { params });
+    const response = await api.get('business/live-feed', { params });
     return response.data;
   },
   getMarketOverlay: async (profileData: FinancialProfileRequest) => {
-    const response = await api.post('/business/market-overlay', profileData);
+    const response = await api.post('business/market-overlay', profileData);
     return response.data;
   },
   getPerformanceStats: async () => {
-    const response = await api.get('/business/performance-stats');
+    const response = await api.get('business/performance-stats');
     return response.data;
   },
   getAssetList: async () => {
-    const response = await api.get('/business/assets/list');
+    const response = await api.get('business/assets/list');
     return response.data;
   },
   analyzeAsset: async (data: AssetAnalysisRequest) => {
-    const response = await api.post('/business/asset-analysis', data);
+    const response = await api.post('business/asset-analysis', data);
     return response.data;
   },
   getGannIntelligence: async (
@@ -112,11 +112,11 @@ export const businessService = {
         if (birthDetails.lon) params.birth_lon = birthDetails.lon;
     }
     
-    const response = await api.get('/business/gann-intelligence', { params });
+    const response = await api.get('business/gann-intelligence', { params });
     return response.data;
   },
   askGannAI: async (data: GannAIRequest) => {
-    const response = await api.post('/business/gann-ai-chat', data);
+    const response = await api.post('business/gann-ai-chat', data);
     return response.data;
   }
 };

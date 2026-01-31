@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '../services/api';
 import MainLayout from '../components/layout/MainLayout';
 import {
-    Info, Activity, RefreshCw, TrendingUp, Shield, Star, Target
+    Info, Activity, RefreshCw, TrendingUp, Shield, Star, Target, Home
 } from 'lucide-react';
 import AIReportButton from '../components/ai/AIReportButton';
 import { useChartSettings } from '../context/ChartContext';
@@ -13,6 +13,7 @@ const ShadbalaEnergy = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [shadbalaData, setShadbalaData] = useState<any>(null);
+    const [bhavaData, setBhavaData] = useState<any[]>([]);
     const [activeTab, setActiveTab] = useState<'visuals' | 'table'>('visuals');
 
     useEffect(() => {
@@ -35,8 +36,16 @@ const ShadbalaEnergy = () => {
                     longitude: profile.longitude
                 }
             };
-            const response = await api.post('/chart/shadbala', payload);
-            setShadbalaData(response.data);
+            const response = await api.post('chart/shadbala', payload);
+
+            // Handle both old and new response structures
+            if (response.data.shadbala) {
+                setShadbalaData(response.data.shadbala);
+                setBhavaData(response.data.bhava_bala || []);
+            } else {
+                setShadbalaData(response.data);
+                setBhavaData([]);
+            }
         } catch (err) {
             console.error(err);
             setError('Failed to calculate Shadbala strength.');
@@ -154,7 +163,7 @@ const ShadbalaEnergy = () => {
                             <AIReportButton
                                 buttonText="AI Energy Analysis"
                                 context={`Shadbala Energy Analysis for ${currentProfile?.name}`}
-                                data={shadbalaData}
+                                data={{ shadbala: shadbalaData, bhava: bhavaData }}
                                 className="mr-2"
                             />
                         )}
@@ -336,6 +345,47 @@ const ShadbalaEnergy = () => {
                                 )}
                             </div>
                         </div>
+
+
+                        {/* Bhava Bala (House Strength) Section */}
+                        {bhavaData.length > 0 && (
+                            <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                                <div className="px-8 py-6 border-b border-slate-100 flex items-center gap-3">
+                                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                                        <Home className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-slate-900">Bhava Bala</h2>
+                                        <p className="text-sm text-slate-500">House strength analysis (Mean ~8 Rupas)</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div className="overflow-x-auto p-4">
+                                        <div className="min-w-[700px] h-[200px] flex items-end justify-between gap-2 px-4">
+                                            {bhavaData.map((house: any) => {
+                                                const heightPct = Math.min((house.strength / 12) * 100, 100);
+                                                const isStrong = house.strength > 8;
+                                                return (
+                                                    <div key={house.house} className="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                                                        <div className="relative w-full flex justify-center">
+                                                            <div
+                                                                className={`w-full max-w-[40px] rounded-t-lg transition-all ${isStrong ? 'bg-indigo-500' : 'bg-slate-300'} group-hover:brightness-110`}
+                                                                style={{ height: `${heightPct * 1.5}px` }}
+                                                            >
+                                                                <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded whitespace-nowrap z-10">
+                                                                    {house.strength.toFixed(1)} Rupas
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-xs font-bold text-slate-600">H{house.house}</div>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Interpretation Guide */}
                         <div className="bg-slate-900 text-white rounded-3xl p-8 shadow-2xl relative overflow-hidden">

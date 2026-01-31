@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Message } from '../components/ai/AIChatArea';
 
 // Types
+export interface Message {
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp: Date;
+}
+
 export interface ChatSession {
     id: string;
     title: string;

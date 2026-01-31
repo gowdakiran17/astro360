@@ -65,7 +65,7 @@ const Gemstones = () => {
                 longitude: currentProfile.longitude,
                 timezone: currentProfile.timezone
             };
-            const response = await api.post('/tools/gemstones', payload);
+            const response = await api.post('tools/gemstones', payload);
             setData(response.data);
         } catch (err: any) {
             console.error("Failed to fetch gemstones", err);

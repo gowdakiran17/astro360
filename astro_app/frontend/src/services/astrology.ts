@@ -60,7 +60,7 @@ export const astrologyService = {
      * Get detailed Sade Sati analysis
      */
     getSadeSati: async (details: BirthDetails): Promise<SadeSatiResponse> => {
-        const response = await api.post('/chart/sade-sati', details);
+        const response = await api.post('chart/sade-sati', details);
         return response.data;
     },
 
@@ -68,7 +68,7 @@ export const astrologyService = {
      * Get Vimshottari Dasha details
      */
     getDasha: async (request: DashaRequest) => {
-        const response = await api.post('/chart/dasha', request);
+        const response = await api.post('chart/dasha', request);
         return response.data;
     },
 
@@ -76,7 +76,7 @@ export const astrologyService = {
      * Get Period Analysis (Calendar scores, predictions)
      */
     getPeriodAnalysis: async (request: PeriodAnalysisRequest) => {
-        const response = await api.post('/chart/period-analysis', request);
+        const response = await api.post('chart/period-analysis', request);
         return response.data;
     },
 
@@ -84,7 +84,7 @@ export const astrologyService = {
      * Get Planetary Transits
      */
     getTransits: async (request: any) => {
-        const response = await api.post('/chart/transits', request);
+        const response = await api.post('chart/transits', request);
         return response.data;
     },
 
@@ -92,7 +92,23 @@ export const astrologyService = {
      * Get Birth Chart (D1)
      */
     getBirthChart: async (details: BirthDetails) => {
-        const response = await api.post('/chart/birth', details);
+        const response = await api.post('chart/birth', details);
+        return response.data;
+    },
+
+    /**
+     * Search for Auspicious Muhurata
+     */
+    findMuhurata: async (request: any) => {
+        const response = await api.post('chart/muhurata/find', request);
+        return response.data;
+    },
+
+    /**
+     * Check Transit Ingress (Nakshatra Change)
+     */
+    checkTransitIngress: async (request: any) => {
+        const response = await api.post('chart/transits/ingress', request);
         return response.data;
     }
 };

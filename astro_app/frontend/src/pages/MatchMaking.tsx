@@ -67,7 +67,7 @@ const MatchMaking = () => {
         girl: formatPayload(girlData)
       };
 
-      const response = await api.post('/match/ashtakoot', payload);
+      const response = await api.post('match/ashtakoot', payload);
       setMatchResult(response.data);
     } catch (err: any) {
       console.error(err);

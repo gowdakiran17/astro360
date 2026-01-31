@@ -15,6 +15,7 @@ import MatchMaking from './pages/MatchMaking';
 import MyCharts from './pages/MyCharts';
 import HomeDashboard from './pages/HomeDashboard';
 import PeriodAnalysisPage from './pages/PeriodAnalysisPage';
+import LifePredictorPage from './pages/LifePredictorPage';
 import ChartRectification from './pages/ChartRectification';
 import EventsCalibration from './pages/EventsCalibration';
 import ZodiacCalibration from './pages/ZodiacCalibration';
@@ -39,9 +40,8 @@ import GannIntelligence from './pages/GannIntelligence';
 import CryptoStocksDashboard from './pages/CryptoStocksDashboard';
 import RealTimeTrading from './pages/RealTimeTrading';
 
+
 // Lazy load feature modules (Tools)
-const AIInsightsPage = lazy(() => import('./pages/AIInsightsPage'));
-const Research = lazy(() => import('./pages/Research'));
 const VastuCompass = lazy(() => import('./pages/VastuCompass'));
 const Gemstones = lazy(() => import('./pages/Gemstones'));
 const Numerology = lazy(() => import('./pages/Numerology'));
@@ -49,8 +49,20 @@ const SadeSati = lazy(() => import('./pages/SadeSati'));
 const BlueprintDashboard = lazy(() => import('./pages/BlueprintDashboard'));
 const ReportDashboard = lazy(() => import('./pages/ReportDashboard')); // Premium Reports
 const PersonalVastu = lazy(() => import('./pages/PersonalVastu')); // New Feature
-const KPAstrology = lazy(() => import('./pages/KPAstrology'));
-const LLMStudioPage = lazy(() => import('./pages/LLMStudioPage'));
+
+// KP Astrology Pages
+const KPDashboard = lazy(() => import('./pages/kp/KPDashboard'));
+const KPChart = lazy(() => import('./pages/kp/KPChart'));
+const KPTimeline = lazy(() => import('./pages/kp/KPTimeline'));
+const KPDetailedPredictions = lazy(() => import('./pages/kp/KPDetailedPredictions'));
+const KPPrecisionScoring = lazy(() => import('./pages/kp/KPPrecisionScoring'));
+const KPEventPotential = lazy(() => import('./pages/kp/KPEventPotential'));
+const KPCompleteReport = lazy(() => import('./pages/kp/KPCompleteReport'));
+const KPCategoryReport = lazy(() => import('./pages/kp/KPCategoryReport'));
+const KPThreeLayerScript = lazy(() => import('./pages/kp/KPThreeLayerScript'));
+const KPAccurateTiming = lazy(() => import('./pages/kp/KPAccurateTiming'));
+const NakshatraNadiDashboard = lazy(() => import('./pages/kp/NakshatraNadiDashboard'));
+
 const AIChatPage = lazy(() => import('./pages/AIChatPage'));
 
 // Loading Fallback
@@ -96,21 +108,21 @@ function App() {
                   </MainLayout>
                 } />
 
-                <Route path="/ai-insights" element={
-                  <MainLayout title="AI Insights" breadcrumbs={['Dashboard', 'AI Insights']} showHeader={true} disableContentPadding={false}>
-                    <AIInsightsPage />
+                <Route path="/ai-astrologer" element={
+                  <MainLayout title="VedaAI Chat" breadcrumbs={['Dashboard', 'VedaAI']} showHeader={true} disableContentPadding={true}>
+                    <AIChatPage />
                   </MainLayout>
                 } />
 
-                <Route path="/ai-chat" element={
-                  <ProtectedRoute>
+                <Route path="/ai-guru" element={
+                  <MainLayout title="AI Guru Teacher" breadcrumbs={['Dashboard', 'Learning Gateway']} showHeader={true} disableContentPadding={true}>
                     <AIChatPage />
-                  </ProtectedRoute>
+                  </MainLayout>
                 } />
 
-                <Route path="/llm-studio" element={
-                  <MainLayout title="LLM Studio" breadcrumbs={['Dashboard', 'LLM Studio']} showHeader={true} disableContentPadding={false}>
-                    <LLMStudioPage />
+                <Route path="/ai-horary" element={
+                  <MainLayout title="Horary Prasna" breadcrumbs={['Dashboard', 'Event Prediction']} showHeader={true} disableContentPadding={true}>
+                    <AIChatPage />
                   </MainLayout>
                 } />
 
@@ -163,11 +175,7 @@ function App() {
                 } />
 
                 {/* Research Module */}
-                <Route path="/research" element={
-                  <ProtectedRoute>
-                    <Research />
-                  </ProtectedRoute>
-                } />
+
 
                 {/* Vastu Compass */}
                 <Route path="/vastu" element={
@@ -199,6 +207,11 @@ function App() {
                   <Route path="zodiac" element={<ProtectedRoute><ZodiacCalibration /></ProtectedRoute>} />
                   <Route path="biodata" element={<ProtectedRoute><BiodataCalibration /></ProtectedRoute>} />
                   <Route path="period-analysis" element={<ProtectedRoute><PeriodAnalysisPage /></ProtectedRoute>} />
+                  <Route path="life-predictor" element={
+                    <MainLayout title="Life Predictor" breadcrumbs={['Tools', 'Life Predictor']} showHeader={true}>
+                      <LifePredictorPage />
+                    </MainLayout>
+                  } />
                 </Route>
 
                 {/* Reports */}
@@ -208,7 +221,7 @@ function App() {
                 <Route path="/calculations/shodashvarga" element={<ProtectedRoute><Shodashvarga /></ProtectedRoute>} />
                 <Route path="/calculations/ashtakvarga" element={<ProtectedRoute><AshtakvargaStrength /></ProtectedRoute>} />
                 <Route path="/calculations/shadbala" element={<ProtectedRoute><ShadbalaEnergy /></ProtectedRoute>} />
-                <Route path="/calculations/kp-astrology" element={<ProtectedRoute><KPAstrology /></ProtectedRoute>} />
+
                 <Route path="/calculations/vimshottari" element={<ProtectedRoute><VimshottariDasha /></ProtectedRoute>} />
                 <Route path="/calculations/shadow-planets" element={<ProtectedRoute><ShadowPlanets /></ProtectedRoute>} />
 
@@ -223,6 +236,63 @@ function App() {
                 <Route path="/zodiac/profile" element={<ZodiacProfile />} />
                 <Route path="/horoscope/daily" element={<DailyHoroscope />} />
                 <Route path="/account/profile" element={<UserProfile />} />
+
+                {/* KP Astrology Routes */}
+                <Route path="/kp/dashboard" element={
+                  <MainLayout title="KP Astrology" breadcrumbs={['KP Astrology', 'Dashboard']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPDashboard /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/chart" element={
+                  <MainLayout title="KP Chart" breadcrumbs={['KP Astrology', 'My KP Chart']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPChart /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/detailed-predictions" element={
+                  <MainLayout title="Detailed Predictions" breadcrumbs={['KP Astrology', 'Predictions']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPDetailedPredictions /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/precision-scoring" element={
+                  <MainLayout title="Precision Scoring" breadcrumbs={['KP Astrology', 'Scoring']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPPrecisionScoring /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/event-potential" element={
+                  <MainLayout title="Event Potential" breadcrumbs={['KP Astrology', 'Potential']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPEventPotential /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/three-layer-script" element={
+                  <MainLayout title="3-Layer Script" breadcrumbs={['KP Astrology', 'Script']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPThreeLayerScript /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/timeline" element={
+                  <MainLayout title="5-Year Timeline" breadcrumbs={['KP Astrology', 'Timeline']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPTimeline /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/accurate-timing" element={
+                  <MainLayout title="Accurate Timing" breadcrumbs={['KP Astrology', 'Timing']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPAccurateTiming /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/complete-report" element={
+                  <MainLayout title="Complete KP Report" breadcrumbs={['KP Astrology', 'Full Report']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPCompleteReport /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/category/:category" element={
+                  <MainLayout title="Category Report" breadcrumbs={['KP Astrology', 'Category']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><KPCategoryReport /></ProtectedRoute>
+                  </MainLayout>
+                } />
+                <Route path="/kp/nakshatra-nadi" element={
+                  <MainLayout title="Nakshatra Nadi" breadcrumbs={['KP Astrology', 'Nadi Analysis']} showHeader={true} disableContentPadding={true}>
+                    <ProtectedRoute><NakshatraNadiDashboard /></ProtectedRoute>
+                  </MainLayout>
+                } />
 
                 {/* Fallbacks */}
                 <Route path="/tools/*" element={<ProtectedRoute><HomeDashboard /></ProtectedRoute>} />

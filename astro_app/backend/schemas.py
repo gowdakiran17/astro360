@@ -40,9 +40,23 @@ class BirthDetails(BaseModel):
             raise ValueError('Longitude must be between -180 and 180')
         return v
 
-class KPRequest(BaseModel):
+# KP Astrology Schemas
+class KPChartRequest(BaseModel):
     birth_details: BirthDetails
-    horary_number: Optional[int] = Field(0, description="KP Horary number (1-249)")
+    horary_number: Optional[int] = Field(0, description="KP Horary number (1-249)", example=108)
+
+class KPDashaRequest(BaseModel):
+    birth_details: BirthDetails
+    years_ahead: int = Field(5, description="Number of years to calculate ahead", example=5)
+
+class KPCategoryRequest(BaseModel):
+    birth_details: BirthDetails
+    category: str = Field(..., description="Category: career, love, finance, property, health, fame", example="career")
+
+class KPAIRequest(BaseModel):
+    dasha_hierarchy: Dict
+    event_name: Optional[str] = None
+    significators: Optional[Dict] = None
 
 class DashaRequest(BaseModel):
     birth_details: BirthDetails
@@ -117,6 +131,16 @@ class MuhurataRequest(BaseModel):
             raise ValueError('Invalid timezone format. Use +HH:MM, -HH:MM, or named zone like Asia/Kolkata')
         return v
 
+class MuhurtaSearchRequest(MuhurataRequest):
+    end_date: str = Field(..., description="End date in DD/MM/YYYY format")
+    target_quality: Optional[List[str]] = Field(["Excellent", "Good"], description="Quality levels to search")
+
+class IngressRequest(BaseModel):
+    planet: str = Field(..., description="Planet name (e.g. Jupiter)")
+    current_date: str = Field(..., description="Date around which to check")
+    timezone: str = Field(..., description="Timezone offset")
+    window_days: int = Field(7, description="Days to check before/after")
+
 class AnalysisRequest(BaseModel):
     birth_details: BirthDetails
     analysis_date: Optional[str] = Field(None, description="Date for analysis in DD/MM/YYYY format. Defaults to today.")
@@ -153,3 +177,20 @@ class RatingRequest(BaseModel):
     date: str # YYYY-MM-DD
     rating: int = Field(..., ge=1, le=5)
     feedback: Optional[str] = None
+
+class LifeTimelineRequest(BaseModel):
+    birth_details: BirthDetails
+    start_year: int = Field(..., description="Start year for timeline", example=2026)
+    end_year: int = Field(..., description="End year for timeline", example=2031)
+
+class PredictionRequest(BaseModel):
+    birth_details: BirthDetails
+    categories: Optional[List[str]] = Field(None, description="Prediction categories: marriage, career, wealth, health, children")
+
+class LifePredictorRequest(BaseModel):
+    birth_details: BirthDetails
+    start_date: Optional[str] = None
+    end_date: Optional[str] = None
+    houses: Optional[List[int]] = None
+    planets: Optional[List[str]] = None
+    categories: Optional[List[str]] = None

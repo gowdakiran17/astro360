@@ -26,7 +26,7 @@ const AIReportButton: React.FC<AIReportButtonProps> = ({ context, data, buttonTe
         setIsOpen(true);
 
         try {
-            const response = await api.post('/ai/generate', {
+            const response = await api.post('ai/generate', {
                 context,
                 data,
                 user_query: query || userQuery

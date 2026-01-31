@@ -164,3 +164,72 @@ def calculate_transit_aspects(natal_planets: list, transit_planets: list):
                 })
                 
     return aspects
+
+def check_nakshatra_ingress(planet_name: str, date_str: str, timezone_str: str, window_days: int = 1):
+    """
+    Checks if a planet changes Nakshatra within a time window (+/- days).
+    Returns ingress details if found.
+    """
+    try:
+        dt = datetime.strptime(date_str, "%d/%m/%Y")
+    except ValueError:
+        return None
+        
+    # We check position at start and end of window
+    # Actually just check Today vs Tomorrow to see if it changes near this date
+    # Or specifically find the exact time? 
+    # For now, let's detect if it changes from 'date_str' to 'date_str + 1 day'
+    
+    # JD for requested date (Noon)
+    jd_start = calculate_transits(date_str, "12:00", timezone_str, 0, 0)[0]["longitude"] # Inefficient call pattern
+    # Better: Use direct swe calls if possible, but let's reuse logic or optimize.
+    # To avoid circular ref or massive refactor, let's just use swe directly here.
+    
+    # Helper to get lon
+    def get_planet_lon(jd, p_name):
+        swe.set_sid_mode(swe.SIDM_LAHIRI, 0, 0)
+        p_map = {"Sun":0, "Moon":1, "Mars":4, "Mercury":2, "Jupiter":5, "Venus":3, "Saturn":6, "Rahu":11, "Ketu":11}
+        p_id = p_map.get(p_name)
+        if p_id is None: return 0
+        res = swe.calc_ut(jd, p_id, swe.FLG_SWIEPH | swe.FLG_SIDEREAL)
+        return res[0][0]
+
+    # Parse TZ
+    try:
+         # Simplified TZ parse
+         sign = 1 if timezone_str.startswith("+") else -1
+         parts = timezone_str.strip("+-").split(":")
+         offset = sign * (int(parts[0]) + int(parts[1])/60.0) if len(parts)>1 else 0
+    except:
+         offset = 0
+         
+    # Check range t-1 to t+1
+    shifts = []
+    
+    # Steps of 6 hours
+    start_dt = dt
+    for i in range(-window_days * 4, window_days * 4):
+        # Calculate time
+        hours_add = i * 6
+        check_dt = start_dt + timedelta(hours=hours_add)
+        
+        # Convert to JD
+        decimal_hour = check_dt.hour - offset 
+        jd = swe.julday(check_dt.year, check_dt.month, check_dt.day, decimal_hour + check_dt.minute/60.0)
+        
+        lon = get_planet_lon(jd, planet_name)
+        nak = get_nakshatra(lon)
+        
+        # Compare with previous step
+        if i > -window_days * 4:
+            if nak != prev_nak:
+                shifts.append({
+                    "planet": planet_name,
+                    "from_nakshatra": prev_nak,
+                    "to_nakshatra": nak,
+                    "measure_time": check_dt.strftime("%d/%m/%Y %H:%M") + " (Approx)"
+                })
+        
+        prev_nak = nak
+        
+    return shifts

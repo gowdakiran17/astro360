@@ -10,8 +10,13 @@ import {
 } from 'recharts';
 import { DashboardOverviewResponse } from '../../../types/periodAnalysis';
 
+import { DailyCalendarData } from '../InteractiveCalendar';
+
 interface TimelineTabProps {
     data: DashboardOverviewResponse;
+    selectedDate?: Date;
+    onDateChange?: (date: Date) => void;
+    dailyData?: Record<string, DailyCalendarData>;
 }
 
 const TimelineTab = ({ data }: TimelineTabProps) => {

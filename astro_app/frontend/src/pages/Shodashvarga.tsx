@@ -35,7 +35,7 @@ const Shodashvarga = () => {
                 }
             };
 
-            const response = await api.post('/chart/shodashvarga', payload);
+            const response = await api.post('chart/shodashvarga', payload);
             setVargaData(response.data);
         } catch (err: any) {
             console.error(err);

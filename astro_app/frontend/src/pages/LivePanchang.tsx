@@ -46,7 +46,7 @@ const LivePanchang = () => {
             const dateStr = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
             const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
-            const response = await api.post('/chart/live-panchang', {
+            const response = await api.post('chart/live-panchang', {
                 date: dateStr,
                 time: timeStr,
                 timezone: location.timezone,
